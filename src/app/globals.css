@@ -2,26 +2,437 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+html {
+  box-sizing: border-box;
+  --scroll-behavior: smooth !important;
+    scroll-behavior: smooth !important;
+}
+
+:root {
+  
+  /* color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424; */
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  margin: 0;
+  min-width: 300px;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1 {
+  font-size: 2.2em;
+}
+
+h2 {
+  font-size: 1.8em; /* 1.5em */
+}
+
+h3 {
+  font-size: 1.5em; /* 1.17em */
+}
+
+h4 {
+  font-size: 1.2em;
+}
+
+h5 {
+  font-size: 1em;
+}
+
+h6 {
+  font-size: 0.8em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @apply leading-6;
+}
+
+code {
+  background: #f4f5f6;
+  border-radius: 0.4rem;
+  font-size: 86%;
+  margin: 0 0.2rem;
+  padding: 0.2rem 0.5rem;
+  white-space: nowrap;
+}
+
+pre {
+  background: #f4f5f6;
+  border-radius: 8px;
+  overflow-y: hidden;
+  padding: 1em;
+  white-space: pre-wrap;
+}
+
+pre>code {
+  border-radius: 0;
+  display: block;
+  padding: 1rem 1.5rem;
+  white-space: pre;
+}
+
+input[type],
+textarea {
+  outline: none !important;
+}
+
+button:focus{
+  outline: none !important;
+}
+
+/* clears the ‘X’ from Internet Explorer */
+input[type="search"]::-ms-clear {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+input[type="search"]::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* clears the ‘X’ from Chrome */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  display: none;
+}
+
+/* Alerts and form errors */
+
+.invalid-feedback {
+  @apply block my-2 text-red-700 dark:text-red-500;
+  animation: 0.2s ease-in 0s normal forwards 1 fade-in-scale-keys;
+}
+
+.invalid-feedback::first-letter {
+  @apply uppercase;
+}
+
+.alert {
+  animation: 0.2s ease-in 0s normal forwards 1 fade-in-scale-keys;
+}
+
+.alert-info {
+  @apply bg-[#eff8ff] dark:bg-sky-500 border border-[#6cb2eb] dark:border-none text-[#2779bd] dark:text-white relative;
+}
+
+.alert-warning {
+  @apply bg-[#fff5eb] border border-[#faad63] text-[#de751f] relative;
+}
+
+.alert-danger {
+  @apply bg-[#fcebea] dark:bg-red-500 border border-[#ef5753] dark:border-none text-[#cc1f1a] dark:text-white relative;
+}
+
+.alert p {
+  @apply mb-0;
+}
+
+.alert:empty {
+  @apply hidden;
+}
+
+/* Post editor & post page */
+
+#post-form .ql-toolbar,
+#post-form .ql-container,
+#new-comment-form .ql-toolbar,
+#new-comment-form .ql-container,
+#change-comment-form .ql-toolbar,
+#change-comment-form .ql-container {
+  @apply border-none mb-2;
+}
+
+.ql-stroke {
+  @apply dark:!stroke-gray-100 dark:hover:!stroke-indigo-400;
+}
+
+svg:hover > .ql-stroke {
+  @apply dark:!stroke-indigo-400;
+}
+
+.ql-fill {
+  @apply dark:!fill-gray-100;
+}
+
+svg:hover > .ql-fill {
+  @apply dark:!fill-indigo-400;
+}
+
+.ql-picker {
+  @apply dark:!text-gray-100;
+}
+
+.ql-picker-options {
+  @apply dark:!bg-slate-600 rounded-md;
+}
+
+.ql-picker-item {
+  @apply dark:hover:!text-indigo-400;
+}
+
+.ql-selected {
+  @apply dark:!text-indigo-400;
+}
+
+#post-form .ql-editor {
+  @apply !min-h-[140px] text-sm md:text-base border rounded-md dark:bg-[#4a5469] border-gray-300 dark:border-slate-400 focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-90 focus:border-transparent dark:focus:border-transparent dark:focus:ring-blue-400;
+}
+
+#new-comment-form .ql-editor,
+#change-comment-form .ql-editor {
+  @apply min-h-[100px] text-sm md:text-base rounded-lg border border-[#e0e2e4] dark:bg-[#4a5469] dark:text-slate-100 dark:border-slate-400 bg-inherit p-2 outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-90 focus:border-transparent dark:focus:border-transparent dark:focus:ring-blue-400;
+}
+
+#post-form .ql-editor blockquote,
+#post-body blockquote {
+  @apply border-l-[0.3rem] border-l-slate-300 bg-slate-100 dark:bg-slate-500 ml-0 mr-0 px-[1.5rem] py-[1rem];
+}
+
+#post-form .ql-editor pre,
+#post-body pre {
+  @apply block text-[0.8em] md:text-[0.95em] text-[#ccc] rounded-lg bg-[#2d2d2d] my-2 whitespace-pre-wrap break-words leading-5 p-3;
+}
+
+#post-form .ql-editor img,
+#post-body img {
+  @apply w-auto mx-auto rounded-lg p-1;
+}
+
+.ql-editor ul,
+#post-form .ql-editor ul,
+#post-body ul {
+  list-style: circle inside;
+}
+
+.ql-editor ol,
+#post-form .ql-editor ol,
+#post-body ol {
+  list-style: decimal inside;
+}
+
+.ql-editor ul li,
+#post-body ul li,
+.ql-editor ol li,
+#post-body ol li {
+  padding-left: 10px;
+  margin-bottom: 1rem;
+}
+
+/* Tooltips */
+
+.top-tooltip-text {
+  @apply invisible absolute opacity-60 text-center left-1/2 bottom-full -translate-x-1/2 z-[1];
+}
+
+.bottom-tooltip-text {
+  @apply invisible absolute opacity-60 text-center left-1/2 top-[140%] -translate-x-1/2 z-[1];
+}
+
+.side-tooltip-text {
+  @apply invisible absolute opacity-60 top-1/2 left-full z-[1];
+}
+
+.top-tooltip-text::before {
+  content: "";
+  @apply absolute bg-inherit w-2 h-2 z-[1] -bottom-1 left-1/2 -translate-x-1/2 -rotate-45;
+}
+
+.bottom-tooltip-text::before {
+  content: "";
+  @apply absolute bg-inherit w-2 h-2 z-[1] -top-1 left-1/2 -translate-x-1/2 -rotate-45;
+}
+
+.side-tooltip-text::before {
+  content: "";
+  @apply absolute bg-inherit w-2 h-2 z-[1] top-1/2 -left-1 -translate-y-1/2 -rotate-45;
+}
+
+.top-tooltip-text.tooltip-text-hover {
+  @apply animate-[show-up-tooltip-top_0.6s_ease-in-out_forwards];
+}
+
+.bottom-tooltip-text.tooltip-text-hover {
+  @apply animate-[show-up-tooltip-top_0.8s_ease-in-out_forwards];
+}
+
+.side-tooltip-text.tooltip-text-hover {
+  @apply animate-[show-up-tooltip-side_0.8s_ease-in-out_forwards];
+}
+
+/* Active navigation link style */
+.active-link {
+  @apply relative rounded-md text-indigo-700;
+}
+
+.active-link::after {
+  @apply content-[''] absolute left-0 w-full h-[0.15rem] bg-indigo-400 animate-[slide-active-link_0.2s_ease-in-out_forwards] transition-all;
+}
+
+/*
+ * Loading Spinner
+ *
+ * Copied from:
+ * https://projects.lukehaas.me/css-loaders/
+ *
+ */
+
+ .loader,
+ .loader:before,
+ .loader:after {
+   border-radius: 50%;
+   width: 2.5em;
+   height: 2.5em;
+   -webkit-animation-fill-mode: both;
+   animation-fill-mode: both;
+   animation: bblFadInOut 1.6s infinite ease-in-out;
+   -webkit-animation: bblFadInOut 1.6s infinite ease-in-out;
+ }
+ .loader {
+   font-size: 7px;
+   position: relative;
+   margin: auto;
+   margin-bottom: 40px;
+   text-indent: -9999em;
+   transform: translateZ(0);
+   animation-delay: -0.16s;
+ }
+ .loader:before,
+ .loader:after {
+   content: "";
+   position: absolute;
+   top: 0;
+ }
+ .loader:before {
+   left: -3.5em;
+   animation-delay: -0.32s;
+ }
+ .loader:after {
+   left: 3.5em;
+ }
+ 
+ @keyframes bblFadInOut {
+   0%,
+   80%,
+   100% {
+     box-shadow: 0 2.5em 0 -1.3em;
+   }
+   40% {
+     box-shadow: 0 2.5em 0 0;
+   }
+ }
+ 
+
+@keyframes slide-active-link {
+  0% {
+    bottom: -25%;
+  }
+  100% {
+    bottom: -5px;
+  }
+}
+
+/* Animations */
+
+@keyframes show-up-menu {
+  0% {
+    visibility: hidden;
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  100% {
+    visibility: visible;
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes hide-menu {
+  0% {
+    visibility: visible;
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(0.95);
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes show-up {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 50%);
+  }
+  100% {
+    transform: translate(-50%, -50%);
+    opacity: 1;
+  }
+}
+
+@keyframes show-up-tooltip-side {
+  0% {
+    opacity: 0;
+    transform: translate(0%, -50%);
+  }
+
+  100% {
+    visibility: visible;
+    opacity: 0.8;
+    transform: translate(20%, -50%);
+  }
+}
+
+@keyframes show-up-tooltip-top {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0%);
+  }
+
+  100% {
+    visibility: visible;
+    opacity: 0.8;
+    transform: translate(-50%, -20%);
+  }
+}
+
+@keyframes show-up-tooltip-bottom {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0%);
+  }
+
+  100% {
+    visibility: visible;
+    opacity: 0.8;
+    transform: translate(-50%, -20%);
+  }
 }

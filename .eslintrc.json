@@ -1,3 +1,26 @@
 {
-  "extends": "next/core-web-vitals"
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es2021": true
+  },
+  "extends": [
+    "next/core-web-vitals"
+    // "plugin:react/recommended",
+    // "standard-with-typescript"
+  ],
+  "overrides": [],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "project": [
+      "./tsconfig.json"
+    ]
+  },
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+    "react/no-unescaped-entities": "off",
+    "react/display-name": "off"
+  }
 }
