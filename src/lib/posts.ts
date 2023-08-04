@@ -1,5 +1,4 @@
 import prismaClient from '@/lib/db/prismaClient'
-import { Comment, Post, Tag, User } from '@prisma/client'
 
 function paginationQuery(take: number, skip: number) {
     return {
@@ -44,6 +43,107 @@ let PostTask = {
             _count: { id: true }
         })
     },
+    createLike: async function (authorId: string, resourceId: string, resourceType: 'post' | 'comment') {
+
+        let queryData = resourceType === 'post' ?
+            {
+                data: { post: { connect: { id: resourceId } } },
+                include: { comment: true }
+            } :
+            {
+                data: { comment: { connect: { id: resourceId } } },
+                include: { comment: true }
+            }
+
+        const like = await prismaClient.like.create({
+            data: {
+                author: { connect: { id: authorId } },
+                resourceId: resourceId,
+                ...queryData.data
+            },
+            include: {
+                author: { select: excludeUserFields(['hashedPassword', 'refreshToken']) },
+                ...queryData.include
+            }
+        })
+
+        if (resourceType === 'post') {
+            await prismaClient.post.update({
+                where: { id: resourceId },
+                data: { totalLikes: { increment: 1 } }
+            })
+        } else {
+            await prismaClient.comment.update({
+                where: { id: resourceId },
+                data: { totalLikes: { increment: 1 } }
+            })
+        }
+
+        return like
+    },
+    deleteLike: async function (authorId: string, resourceId: string, resourceType: 'post' | 'comment') {
+
+        let queryWhere = {}
+
+        if (resourceType === 'post') {
+            queryWhere = {
+                where: {
+                    authorId: authorId,
+                    postId: resourceId
+                }
+            }
+        } else {
+            queryWhere = {
+                where: {
+                    authorId: authorId,
+                    commentId: resourceId
+                }
+            }
+        }
+
+        const deleted = await prismaClient.like.deleteMany({ ...queryWhere })
+
+        if (deleted.count > 0) {
+            if (resourceType === 'post') {
+                await prismaClient.post.update({
+                    where: { id: resourceId },
+                    data: { totalLikes: { decrement: 1 } }
+                })
+            } else {
+                await prismaClient.comment.update({
+                    where: { id: resourceId },
+                    data: { totalLikes: { decrement: 1 } }
+                })
+            }
+        }
+        return deleted
+    },
+    getPostLikes: async function (postId: string) {
+        return await prismaClient.like.findMany({
+            where: { postId: postId }
+        })
+    },
+    getCommentLikes: async function (commentId: string) {
+        return await prismaClient.like.findMany({
+            where: { commentId: commentId }
+        })
+    },
+    isPostLiked: async function (userId: string, postId: string) {
+        return await prismaClient.like.findFirst({
+            where: {
+                authorId: userId,
+                postId: postId
+            }
+        })
+    },
+    isCommentLiked: async function (userId: string, commentId: string) {
+        return await prismaClient.like.findFirst({
+            where: {
+                authorId: userId,
+                commentId: commentId
+            }
+        })
+    },
     getPostsByTag: async function (take: number, skip: number, tag: string) {
         let query = {
             where: {
@@ -85,8 +185,6 @@ let PostTask = {
         })
     },
     createComment: async function (content: string, authorId: string, postId: string, replyId?: string) {
-        console.log('crete new or reply...')
-        console.log(authorId, postId, replyId)
 
         let queryData = {
             content: content,
@@ -129,6 +227,27 @@ let PostTask = {
 
         return comment
     },
+    deleteComment: async function (commentId: string) {
+
+        const deleted = await prismaClient.comment.delete({
+            where: {
+                id: commentId
+            }
+        })
+
+        if (deleted) {
+            await prismaClient.post.update({
+                where: {
+                    id: deleted.postId
+                },
+                data: {
+                    totalComments: { decrement: 1 }
+                }
+            })
+        }
+
+        return deleted
+    },
     updateComment: async function (data: any) {
 
         return await prismaClient.comment.update({
@@ -144,7 +263,7 @@ let PostTask = {
             }
         })
     },
-    getAllPostComments: async function (postId: string) {
+    getAllPostComments: async function (postId: string, take?: number, skip?: number) {
         return await prismaClient.comment.findMany({
             where: {
                 postId: postId
@@ -155,13 +274,41 @@ let PostTask = {
                 },
                 post: true,
                 reply: true,
-                replies: true
+                replies: true,
+                likes: true
             },
             orderBy: {
                 createdAt: 'desc'
-            }
+            },
+            // take: take,
+            // skip: skip
         })
     },
+    getNumOfPostComments: async function (postId: string) {
+        return await prismaClient.comment.aggregate({
+            where: {
+                postId: postId
+            },
+            _count: { id: true }
+        })
+    },
+    // getPostComments: async function (take: number, skip: number, postId: string) {
+    //     let query = {
+    //         where: {
+    //             postId: postId
+    //         },
+    //         include: {
+    //             comments: true,
+    //             tags: true,
+    //             author: {
+    //                 select: excludeUserFields(['hashedPassword', 'refreshToken', 'posts'])
+    //             },
+    //         },
+    //         take: take,
+    //         skip: skip
+    //     }
+    //     return await prismaClient.comment.findMany(query)
+    // },
     maybeCreateNewTags: async function (postTags: { name: string }[]) {
         return await prismaClient.tag.createMany({
             data: postTags,
@@ -271,6 +418,7 @@ let PostTask = {
                 author: {
                     select: excludeUserFields(['hashedPassword', 'refreshToken'])
                 },
+                likes: true,
                 tags: true,
                 comments: {
                     select: {

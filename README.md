@@ -34,6 +34,7 @@ InstaCamp is made with the Next.js React web framework.
 Users should be able to:
 
 - View the optimal layout for the web app depending on their device's screen size
+- Create user account(registration) to be able to create/edit and share materials with other people
 - Create blog posts with rich content, comment on other posts, like the posts/comments
 - Users can tag/bookmark the posts they are interested in
 - View a list of their own posts on their account or visit the list of saved posts list(bookmarked)
@@ -68,23 +69,29 @@ Users should be able to:
 - Docs: https://nextjs.org/docs
 - Source: https://github.com/vercel/next.js
 
-### What I learned
+### What I learned  
 
-Comming soon ...
+Comming soon ...  
+  
+### Continued development  
+  
+### TO-DO list  
+   
+Implement next features:  
 
-### Continued development
-
-### TO-DO list
-
-Implement next features:
-
-- Finish welcome/home page
-- Complete page for searching posts by topic/tag(or incorporate it with the home page due the similar logic)
-- User can make comment on other comment(maybe something like @mention or comment reply)
-- Cover more code with tests
-- Register/Login and customize their account
-- Implement Follow/Unfollow users feature
-- Receive activity messages when:
+- [ ] Finish welcome/home feed page
+- User Settings page
+  - [ ] Add web page with user account form
+  - [ ] Add web page with user password-change form
+- [x] Resize user avatar image while uploading(Implemented by using sharp package)
+- [ ] Complete page for searching posts by topic/tag(or incorporate it with the home page due the similar logic)
+- [x] User can make comment on other comment. Maybe something like @mention or comment reply(implemented comment reply system)
+- [ ] Cover more code with tests
+- [x] Register/Login and customize their account(implemented by using NextAuth)
+- [ ] Implement Like feature for posts and comments
+- [ ] Implement Bookmark/tag feature for posts
+- [x] Implement Follow/Unfollow users feature
+- [ ] Receive activity messages when:
   - other users comment or like their posts/comments
   - other users start to follow them
 
@@ -98,7 +105,7 @@ Implement next features:
 First supply a valid DATABASE_URL to your .env.local:
 
 ```bash
-mysql://username:password@127.0.0.1:3306/my_database
+mysql://username:password@127.0.0.1:port_name/my_database
 ```
 
 Put your own configuration for username, password and database name.

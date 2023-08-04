@@ -21,7 +21,7 @@ const NotFoundPage = () => {
                 />
             </div>
 
-            <section className="text-neutral-600 bg-[#f1f3f7] rounded-2xl text-center px-4 py-10 mt-4">
+            <section className="text-neutral-600 rounded-2xl text-center px-4 py-10 mt-4">
                 <h1 className="text-xl sm:text-2xl font-medium my-2">Sorry, this page could not be found.</h1>
                 <h4 className="text-base sm:text-xl font-medium my-4">
                     It's not your fault. We may have moved the page.

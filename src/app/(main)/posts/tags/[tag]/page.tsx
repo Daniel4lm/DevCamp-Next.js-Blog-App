@@ -1,6 +1,7 @@
 "use client"
 
 import { SmallPostCard } from "@/app/components/CardsComponent"
+import Skeleton from "@/app/components/skeletons/Skeleton"
 import { Post, Tag, User } from "@prisma/client"
 import { useInfiniteQuery } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
@@ -30,7 +31,6 @@ async function getPosts(page: number, tag: string) {
 export default function PostsListByTag({ params }: PageProps) {
 
     const { tag } = params
-
     const [page, setPage] = useState(0)
     const [totalCount, setTotalCount] = useState(0)
     const [totalPages, setTotalPages] = useState(0)
@@ -50,7 +50,6 @@ export default function PostsListByTag({ params }: PageProps) {
             return results.posts
         },
         getNextPageParam: (lastPage, allPages) => {
-            console.log(page)
             return page < totalPages ? page : undefined;
         },
     })
@@ -65,7 +64,20 @@ export default function PostsListByTag({ params }: PageProps) {
             </div>
             <section className="w-full sm:w-10/12 md:w-2/3 xl:w-3/6 min-h-[45vh] dark:text-slate-100 mx-auto px-2 xs:px-4 md:px-0 pb-8 mb-1 mt-6 sm:mt-0">
                 <div id="posts-list-slug" className="flex flex-col gap-y-4 mt-4">
-                    {isLoading && (<div className="loader text-gray-300 dark:text-slate-400"></div>)}
+                    {isLoading ? (
+                        <>
+                            {[...Array(4).keys()].map(i => {
+                                return (
+                                    <div key={`card-${i}-1`} className='border rounded-xl xs:shadow p-1'>
+                                        <Skeleton classes='h-40 md:h-20 width-100 mb-2' />
+                                        <Skeleton classes='text width-100 my-1' />
+                                        <Skeleton classes='text width-100 my-1' />
+                                        <Skeleton classes='text width-100 my-1' />
+                                    </div>
+                                )
+                            })}
+                        </>
+                    ) : null}
                     {
                         userPosts?.pages.map((page) => {
                             return page.map((post) => (<SmallPostCard key={post.id} postData={post} />))

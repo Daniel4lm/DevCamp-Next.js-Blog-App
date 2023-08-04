@@ -11,19 +11,37 @@ datasource db {
 }
 
 model User {
-  id             String    @id @default(cuid())
+  id             String         @id @default(cuid())
   avatarUrl      String?
-  username       String    @unique
+  username       String         @unique
   fullName       String
-  email          String    @unique
+  email          String         @unique
   hashedPassword String
-  insertedAt     DateTime  @default(now())
-  updatedAt      DateTime? @updatedAt
-  postsCount     Int       @default(0)
+  insertedAt     DateTime       @default(now())
+  updatedAt      DateTime?      @updatedAt
   refreshToken   String?
+  role           String         @default("user") // user, admin
   profile        Profile?
   posts          Post[]
+  postsCount     Int            @default(0)
   comments       Comment[]
+  likes          Like[]
+  followings     UserFollower[] @relation("Followings")
+  followers      UserFollower[] @relation("Followers")
+  followersCount Int            @default(0)
+  followingCount Int            @default(0)
+
+  @@map("users")
+}
+
+model UserFollower {
+  followedId String
+  followed   User   @relation("Followings", fields: [followedId], references: [id], onDelete: Cascade)
+  followerId String
+  follower   User   @relation("Followers", fields: [followerId], references: [id], onDelete: Cascade)
+
+  @@unique([followedId, followerId])
+  @@map("user_followers")
 }
 
 model Profile {
@@ -36,6 +54,8 @@ model Profile {
   website            String?
   location           String?
   user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
 }
 
 enum ThemeMode {
@@ -51,6 +71,7 @@ model Post {
   photo_url     String?
   published     Boolean   @default(false)
   totalLikes    Int       @default(0)
+  likes         Like[]
   totalComments Int       @default(0)
   readTime      Int       @default(0)
   authorId      String
@@ -59,6 +80,22 @@ model Post {
   updatedAt     DateTime  @updatedAt
   comments      Comment[]
   tags          Tag[]
+
+  @@map("posts")
+}
+
+model Like {
+  // id        String   @id @default(cuid())
+  authorId   String
+  resourceId String   @unique
+  author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  postId     String?
+  post       Post?    @relation(fields: [postId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  commentId  String?
+  comment    Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([authorId, resourceId])
+  @@map("likes")
 }
 
 model Tag {
@@ -67,6 +104,7 @@ model Tag {
   posts Post[]
 
   @@unique([name])
+  @@map("tags")
 }
 
 model Comment {
@@ -82,4 +120,7 @@ model Comment {
   replyId    String?
   reply      Comment?  @relation("Replies", fields: [replyId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   replies    Comment[] @relation("Replies")
+  likes      Like[]
+
+  @@map("comments")
 }

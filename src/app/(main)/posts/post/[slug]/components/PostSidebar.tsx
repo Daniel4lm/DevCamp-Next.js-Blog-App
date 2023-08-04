@@ -1,39 +1,51 @@
 "use client"
 
-import { CommentIcon, CopyLinkIcon, DeleteIcon, EditIcon, EmptyHeartIcon, HeartIcon, OptsIcon, PostTagIcon } from "@/app/components/Icons"
+import Link from "next/link"
+import { useEffect, useRef, useState } from "react"
+import { CommentIcon, CopyLinkIcon, DeleteIcon, EditIcon, EmptyHeartIcon, HeartIcon, LinkIcon, OptsIcon, PostTagIcon } from "@/app/components/Icons"
 import Modal from "@/app/components/Modal"
 import ToolTip from "@/app/components/Tooltip"
 import useModalShow from "@/app/hooks/useModalShow"
 import useOutsideClick from "@/app/hooks/useOutsideClick"
+import { User as SessionUser } from "next-auth"
+
 import { copyPostUrl, getURL } from "@/lib/helperFunctions"
-import { Post, Tag, User } from "@prisma/client"
-import Link from "next/link"
+import { Post, Tag, Like, Prisma } from "@prisma/client"
+import { PostComment } from "@/models/Comment"
+
 import { usePathname, useRouter } from "next/navigation"
-import { useRef, useState } from "react"
+import SmartLink from "@/app/components/navigation/SmartLink"
+import LikeComponent from "@/app/components/LikeComponent"
 
 interface PostProps {
     data: (Post & {
         author: {
-            [x: string]: string | number | null;
-            [x: number]: string | number | null;
+            [x: string]: string | number | null
+            [x: number]: string | number | null
         }
         tags: Tag[]
+        likes: Like[]
+        comments: PostComment[]
     } | undefined)
+    currentUser: SessionUser | undefined
 }
 
 interface OptsMenuProps {
     data: (Post & {
         author: {
-            [x: string]: string | number | null;
-            [x: number]: string | number | null;
+            [x: string]: string | number | null
+            [x: number]: string | number | null
         };
         tags: Tag[]
+        likes: Like[]
+        comments: PostComment[]
     } | undefined)
+    currentUser: SessionUser | undefined
     isOpen: 'open' | 'close'
     closeFunc: () => void
 }
 
-const OptsMenu = ({ data, isOpen, closeFunc }: OptsMenuProps) => {
+const OptsMenu = ({ data, currentUser, isOpen, closeFunc }: OptsMenuProps) => {
 
     const [isCopied, setIsCopied] = useState(false)
     const pathname = usePathname()
@@ -47,7 +59,6 @@ const OptsMenu = ({ data, isOpen, closeFunc }: OptsMenuProps) => {
     }
 
     const deletePost = async (id: string) => {
-        console.log('delete post...', id)
 
         await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/posts/delete`, {
             method: 'POST',
@@ -106,102 +117,129 @@ const OptsMenu = ({ data, isOpen, closeFunc }: OptsMenuProps) => {
                         onClick={copyUrl}
                     >
                         <span>Copy link</span>
-                        <CopyLinkIcon />
+                        <LinkIcon />
                     </div>
-                    {isCopied && (<div className="bg-sky-100 dark:bg-slate-400 rounded-md px-4 py-1 mt-2">
-                        Copied to Clipboard
-                    </div>)}
+                    {isCopied ? (
+                        <div className="bg-sky-100 dark:bg-slate-400 rounded-md px-4 py-1 mt-2">
+                            Copied to Clipboard
+                        </div>
+                    ) : null}
 
                 </li>
-                {data?.author.email &&
-                    <div
-                        id={`delete-post-${data.id}`}
-                        className="cursor-pointer"
-                        onClick={showDeleteModal}
-                    >
-                        <li className="py-2 px-2 rounded-md hover:bg-indigo-50 dark:hover:bg-slate-400 dark:hover:bg-opacity-50">
-                            <div className="flex items-center justify-between">
-                                <span>Delete post</span>
-                                <div className="p-1"><DeleteIcon /></div>
+                {currentUser && currentUser.id === data?.authorId ?
+                    (
+                        <>
+                            <div
+                                id={`delete-post-${data?.id}`}
+                                className="cursor-pointer"
+                                onClick={showDeleteModal}
+                            >
+                                <li className="py-2 px-2 rounded-md hover:bg-indigo-50 dark:hover:bg-slate-400 dark:hover:bg-opacity-50">
+                                    <div className="flex items-center justify-between">
+                                        <span>Delete post</span>
+                                        <div className="p-1"><DeleteIcon /></div>
+                                    </div>
+                                </li>
                             </div>
-                        </li>
-                    </div>
-                }
-                {data?.author.email &&
-                    (<Link
-                        id="edit-post-#{@post.id}"
-                        href={`/posts/edit?slug=${data.slug}`}
-                    >
-                        <li className="py-2 px-2 rounded-md hover:bg-indigo-50 dark:hover:bg-slate-400 dark:hover:bg-opacity-50 cursor-pointer">
-                            <div className="flex items-center justify-between">
-                                <span>Edit post</span>
-                                <div className="p-1"><EditIcon /></div>
-                            </div>
-                        </li>
-                    </Link>)
+
+                            <Link
+                                id="edit-post-#{@post.id}"
+                                href={`/posts/edit?slug=${data?.slug}`}
+                            >
+                                <li className="py-2 px-2 rounded-md hover:bg-indigo-50 dark:hover:bg-slate-400 dark:hover:bg-opacity-50 cursor-pointer">
+                                    <div className="flex items-center justify-between">
+                                        <span>Edit post</span>
+                                        <div className="p-1"><EditIcon /></div>
+                                    </div>
+                                </li>
+                            </Link>
+                        </>
+                    ) : null
                 }
             </ul>
         </>
     )
 }
 
-const PostSidebar = ({ data }: PostProps) => {
+const PostSidebar = ({ data, currentUser }: PostProps) => {
 
     const [menuOpen, setMenuOpen] = useState<'open' | 'close'>('close')
 
     const closeMenu = () => setMenuOpen('close')
     const handleMenuOpen = () => setMenuOpen(menuOpen === 'open' ? 'close' : 'open')
 
-    const scrollToComments = () => {
-        const commentsSection = document.getElementById('post-comments-section')
-        commentsSection && commentsSection.scrollIntoView({ behavior: 'smooth', block: "start" })
+    // const scrollToComments = (elemId: string) => {
+    //     const commentsSection = document.getElementById(elemId)
+    //     // commentsSection && commentsSection.scrollIntoView({ behavior: 'smooth', block: "start" })
+    //     commentsSection && window.scrollTo({ behavior: 'smooth', top: commentsSection?.getBoundingClientRect().top })
+    // }
+
+    function isLiked(currentUser: SessionUser | undefined, data: (Post & {
+        comments: PostComment[]
+        author: { [x: string]: string | number | null }
+        likes: Like[]
+        tags: Tag[]
+    } | undefined)) {
+        return data?.likes.some(like => like.authorId === currentUser?.id)
     }
+
+    useEffect(() => {
+
+        const postSidebar = document.getElementById('post-sidebar')
+        
+        function handlePageScroll() {
+            if (window.scrollY > 100) {
+                postSidebar?.classList.replace('opacity-0', 'opacity-1')
+                postSidebar?.classList.replace('translate-y-1/2', '-translate-y-1/2')
+            } else {
+                postSidebar?.classList.replace('opacity-1', 'opacity-0')
+                postSidebar?.classList.replace('-translate-y-1/2', 'translate-y-1/2')
+            }
+        }
+
+        handlePageScroll()
+
+        postSidebar && window.innerWidth < 768 && window.addEventListener('scroll', handlePageScroll)
+        return () => window.removeEventListener('scroll', handlePageScroll)
+    }, [])
+
 
     return (
         <aside
+            id="post-sidebar"
             className="fixed sm:sticky w-max sm:w-max h-max z-[10] left-1/2 bottom-2 -translate-x-1/2 sm:translate-x-0 sm:left-auto sm:top-14 sm:p-6 border dark:text-slate-100 border-gray-300 rounded-full bg-white dark:bg-navbar-dark-github sm:dark:bg-transparent sm:border-0 sm:bg-transparent"
             aria-label="Post actions"
         >
             <div className="flex justify-around items-center gap-x-2 px-4 sm:px-0 sm:flex-col sm:gap-x-0 rounded-full">
-
-                <ToolTip position="side" title="Like the Post">
-                    <div className="flex sm:flex-col py-2 items-center cursor-pointer">
-                        {data?.author.email ?
-                            (<div className="rounded-full p-2 cursor-pointer border border-transparent hover:border-red-200 hover:bg-red-100 dark:hover:bg-transparent dark:hover:border-transparent">
-                                {/* {<.live_component
-                                    id="post-like-comp"
-                                    module={LikeComponent}
-                                    current_user={@current_user}
-                                    resource={@post}
-                                    resource_name={:post}
-                                />} */}
-                                <EmptyHeartIcon />
-                            </div>)
-                            :
-                            (<div id="post-like-icon" className="py-2">
-                                <HeartIcon />
-                            </div>)
-                        }
-                        <span id="post-total-likes" className="mx-1 sm:mx-2">{data?.totalLikes}</span>
-                    </div>
+                <ToolTip position="right" title="Like the Post">
+                    <LikeComponent
+                        currentUser={currentUser}
+                        resource={data as Post}
+                        resourceType="post"
+                        isLiked={isLiked(currentUser, data) || false}
+                    />
                 </ToolTip>
 
-                <ToolTip position="side" title="Jump to comments">
-                    <div className="flex sm:flex-col py-2 items-center cursor-pointer">
-                        <div
-                            id="post-comment-icon"
-                            className="rounded-full p-2 border border-transparent hover:border-orange-200 hover:bg-orange-100 hover:text-amber-500 dark:hover:bg-transparent dark:hover:border-transparent"
-                            onClick={scrollToComments}
+                <ToolTip position="right" title="Jump to comments">
+                    <div className="flex sm:flex-col py-2 items-center">
+                        <SmartLink
+                            href="#post-comments-section"
+                            isScrollAble
                         >
-                            <CommentIcon />
-                        </div>
+                            <div
+                                id="post-comment-icon"
+                                className="rounded-full p-2 cursor-pointer border border-transparent hover:border-orange-200 hover:bg-orange-100 hover:text-amber-500 dark:hover:bg-transparent dark:hover:border-transparent"
+                            >
+                                <CommentIcon />
+                            </div>
+                        </SmartLink>
                         <span id="post-total-comments" className="mx-1 sm:mx-2">{data?.totalComments}</span>
                     </div>
                 </ToolTip>
 
-                <ToolTip position="side" title="Tag the Post">
-                    <div className="flex sm:flex-col py-2 items-center cursor-pointer">
-                        {data?.author.email ?
+                <ToolTip position="right" title="Tag the Post">
+                    <div className="flex sm:flex-col py-2 items-center">
+                        {currentUser && currentUser.id !== data?.authorId ?
                             (<div className="rounded-full p-2 cursor-pointer border border-transparent hover:text-indigo-600 hover:border-indigo-300 hover:bg-indigo-50 dark:hover:bg-transparent dark:hover:border-transparent">
                                 {/* <.live_component
                                     id="post-tag-comp"
@@ -216,6 +254,7 @@ const PostSidebar = ({ data }: PostProps) => {
                                 <PostTagIcon />
                             </div>)
                         }
+                        <span id="post-total-taged" className="mx-1 sm:mx-2">0</span>
                     </div>
                 </ToolTip>
 
@@ -231,10 +270,18 @@ const PostSidebar = ({ data }: PostProps) => {
                             Other options
                         </span>
                     </div>
-                    {menuOpen === 'open' && <OptsMenu data={data} isOpen={menuOpen} closeFunc={closeMenu} />}
-                </div >
-            </div >
-        </aside >
+                    {menuOpen === 'open' ?
+                        (
+                            <OptsMenu
+                                data={data}
+                                currentUser={currentUser}
+                                isOpen={menuOpen}
+                                closeFunc={closeMenu}
+                            />
+                        ) : null}
+                </div>
+            </div>
+        </aside>
     )
 }
 

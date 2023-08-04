@@ -7,8 +7,6 @@ export async function GET(request: Request) {
         const { searchParams } = new URL(request.url)
         const postId = searchParams.get('postId') as string || ''
 
-        console.info('comments -> params: ', postId)
-
         const comments = await PostTask.getAllPostComments(postId)
         return NextResponse.json({ comments }, { status: 200 })
 

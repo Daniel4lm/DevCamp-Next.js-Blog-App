@@ -1,11 +1,13 @@
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import PostBody from "./components/PostBody"
-import { Tag, User, Post, Prisma } from "@prisma/client"
+import { Tag, Post, Prisma } from "@prisma/client"
 import { PostComment } from "@/app/models/Comment"
 import getQueryClient from "@/lib/reactQuery/getQueryClient"
 import { dehydrate } from "@tanstack/react-query"
 import Hydrate from "@/app/components/hydrate.client"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions"
 
 type PostProps = Pick<Post, "slug">
 
@@ -69,6 +71,7 @@ export default async function Post({ params }: PageProps) {
     }) | null = null
 
     const queryClient = getQueryClient()
+    const session = await getServerSession(authOptions)
 
     try {
         await queryClient.prefetchQuery({
@@ -91,7 +94,7 @@ export default async function Post({ params }: PageProps) {
     return (
         <Hydrate state={dehydratedState}>
             <div className="relative flex md:w-full lg:w-4/5 2xl:w-2/3 md:mx-auto sm:px-4">
-                <PostBody postSlug={slug} />
+                <PostBody postSlug={slug} currentUser={session?.user} />
             </div>
         </Hydrate>
     )

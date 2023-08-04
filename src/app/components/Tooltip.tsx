@@ -1,8 +1,10 @@
+"use client"
+
 import { ReactNode, useState } from "react"
 
 interface TooltipProps {
     title: string
-    position: 'top' | 'bottom' | 'side'
+    position: 'top' | 'bottom' | 'left' | 'right'
     delay?: number
     children: ReactNode
 }
@@ -10,7 +12,8 @@ interface TooltipProps {
 const TooltipClass: { [k: string]: string } = {
     'top': 'top-tooltip-text',
     'bottom': 'bottom-tooltip-text',
-    'side': 'side-tooltip-text'
+    'left': 'left-tooltip-text',
+    'right': 'right-tooltip-text',
 }
 
 const ToolTip = ({ title, position, delay, children }: TooltipProps) => {

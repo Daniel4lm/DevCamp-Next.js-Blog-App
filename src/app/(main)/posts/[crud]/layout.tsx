@@ -12,10 +12,10 @@ export async function generateMetadata({ params }: { params: { crud: string } })
     }
 }
 
-export async function generateStaticParams(): Promise<{ crud: string }[]> {
+// export async function generateStaticParams(): Promise<{ crud: string }[]> {
 
-    return [{ crud: 'new' }, { crud: 'edit' }]
-}
+//     return [{ crud: 'new' }, { crud: 'edit' }]
+// }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (

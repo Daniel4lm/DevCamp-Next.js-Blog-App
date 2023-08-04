@@ -9,8 +9,6 @@ export async function GET(request: Request) {
     const limit = searchParams.get('limit') || '5'
     const tag = searchParams.get('tag') || ''
 
-    console.log('backend...', tag, curPage)
-
     const curPageNum: number = (Number(curPage) || 0)
     const curLimit: number = (Number(limit) || 5)
 

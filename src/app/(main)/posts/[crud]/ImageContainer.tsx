@@ -19,7 +19,7 @@ function UploadImageContainer({ uploadImage, valid, cancelUpload }: { valid: boo
                             <p className="drag-sub-el text-sm md:text-base font-light text-gray-500 dark:text-gray-50">
                                 Your file must be in JPG or PNG format
                             </p>
-                            <label htmlFor='postImage' className="flex cursor-pointer justify-center my-8">
+                            <label htmlFor='postImage' className="flex cursor-pointer justify-center my-8 text-[#7B8DE1]">
                                 {valid ?
                                     <UploadImage />
                                     :

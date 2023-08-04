@@ -1,10 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { Post } from "@prisma/client"
 import PostTask from '@/lib/posts'
 import prisma from '@/lib/db/prismaClient'
-import { join } from 'path'
-const fs = require('fs');
-
+import { maybeRemoveOldImage } from '@/lib/fileHelpers'
 
 export async function POST(request: Request) {
     const { id }: Pick<Post, "id"> = await request.json()
@@ -24,31 +22,10 @@ export async function POST(request: Request) {
     const deletedPost = await PostTask.deletePost(id)
 
     if (foundPost.photo_url) {
-        if (foundPost.photo_url) maybeRemoveOldImage(foundPost.photo_url)
+        let pathArray = foundPost.photo_url.split('/')
+        let oldImageName = pathArray.at(-1) || ''
+        maybeRemoveOldImage(oldImageName, 'public/uploads/blog/')
     }
 
-    console.log('Deleted post: ', deletedPost.id)
     return NextResponse.json({ deletedPost }, { status: 200 })
-}
-
-const maybeRemoveOldImage = (imageUrl: string) => {
-    let pathArray = imageUrl.split('/')
-    let oldImageName = pathArray[pathArray.length - 1]
-    console.log(oldImageName)
-    let oldImagePath = join('public/uploads/blog/', oldImageName)
-
-    fs.access(oldImagePath, fs.constants.F_OK, (err: any) => {
-        if (err) {
-            console.log(err)
-            return
-        } else {
-            console.log('removed old image...')
-            fs.unlink(oldImagePath, (err: any) => {
-                if (err) {
-                    console.error(err)
-                    return
-                }
-            })
-        }
-    })
 }

@@ -3,8 +3,8 @@ export interface IObjectKeys {
 }
 
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/
-const EMAIL_REGEX = /\S+@\S+\.\S+/
-const WEBSITE_REGEX = /(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-/]))?/
+export const EMAIL_REGEX = /\S+@\S+\.\S+/
+export const WEBSITE_REGEX = /(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-/]))?/
 
 export interface ValidationTypes {
     [key: string]: {
@@ -38,7 +38,7 @@ const USER_CHANGESET_VALIDATION: ValidationTypes = {
             message: "Full name can't be blank!"
         }
     ],
-    userName: [
+    username: [
         {
             isValid: basicValidation,
             message: "Usename can't be blank!"
@@ -71,7 +71,7 @@ const POST_CHANGESET_VALIDATION: ValidationTypes = {
     ]
 }
 
-export const formChangesetValidation = (formInstance: IObjectKeys, fieldName: string, type: string): ValidationTypes => {
+export const formChangesetValidation = (formInstance: IObjectKeys, fieldName: string, type: 'form' | 'user'): ValidationTypes => {
 
     let formValidation: ValidationTypes;
     if (type === 'form') {

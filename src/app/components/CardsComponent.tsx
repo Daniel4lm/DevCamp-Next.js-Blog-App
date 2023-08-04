@@ -86,7 +86,7 @@ const SmallPostCard = forwardRef<HTMLDivElement, UserPostCardPops>(({ postData }
                         linkClass={"w-8 h-8 md:w-9 md:h-9 z-10"}
                     />
 
-                    <div className="w-full flex justify-between flex-wrap items-center ml-2">
+                    <div className="w-full flex flex-1 justify-between flex-wrap items-center ml-2">
                         <Link href={`/user/${postData?.author.username}`} className="font-medium text-sm lg:text-base">
                             {postData?.author.fullName}
                         </Link>

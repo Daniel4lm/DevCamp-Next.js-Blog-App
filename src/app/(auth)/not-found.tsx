@@ -11,7 +11,7 @@ const NotFoundPage = () => {
         <main className="absolute w-11/12 sm:w-8/12 lg:w-5/12 xl:w-4/12 left-1/2 top-[50vh] -translate-x-1/2 -translate-y-1/2 flex flex-col text-center rounded-2xl px-4 py-10 bg-transparent">
             <h1 className="text-5xl md:text-8xl font-semibold text-indigo-400 py-6">404</h1>
 
-            <section className="text-neutral-600">
+            <section className="text-neutral-600 dark:text-neutral-200">
                 <h1 className="text-xl sm:text-2xl font-medium my-2">Sorry, this page could not be found.</h1>
                 <h4 className="text-base sm:text-xl font-medium my-4">
                     It's not your fault. We may have moved the page.

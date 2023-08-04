@@ -29,11 +29,11 @@ function Modal({ isOpen, onClose, title, type = 'INFO', style, children }: Modal
                     <div className={`absolute z-[400] ${style}`}
                         onClick={stopClick}
                     >
-                        <header className="flex justify-between gap-2 bg-gray-50 dark:bg-slate-600 p-2 border-b dark:border-slate-400 rounded-t-lg">
-                            <h2 id="follow-list-title" className="text-sm xs:text-base font-medium">
+                        <header className="flex justify-between items-center gap-2 p-4 dark:border-slate-400 rounded-t-lg">
+                            <h2 id="follow-list-title" className="text-sm xs:text-base first-letter:uppercase font-semibold">
                                 {title}
                             </h2>
-                            <button onClick={onClose} >
+                            <button className="text-[#8F8F8F] bg-[#F4F6FA] p-2 rounded-full" onClick={onClose} >
                                 <CloseIcon />
                             </button>
                         </header>

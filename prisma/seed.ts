@@ -1,6 +1,14 @@
 import { PrismaClient } from '@prisma/client'
+import { hashSync, genSaltSync } from "bcryptjs"
 
 const prisma = new PrismaClient()
+
+function encryptPassword(receivedPassword: string) {
+    let saltRounds = 10
+    // generate the password hash
+    let salt = genSaltSync(saltRounds)
+    return hashSync(receivedPassword, salt)
+}
 
 async function seedUsers() {
     // Perform database queries here
@@ -11,8 +19,9 @@ async function seedUsers() {
         create: {
             email: 'daniel@gmail.com',
             fullName: 'Daniel Molnar',
-            hashedPassword: '#gf-.tz8708v$9%7/*/ziu?)*=?ILLUgnfhg',
+            hashedPassword: encryptPassword("4444333"),
             username: 'daniel4mx',
+            postsCount: 1,
             profile: {
                 create: {
                     bio: "Hello, I'm Daniel from Tuzla"
@@ -39,14 +48,20 @@ async function seedUsers() {
         }
     })
 
-    const dijana = await prisma.user.upsert({
-        where: { email: 'dijana@gmail.com' },
+    const diana = await prisma.user.upsert({
+        where: { email: 'diana@gmail.com' },
         update: {},
         create: {
-            email: 'dijana@gmail.com',
+            email: 'diana@gmail.com',
             fullName: 'Diana Molnar',
-            hashedPassword: '#gf-.tz87089%7%4/*/ziu?)*=?ILLUgnfhg',
-            username: 'dijana_tz',
+            hashedPassword: encryptPassword("lana_picak"),
+            username: 'diana_tz',
+            postsCount: 1,
+            profile: {
+                create: {
+                    bio: "Hello, I'm an Artist"
+                }
+            },
             posts: {
                 create: [
                     {
@@ -69,9 +84,9 @@ async function seedUsers() {
         }
     })
 
-    Promise.all([daniel, dijana])
+    Promise.all([daniel, diana])
         .then(values => {
-            console.log('Results: ', values)
+            console.info('Results: ', values)
         }).
         catch(error => {
             console.error(error)
@@ -80,16 +95,6 @@ async function seedUsers() {
         .finally(async () => {
             await prisma.$disconnect()
         })
-
 }
 
 seedUsers()
-
-// main()
-//     .catch(error => {
-//         console.error(error)
-//         process.exit(1)
-//     })
-//     .finally(async () => {
-//         await prisma.$disconnect()
-//     })

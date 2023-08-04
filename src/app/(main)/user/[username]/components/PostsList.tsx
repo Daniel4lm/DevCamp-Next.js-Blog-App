@@ -1,6 +1,7 @@
 "use client"
 
 import { SmallPostCard } from "@/app/components/CardsComponent"
+import UserPostsSkeleton from "@/app/components/skeletons/UserPostsSkeleton"
 import { Comment, Post, Profile, Tag, User } from "@prisma/client"
 import { useCallback, useEffect, useRef, useState } from "react"
 
@@ -39,7 +40,7 @@ async function getPosts(page: number, username: string, cursor?: string) {
 const PostsList = ({ user }: PostsListProps) => {
     const [page, setPage] = useState(0)
     const [hasNextPage, setHasNextPage] = useState(false)
-    const [cursor, setCursor] = useState('')
+    // const [cursor, setCursor] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const [userPosts, setUserPosts] = useState<(Post & {
         comments?: Comment[]
@@ -83,8 +84,7 @@ const PostsList = ({ user }: PostsListProps) => {
         try {
             getPosts(page, user.username)
                 .then(results => {
-                    console.log(results)
-                    setCursor(results.posts[results.posts.length - 1].id)
+                    // setCursor(results.posts[results.posts.length - 1].id)
                     if (!ignore) {
                         setUserPosts(prev => [...prev, ...results.posts])
                         setHasNextPage(page < totalPages - 1)
@@ -93,9 +93,9 @@ const PostsList = ({ user }: PostsListProps) => {
                 })
 
         } catch (err) {
+            if (controller.signal.aborted) return
             console.error(err)
             setIsLoading(false)
-            if (controller.signal.aborted) return
         }
 
         return () => {
@@ -113,22 +113,31 @@ const PostsList = ({ user }: PostsListProps) => {
 
     return (
         <>
-            <section className="w-full sm:w-10/12 md:w-2/3 xl:w-3/6 min-h-[45vh] dark:text-slate-100 mx-auto px-4 md:px-0 pb-8 mb-1 mt-6 sm:mt-0">
-                <div className="px-2 my-4">
-                    <h3 className="mx-auto text-center font-medium">Posts</h3>
-                </div>
-                <div id="user-posts" className="flex flex-col gap-y-4 mt-4">
-                    {isLoading && (<div className="loader text-gray-300 dark:text-slate-400"></div>)}
-                    {renderPosts}
-                </div>
-            </section>
+            {isLoading || !userPosts.length ? (<UserPostsSkeleton />) :
+                (
+                    <>
+                        <section className="w-full sm:w-10/12 md:w-2/3 xl:w-3/6 min-h-[45vh] dark:text-slate-100 mx-auto px-4 md:px-0 pb-8 mb-1 mt-6 sm:mt-0">
+                            <div className="px-2 my-8">
+                                <h3 className="text-gray-800 text-lg xs:text-2xl dark:text-slate-100 font-medium">
+                                    All posts from <span className="border-b-4 border-indigo-400 dark:border-indigo-300">{user.fullName}</span>
+                                </h3>
+                            </div>
+                            <div id="user-posts" className="flex flex-col gap-y-4 mt-4">
+                                {isLoading ? (<div className="loader text-gray-300 dark:text-slate-400"></div>) : null}
+                                {renderPosts}
+                            </div>
+                        </section>
 
-            {hasNextPage && (
-                <>
-                    <div id="infinite-scroll-marker"></div>
-                    <div className="loader text-gray-300 dark:text-slate-400"></div>
-                </>
-            )}
+                        {hasNextPage ? (
+                            <>
+                                <div id="infinite-scroll-marker"></div>
+                                <div className="loader text-gray-300 dark:text-slate-400"></div>
+                            </>
+                        ) : null}
+                    </>
+                )
+            }
+
         </>
     )
 }

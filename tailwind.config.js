@@ -19,6 +19,7 @@ module.exports = {
       boxShadow: {
         'card-shadow': '0px 0px 4px 0px rgb(219, 223, 227)',
         'card-shadow-hover': '0px 0px 6px 2px rgb(210, 209, 209)',
+        'side-menu-shadow': '0px 0px 20px -4px rgb(210, 209, 209)'
       },
       colors: {
         'main-light': '#fafafa',
@@ -31,6 +32,10 @@ module.exports = {
         gray: {
           250: '#dbdfe3'
         }
+      },
+      fontFamily: {
+        inter: ['var(--font-inter)', 'sans-serif'],
+        caveat: ['var(--font-caveat)', 'cursive'],
       },
       screens: {
         xs: '450px'

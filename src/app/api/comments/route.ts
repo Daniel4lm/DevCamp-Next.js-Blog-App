@@ -29,8 +29,7 @@ export async function PUT(request: Request) {
     try {
         const formData = await request.formData();
         let editEntries = Object.fromEntries(formData)
-        console.log('edit params...', editEntries)
-        
+
         const foundComment = await prisma.comment.findUnique({
             where: { id: editEntries.id as string }
         })
@@ -40,7 +39,6 @@ export async function PUT(request: Request) {
         }
 
         const updatedComment = await PostTask.updateComment(editEntries)
-        console.log('Updated post: ', updatedComment.id)
         return NextResponse.json({ updatedComment }, { status: 200 })
 
     } catch (err: any) {
@@ -52,5 +50,17 @@ export async function PUT(request: Request) {
             status: 500,
             headers: { "Content-Type": "application/json" },
         });
+    }
+}
+
+export async function DELETE(request: Request) {
+
+    const { commentId } = await request.json()
+
+    try {
+        const comment = await PostTask.deleteComment(commentId)
+        return NextResponse.json({ comment: comment }, { status: 200 })
+    } catch (err: any) {
+        return NextResponse.json({ error: err.message }, { status: 500 })
     }
 }

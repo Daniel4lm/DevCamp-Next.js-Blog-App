@@ -1,9 +1,8 @@
-import { NextResponse } from 'next/server';
-import PostTask from '@/lib/posts';
+import { NextResponse } from 'next/server'
+import PostTask from '@/lib/posts'
 
 export async function GET(request: Request, { params }: { params: { slug: string } }) {
 
-    console.log('Params: ', params)
     const postSlug = params?.slug
 
     try {

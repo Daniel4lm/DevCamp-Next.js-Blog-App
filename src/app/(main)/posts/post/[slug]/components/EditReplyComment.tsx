@@ -14,7 +14,7 @@ interface EditReplyCommentProps {
     postId: string
     authorId: string
     replyId?: string
-    action: 'EDIT' | 'REPLY' | 'NONE'
+    action: 'EDIT' | 'REPLY' | 'DELETE' | 'NONE'
     handleFunc: (method: "POST" | "PUT" | "NONE", data: FormData | null) => void
 }
 
@@ -24,8 +24,6 @@ function EditReplyComment(props: EditReplyCommentProps) {
     const [content, setContent] = useState(props.action === 'EDIT' ? props.comment.content : '')
 
     const onContentChange = (value: string) => setContent(value)
-
-    console.log('form data', props.authorId, props.postId, props.replyId)
 
     const handleFormSubmit = async (event: FormEvent) => {
         event.preventDefault()
@@ -80,8 +78,8 @@ function EditReplyComment(props: EditReplyCommentProps) {
                             >
                                 {props.comment?.author?.username}
                             </Link>
-                        </div >
-                    </div >
+                        </div>
+                    </div>
                 )
             }
 
@@ -98,19 +96,20 @@ function EditReplyComment(props: EditReplyCommentProps) {
                         formats={quillFormats}
                         onChange={onContentChange}
                     />
-                    <div className='flex gap-4'>
+                    <div className='flex gap-2'>
                         <button type="submit"
-                            className="w-max m-4 py-2 px-6 border-none shadow rounded-full font-semibold text-sm text-gray-50 hover:bg-indigo-500 bg-indigo-400 cursor-pointer">
+                            className="w-max m-2 py-2 px-6 border-none rounded-full font-semibold text-xs xs:text-sm text-gray-50 hover:bg-indigo-500 bg-indigo-400 cursor-pointer">
                             {isSaving ? 'Saving...' : 'Submit'}
                         </button>
                         <button
-                            className="w-max m-4 py-2 px-6 shadow rounded-full font-semibold text-sm border border-gray-500 text-gray-50 hover:bg-transparent cursor-pointer"
+                            className="w-max my-2 py-2 px-6 rounded-full font-semibold text-xs xs:text-sm border-2 border-indigo-400 text-indigo-500 hover:bg-indigo-500 hover:border-indigo-500 hover:text-white cursor-pointer"
                             onClick={() => props.handleFunc("NONE", null)}>
+                            Cancel
                         </button>
                     </div>
                 </div>
             </form>
-        </div >
+        </div>
     )
 }
 

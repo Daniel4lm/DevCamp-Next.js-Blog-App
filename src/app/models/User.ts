@@ -10,8 +10,9 @@ export interface User {
     insertedAt?: string | null
     updatedAt?: string | null
     postsCount?: number | null
+    role: 'user' | 'admin'
     refreshToken?: string | null
-    profile: Profile | null
+    profile?: Profile | null
     posts?: Post[] | null
 }
 

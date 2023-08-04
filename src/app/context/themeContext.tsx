@@ -3,6 +3,7 @@
 import { createContext, useContext } from 'react'
 import useDarkMode from '@/hooks/useDarkMode'
 import { ProviderType, ThemeStateType } from './types'
+import { useSession } from 'next-auth/react'
 
 const ThemeContext = createContext<ThemeStateType>({
     themeMode: '',
@@ -14,7 +15,8 @@ const useThemeContext = () => {
 }
 
 const ThemeProvider = ({ children }: ProviderType) => {
-    const { themeMode, toggleMode } = useDarkMode()
+    const { status } = useSession()
+    const { themeMode, toggleMode } = useDarkMode(status)
 
     return (
         <ThemeContext.Provider value={{ themeMode, toggleMode }}>

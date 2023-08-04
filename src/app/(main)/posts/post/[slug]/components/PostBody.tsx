@@ -1,48 +1,84 @@
 "use client"
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
+import { usePostQuery } from '@/app/hooks/api'
+import { User as SessionUser } from "next-auth"
+import 'highlight.js/styles/github-dark.css'
+import Image from 'next/image'
 import Link from 'next/link'
+import hljs from 'highlight.js/lib/common'
 import { UserAvatar } from '@/app/components/CoreComponents'
 import { formatPostDate } from '@/lib/helperFunctions'
-import { Tag, User, Post, Prisma } from '@prisma/client'
-import Image from 'next/image'
-import { ChatIcon, EmptyHeartIcon, PostTagIcon } from '@/app/components/Icons'
+import { ChatIcon, DownloadIcon, EmptyHeartIcon, PostTagIcon } from '@/app/components/Icons'
 import PostComments from './PostComments'
 import ScrollToTopButton from './ScrollToTop'
 import PostSidebar from './PostSidebar'
-import { PostComment } from '@/app/models/Comment'
+import ToolTip from '@/app/components/Tooltip'
 
-import hljs from 'highlight.js/lib/common'
-import 'highlight.js/styles/github-dark.css'
-import { usePostQuery } from '@/app/hooks/api'
 hljs.configure({
     languages: ['javascript', 'java', 'css', 'php', 'go'],
     cssSelector: '#post-body pre'
 })
 
-interface PostBodyProps {
-    postData: (Post & {
-        comments: PostComment[]
-        author: { [x: string]: string | number | null }
-        tags: Tag[]
-    }) | null
-}
+const PostBody = ({ postSlug, currentUser }: { postSlug: string, currentUser: SessionUser | undefined }) => {
 
-const PostBody = ({ postSlug }: { postSlug: string }) => {
-
-    const { data: post, isLoading } = usePostQuery(postSlug)
+    const { data: post } = usePostQuery(postSlug)
+    const effectRun = useRef(false)
+    // const { data: sessionData, status } = useSession()
+    const postImageName = (post?.photo_url || '').split('/').at(-1)
 
     useEffect(() => {
         // document.querySelectorAll('#post-body pre').forEach((el) => {
         //     hljs.highlightElement(el as HTMLPreElement)
         // })
-        hljs.highlightAll()
+
+        if (effectRun.current === true) {
+            hljs.highlightAll()
+
+            let codeBlocks: NodeListOf<HTMLPreElement> = document.querySelectorAll('#post-body pre')
+
+            codeBlocks.forEach((block) => {
+                if (navigator.clipboard) {
+                    let copyButton = document.createElement('button')
+                    copyButton.innerText = 'Copy'
+                    copyButton.classList.add(
+                        'rounded-full', '!font-inter', 'hidden', 'absolute', 'top-1', 'right-1', 'px-2', 'py-1',
+                        'hover:bg-slate-600', 'hover:text-green-400'
+                    )
+                    block.appendChild(copyButton)
+
+                    block.addEventListener("mouseover", () => copyButton.classList.replace('hidden', 'block'))
+                    block.addEventListener("mouseout", () => copyButton.classList.replace('block', 'hidden'))
+
+                    copyButton.addEventListener("click", async () => {
+                        copyButton.innerText = "Copied"
+                        copyButton.classList.add('text-green-500')
+                        await copyCode(block)
+                        setTimeout(() => { copyButton.innerText = "Copy" }, 4000)
+                    })
+                }
+            })
+        }
+
+        async function copyCode(block: HTMLPreElement) {
+            let code = block.innerText
+
+            try {
+                await navigator.clipboard.writeText(code)
+            } catch (err) {
+                console.error('Failed to copy code: ', err)
+            }
+        }
+
+        return () => {
+            effectRun.current = true
+        }
     }, [])
 
     return (
         <>
             <ScrollToTopButton />
-            <PostSidebar data={post} />
+            <PostSidebar data={post} currentUser={currentUser} />
 
             <div id="post-wrapper" className="w-full overflow-y-auto bg-white dark:bg-navbar-dark dark:text-slate-100 border-t border-b sm:border border-[#d1d9d1] dark:border-0 mb-14 py-6">
                 <article
@@ -102,34 +138,53 @@ const PostBody = ({ postSlug }: { postSlug: string }) => {
                                 Read • {post?.readTime} min
                             </span>
                         </div>
-
-                    </header >
+                    </header>
 
                     <hr className="mx-4 sm:mx-12 my-4 dark:border-slate-500" />
 
-                    {post?.photo_url && (
-                        <div className="max-w-[44rem] 2xl:max-w-3xl mx-auto px-4 sm:px-12 xl:px-0 my-8 rounded-lg overflow-hidden">
+                    {post?.photo_url ? (
+                        <div id='blog-image-container' className="relative max-w-[44rem] 2xl:max-w-3xl mx-4 sm:mx-12 xl:mx-auto my-8 rounded-lg">
+                            <a
+                                id='download-icon'
+                                href={`/api/download/${postImageName}`}
+                                target='_blank'
+                                rel='noreferrer'
+                                className='invisible absolute top-2 right-2 border-2 rounded-full bg-white opacity-60 hover:bg-indigo-600 text-[#5e5e5e] hover:text-white border-[#313131] cursor-pointer hover:border-indigo-200'
+                            >
+                                <ToolTip position="left" title="Download image">
+                                    <div className='p-2'>
+                                        <DownloadIcon />
+                                    </div>
+                                </ToolTip>
+                            </a>
                             <Image
                                 alt='Blog Photo'
                                 src={post?.photo_url}
                                 width={800}
-                                height={450}
-                                loading="eager"
+                                height={850}
+                                sizes="(min-width: 2460px) 768px, (min-width: 1280px) calc(29.83vw + 40px), 
+                                (min-width: 1240px) 704px, (min-width: 1040px) calc(51.11vw + 80px), 
+                                (min-width: 980px) 704px, 
+                                (min-width: 640px) 
+                                calc(88.75vw - 148px), 
+                                calc(100vw - 32px)"
+                                priority={true}
                                 style={{
                                     objectFit: 'contain',
                                     borderRadius: '0.5rem',
                                     width: '100%',
                                     height: 'auto',
                                 }}
+                                className='mx-auto'
                             />
                         </div>
-                    )}
+                    ) : null}
 
                     <div
                         id="post-body"
                         className="mx-4 sm:mx-12 py-4 text-sm md:text-base text-justify"
                     >
-                        <div dangerouslySetInnerHTML={{ __html: post!.body }} />
+                        <div dangerouslySetInnerHTML={{ __html: post?.body || '' }} />
                     </div>
 
                     <hr className="my-1 dark:border-slate-500" />
@@ -156,20 +211,13 @@ const PostBody = ({ postSlug }: { postSlug: string }) => {
                     </div>
                 </article>
                 <div>
-                    {post?.author.email ?
-                        <PostComments
+                    {post ?
+                        (<PostComments
                             postComments={post.comments}
+                            currentUser={currentUser}
                             data={{ postId: post.id, authorId: post.authorId, postSlug: post.slug }}
-                        />
-                        :
-                        (<div id="post-comments-section" className="p-4 flex justify-center items-center mt-3 border-t-2 border-gray-100 text-sm md:text-base">
-                            <Link
-                                href={"/auth/login"}
-                                className="text-indigo-500 dark:text-indigo-300 px-4 py-1 border border-indigo-400 dark:border-indigo-300 rounded-full"
-                            >
-                                Log in to comment
-                            </Link>
-                        </div>)
+                        />)
+                        : null
                     }
                 </div>
             </div>

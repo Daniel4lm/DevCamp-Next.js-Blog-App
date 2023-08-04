@@ -1,3 +1,5 @@
+"use client"
+
 import { useThemeContext } from '@/context/themeContext'
 
 export const ThemeToggle = () => {
@@ -6,10 +8,10 @@ export const ThemeToggle = () => {
     return (
         <button
             id="theme-toggle"
-            className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-500"
+            className="rounded-full ring-2 ring-slate-200 dark:ring-slate-500 hover:bg-gray-100 dark:hover:bg-slate-500"
             onClick={() => toggleMode()}
         >
-            <div className="flex items-center justify-center w-6 h-6 xs:w-8 xs:h-8">
+            <div className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9">
                 <svg
                     id="theme-toggle-dark-icon"
                     width="24"

@@ -1,9 +1,12 @@
 import { UserAvatar } from "@/app/components/CoreComponents"
 import { CommentIcon, DeleteIcon, EditIcon, HeartIcon, OptsIcon } from "@/app/components/Icons"
+import LikeComponent from "@/app/components/LikeComponent"
 import useOutsideClick from "@/app/hooks/useOutsideClick"
 import { PostComment } from "@/app/models/Comment"
 import { formatPostDate } from "@/lib/helperFunctions"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useSession } from "next-auth/react"
+import { User as SessionUser } from "next-auth"
+import { Comment } from "@prisma/client"
 import Link from "next/link"
 import { useRef, useState } from "react"
 
@@ -11,35 +14,30 @@ interface CommentProps {
     comment: PostComment,
     density?: number
     allComments: PostComment[]
-    setAction: (val: "EDIT" | "REPLY" | "NONE", comment: PostComment) => void
+    setAction: (val: 'EDIT' | 'REPLY' | 'DELETE' | 'NONE', comment: PostComment) => void
 }
 
 const Comment = ({ comment, density = 0, allComments, setAction }: CommentProps) => {
 
     const [optsMenu, SetOptsMenu] = useState(false)
+    const { data: sessionData } = useSession()
     const optsRef = useRef(null)
-
-    // const queryClient = useQueryClient()
-
-    // const actionMutation = useMutation({
-    //     mutationKey: ['comment-action'],
-    //     mutationFn: async (action: "EDIT" | "REPLY" | "NONE") => action,
-    //     onSuccess: (action) => {
-    //         queryClient.setQueryData(['comment-action'], action)
-    //     }
-    // })
 
     const handleOptsMenu = () => SetOptsMenu(state => !state)
 
     useOutsideClick(optsRef, () => SetOptsMenu(false))
 
-    function manageComment(action: "EDIT" | "REPLY" | "NONE", comment: PostComment) {
+    function manageComment(action: 'EDIT' | 'REPLY' | 'DELETE' | 'NONE', comment: PostComment) {
         setAction(action, comment)
         SetOptsMenu(false)
     }
 
     const childComments = () => {
         return allComments.filter(c => c.replyId === comment.id)
+    }
+
+    function isLiked(currentUser: SessionUser | undefined, data: (PostComment | undefined)) {
+        return data?.likes?.some(like => like.authorId === currentUser?.id)
     }
 
     return (
@@ -52,7 +50,7 @@ const Comment = ({ comment, density = 0, allComments, setAction }: CommentProps)
                         linkClass="w-7 h-7 md:w-8 md:h-8"
                     />
 
-                    <div className="relative w-full">
+                    <div className="relative flex-1">
                         <div className="relative w-full flex flex-col p-2 bg-gray-50 text-gray-700 dark:text-slate-100 border rounded-lg dark:border-slate-500 dark:bg-slate-600">
                             <div className="flex items-center justify-between xs:px-2 rounded-t-md">
                                 <div className="flex items-center gap-1">
@@ -64,17 +62,17 @@ const Comment = ({ comment, density = 0, allComments, setAction }: CommentProps)
                                     </Link>
                                     <p className="flex text-sm gap-1">
                                         •
-                                        {comment.createdAt && (
+                                        {comment.createdAt ? (
                                             <time
                                                 dateTime={new Date(comment?.createdAt).toISOString()}
                                                 title={formatPostDate(comment.createdAt)}
                                             >
                                                 {formatPostDate(comment.createdAt)}
                                             </time>
-                                        )}
+                                        ) : null}
                                     </p>
                                     {
-                                        comment.replyId && (
+                                        comment.replyId ? (
                                             <svg
                                                 width="30"
                                                 height="30"
@@ -88,10 +86,10 @@ const Comment = ({ comment, density = 0, allComments, setAction }: CommentProps)
                                                     strokeWidth="1.8"
                                                 />
                                             </svg>
-                                        )
+                                        ) : null
                                     }
                                 </div>
-                                {comment?.author?.email &&
+                                {sessionData?.user && sessionData?.user.id === comment?.authorId ?
                                     (
                                         <div className="relative cursor-pointer">
                                             <div
@@ -104,7 +102,9 @@ const Comment = ({ comment, density = 0, allComments, setAction }: CommentProps)
                                             </div>
                                             <ul className={`absolute ${optsMenu ? 'block' : 'hidden'} z-10 min-w-[10rem] w-max bg-white dark:bg-menu-dark-github dark:text-slate-100 dark:border-gray-500 top-full mt-1 right-0 rounded-lg border border-gray-300 p-1 text-sm sm:text-base`}>
                                                 <li className="py-2 px-2 rounded-md hover:bg-indigo-50 dark:hover:bg-slate-400 dark:hover:bg-opacity-50">
-                                                    <div className="flex items-center justify-between gap-2">
+                                                    <div className="flex items-center justify-between gap-2"
+                                                        onClick={() => manageComment("DELETE", comment)}
+                                                    >
                                                         <span>Delete</span>
                                                         <DeleteIcon />
                                                     </div>
@@ -119,7 +119,7 @@ const Comment = ({ comment, density = 0, allComments, setAction }: CommentProps)
                                                 </li>
                                             </ul>
                                         </div>
-                                    )
+                                    ) : null
                                 }
                             </div>
 
@@ -128,28 +128,27 @@ const Comment = ({ comment, density = 0, allComments, setAction }: CommentProps)
                             </div>
 
                         </div>
-                        <div className="flex justify-between items-center m-2 text-sm font-medium">
-                            <div className="flex items-center">
-                                <div className="xs:p-2 text-gray-500">
-                                    <HeartIcon />
+                        {sessionData?.user ? (
+                            <div className="flex justify-between items-center m-2 text-sm font-medium">
+                                <div className="flex items-center">
+                                    <LikeComponent
+                                        currentUser={sessionData.user}
+                                        resource={comment as Comment}
+                                        resourceType="comment"
+                                        isLiked={isLiked(sessionData.user, comment) || false}
+                                    />
+
                                 </div>
 
                                 <div
-                                    className="flex items-center xs:bg-gray-50 dark:bg-transparent xs:border border-gray-250 dark:border-slate-400 xs:ml-1 px-2 py-1 rounded-full hover:bg-gray-100 dark:hover:bg-slate-500 hover:cursor-pointer"
+                                    className="flex items-center gap-2 ml-1 px-3 py-1 border bg-gray-50 dark:bg-transparent border-gray-250 dark:border-slate-400 rounded-full hover:bg-gray-100 dark:hover:bg-slate-500 hover:cursor-pointer"
+                                    onClick={() => manageComment("REPLY", comment)}
                                 >
-                                    {/* {if(@comment.total_likes > 0, do: [phx_click: toggle_likes_section(@comment.id)], else: [])} */}
-                                    <span id={`likes-count-for-${comment.id}`} className="hidden xs:block">{comment.totalLikes} Likes</span>
-                                    <span id={`likes-count-for-${comment.id}`} className="block xs:hidden">{comment.totalLikes}</span>
+                                    <span>Reply to</span>
                                 </div>
                             </div>
+                        ) : null}
 
-                            <div
-                                className="flex items-center gap-2 ml-1 px-3 py-1 border bg-gray-50 dark:bg-transparent border-gray-250 dark:border-slate-400 rounded-full hover:bg-gray-100 dark:hover:bg-slate-500 hover:cursor-pointer"
-                                onClick={() => manageComment("REPLY", comment)}
-                            >
-                                <span>Reply to</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
