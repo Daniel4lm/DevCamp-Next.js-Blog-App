@@ -1,4 +1,4 @@
-import { Post, Prisma, Profile, Tag, Like } from "@prisma/client"
+import { Post, Prisma, Profile, Tag, Like, PostBookmark } from "@prisma/client"
 import { useQuery } from "@tanstack/react-query"
 import { PostComment } from "../models/Comment"
 import { User } from "next-auth"
@@ -27,6 +27,7 @@ const usePostQuery = (slug: string) => {
             const blogFetch = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/posts/${slug}`)
             const postJson = await blogFetch.json()
             return postJson.post as (Post & {
+                bookmarks: PostBookmark[]
                 comments: PostComment[]
                 author: { [x: string]: string | number | null }
                 likes: Like[]

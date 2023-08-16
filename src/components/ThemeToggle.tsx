@@ -1,6 +1,6 @@
 "use client"
 
-import { useThemeContext } from '@/context/themeContext'
+import { useThemeContext } from '@/context/ThemeContext'
 
 export const ThemeToggle = () => {
     const { toggleMode } = useThemeContext()

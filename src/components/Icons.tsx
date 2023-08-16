@@ -25,42 +25,15 @@ const AppIcon = () => {
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5 md:w-6 md:h-6"
         >
-            <g clipPath="url(#clip0_1514_10)">
-                <path
-                    d="M6 1H3C1.89543 1 1 1.89543 1 3V6C1 7.10457 1.89543 8 3 8H6C7.10457 8 8 7.10457 8 6V3C8 1.89543 7.10457 1 6 1Z"
-                    fill="#6B78F3"
-                    stroke="#6B78F3"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                />
-                <path
-                    d="M17 1H14C12.8954 1 12 1.89543 12 3V6C12 7.10457 12.8954 8 14 8H17C18.1046 8 19 7.10457 19 6V3C19 1.89543 18.1046 1 17 1Z"
-                    fill="#B1B8F8"
-                    stroke="#B1B8F8"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                />
-                <path
-                    d="M17 12H14C12.8954 12 12 12.8954 12 14V17C12 18.1046 12.8954 19 14 19H17C18.1046 19 19 18.1046 19 17V14C19 12.8954 18.1046 12 17 12Z"
-                    fill="#6B78F3"
-                    stroke="#6B78F3"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                />
-                <path
-                    d="M6 12H3C1.89543 12 1 12.8954 1 14V17C1 18.1046 1.89543 19 3 19H6C7.10457 19 8 18.1046 8 17V14C8 12.8954 7.10457 12 6 12Z"
-                    fill="#B1B8F8"
-                    stroke="#B1B8F8"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                />
+            <g clipPath="url(#clip0_1922_15)">
+                <path d="M6 1H3C1.89543 1 1 1.89543 1 3V6C1 7.10457 1.89543 8 3 8H6C7.10457 8 8 7.10457 8 6V3C8 1.89543 7.10457 1 6 1Z" fill="#6B78F3" stroke="#6B78F3" />
+                <path d="M10.5 9.5C9.44744 8.16385 8.5 6.5 8.5 5L6.5 6.5L5 8.5C7 8.5 8.56063 9.55296 9.5 10.5C10.8064 11.8271 11.5 13.5 11.5 15L13 13L15 11.5C13 11 11.6057 10.6262 10.5 9.5Z" fill="#6B78F3" />
+                <path d="M17 1H14C12.8954 1 12 1.89543 12 3V6C12 7.10457 12.8954 8 14 8H17C18.1046 8 19 7.10457 19 6V3C19 1.89543 18.1046 1 17 1Z" fill="#B1B8F8" stroke="#B1B8F8" />
+                <path d="M17 12H14C12.8954 12 12 12.8954 12 14V17C12 18.1046 12.8954 19 14 19H17C18.1046 19 19 18.1046 19 17V14C19 12.8954 18.1046 12 17 12Z" fill="#6B78F3" stroke="#6B78F3" />
+                <path d="M6 12H3C1.89543 12 1 12.8954 1 14V17C1 18.1046 1.89543 19 3 19H6C7.10457 19 8 18.1046 8 17V14C8 12.8954 7.10457 12 6 12Z" fill="#B1B8F8" stroke="#B1B8F8" />
             </g>
             <defs>
-                <clipPath id="clip0_1514_10">
+                <clipPath id="clip0_1922_15">
                     <rect width="20" height="20" fill="white" />
                 </clipPath>
             </defs>

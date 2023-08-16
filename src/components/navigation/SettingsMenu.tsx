@@ -4,7 +4,7 @@ import { ComponentPropsWithoutRef, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import useOutsideClick from '@/hooks/useOutsideClick'
-import { User } from '@/app/models/User'
+import { User } from '@/models/User'
 import { AvatarIcon, CloseSideMenuIcon, LogoutIcon, SavedListIcon, SettingsIcon2, SmallUserIcon, TagListIcon, UserIcon } from '../Icons'
 import SideMenu from './SideMenu'
 

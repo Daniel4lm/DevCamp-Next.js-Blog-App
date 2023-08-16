@@ -19,7 +19,7 @@ interface HandleLikeProps {
 }
 
 const LikeStyle = {
-    post: 'flex sm:flex-col py-2 items-center',
+    post: 'flex sm:flex-col py-1 items-center',
     comment: 'flex items-center gap-1'
 }
 

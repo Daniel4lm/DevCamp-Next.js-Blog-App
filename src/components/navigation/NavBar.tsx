@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { AppIcon, HambButton, HomeIcon, HomeIconFill, NewIcon, NewIconFill } from '../Icons'
 import { ThemeToggle } from '../ThemeToggle'
 import { SettingsMenu } from './SettingsMenu'
-import { User } from '@/app/models/User'
+import { User } from '@/models/User'
 import SmartLink from './SmartLink'
 import ToolTip from '../Tooltip'
 import WorkMenu from './WorkMenu'
@@ -20,7 +20,7 @@ export default function Navbar({ title, currentUser }: NavBarProps) {
             <div className="flex justify-between items-center px-2 py-0 mx-auto w-full md:w-11/12"> {/* 2xl:w-8/12 */}
                 <div className="flex justify-center items-center gap-2 xs:gap-0">
                     
-                    <Link href="/" className="flex items-center gap-2 md:mx-4">
+                    <Link href="/" className="flex items-center gap-2 mx-4">
                         <AppIcon />
                         <h4 className="text-lg md:text-xl font-normal">{title}</h4>
                     </Link>

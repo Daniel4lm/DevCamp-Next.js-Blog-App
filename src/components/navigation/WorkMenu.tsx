@@ -1,6 +1,6 @@
 "use client"
 
-import useOutsideClick from "@/app/hooks/useOutsideClick"
+import useOutsideClick from "@/hooks/useOutsideClick"
 import { useEffect, useRef, useState } from "react"
 import { AppIcon, CloseSideMenuIcon, HomeIcon, NewIcon, NewIconFill, NewPostIcon, WorkMenuIcon } from "../Icons"
 import SideMenu from "./SideMenu"

@@ -18,8 +18,8 @@ const useOutsideClick = <T extends HTMLElement = HTMLElement>(elemRef: RefObject
 
         return () => {
             document.removeEventListener('click', handleClick)
-        };
+        }
     }, [elemRef, callbackFunc])
-};
+}
 
 export default useOutsideClick

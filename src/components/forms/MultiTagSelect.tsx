@@ -1,5 +1,5 @@
 import React, { ChangeEvent, KeyboardEvent, MouseEvent, useRef, useState } from 'react'
-import { CloseIcon } from './Icons'
+import { CloseIcon } from '../Icons'
 
 function MultiTagSelect({ propTags = [], handleTags }: { propTags: string[], handleTags: (val: string[]) => void }) {
 
