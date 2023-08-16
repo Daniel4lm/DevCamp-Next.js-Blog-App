@@ -29,7 +29,8 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env*.local
+.env
+.env.local
 
 # vercel
 .vercel
@@ -37,3 +38,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Ignore editor generated files
+.vscode
+
+# Ignore docker-compose postgres folder
+/postgres-data
+#!postgres-data/.gitkeep
