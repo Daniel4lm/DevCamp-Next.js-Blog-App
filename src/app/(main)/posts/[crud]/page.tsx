@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth"
 import PostForm from "./Form"
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions"
-import { User } from '@/app/models/User'
+import { User } from '@/models/User'
 
 type PageProps = {
     params: {

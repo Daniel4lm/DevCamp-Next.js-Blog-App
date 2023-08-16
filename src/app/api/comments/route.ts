@@ -1,8 +1,8 @@
 import PostTask from "@/lib/posts"
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import prisma from '@/lib/db/prismaClient'
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData();
         const content = formData.get('content') as string || ''
@@ -12,7 +12,6 @@ export async function POST(request: Request) {
 
         const comment = await PostTask.createComment(content, authorId, postId, replyId)
         return NextResponse.json({ comment }, { status: 200 })
-
     } catch (err: any) {
         let error_response = {
             status: "error",
@@ -25,7 +24,7 @@ export async function POST(request: Request) {
     }
 }
 
-export async function PUT(request: Request) {
+export async function PUT(request: NextRequest) {
     try {
         const formData = await request.formData();
         let editEntries = Object.fromEntries(formData)
@@ -34,9 +33,7 @@ export async function PUT(request: Request) {
             where: { id: editEntries.id as string }
         })
 
-        if (!foundComment) {
-            return NextResponse.json({ error: 'Blog comment not found or data is missing!' }, { status: 404 })
-        }
+        if (!foundComment) return NextResponse.json({ error: 'Blog comment not found or data is missing!' }, { status: 404 })
 
         const updatedComment = await PostTask.updateComment(editEntries)
         return NextResponse.json({ updatedComment }, { status: 200 })
@@ -53,7 +50,7 @@ export async function PUT(request: Request) {
     }
 }
 
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
 
     const { commentId } = await request.json()
 

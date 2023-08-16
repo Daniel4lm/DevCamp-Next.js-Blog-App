@@ -1,4 +1,4 @@
-import { CloseUploadIcon, UnsupportedIcon, UploadImage } from '@/app/components/Icons'
+import { CloseUploadIcon, DeleteIcon, UnsupportedIcon, UploadImage } from '@/components/Icons'
 import React from 'react'
 
 function UploadImageContainer({ uploadImage, valid, cancelUpload }: { valid: boolean, uploadImage?: File, cancelUpload: () => void }) {
@@ -33,18 +33,31 @@ function UploadImageContainer({ uploadImage, valid, cancelUpload }: { valid: boo
                     )
                     :
                     (
-                        <div className="relative py-4 mx-4">
+                        <div className="relative flex flex-col items-center py-4 mx-4">
+                            <div>
+                                <p className="w-max text-base text-center mx-auto">
+                                    Image selected:
+                                </p>
+                            </div>
                             <div className="flex justify-center">
                                 <label
                                     htmlFor='postImage'
-                                    className="flex cursor-pointer justify-center mb-8"
+                                    className="flex cursor-pointer justify-center may-2"
                                 >
                                     {valid ?
                                         <div
                                             id="post-image"
-                                            className={`min-w-[8rem] h-[8rem] mx-auto bg-white rounded-md border overflow-hidden p-1 while-submitting-form`}
+                                            className={`relative min-w-[8rem] h-[8rem] mx-auto bg-white rounded-lg p-1 while-submitting-form`}
                                         >
-                                            <img src={uploadImage ? URL.createObjectURL(uploadImage) : ''} className="w-full h-full object-cover object-center" />
+                                            <img src={uploadImage ? URL.createObjectURL(uploadImage) : ''} className="w-full h-full rounded-lg object-cover object-center" />
+                                            <div
+                                                id="cancel-image-upload"
+                                                onClick={cancelUpload}
+                                                className="absolute -top-2 -right-2 w-8 h-8 bg-rose-500 opacity-80 text-slate-100 cursor-pointer rounded-md flex justify-center items-center
+                                                    hover:opacity-100 hover:transition-all hover:duration-[600] hover:ease-in-out text-[1rem]"
+                                            >
+                                                <DeleteIcon />
+                                            </div>
                                         </div>
                                         :
                                         <UnsupportedIcon />
@@ -52,23 +65,10 @@ function UploadImageContainer({ uploadImage, valid, cancelUpload }: { valid: boo
 
                                 </label>
                             </div>
-                            <div>
-                                <p className="w-max text-base text-center mx-auto">
-                                    Image selected:
-                                </p>
-                            </div>
-                            <div className="w-max mx-auto my-2 relative flex items-center pl-4 py-[0.2rem] pr-2 rounded-2xl sm:rounded-full bg-indigo-400 dark:bg-slate-500 text-white">
-                                <label className="text-[0.9rem]">
+                            <div className="my-2 relative flex items-center px-4 py-[0.2rem] rounded-2xl bg-indigo-200 dark:bg-slate-500 text-slate-700">
+                                <span className="break-all text-[0.9rem]">
                                     {uploadImage?.name}
-                                </label>
-                                <div
-                                    id="cancel-image-upload"
-                                    onClick={cancelUpload}
-                                    className="w-[1.1rem] h-[1.1rem] opacity-80 text-white cursor-pointer ml-2 rounded-full flex justify-center items-center
-                                                    hover:opacity-100 hover:transition-all hover:duration-[600] hover:ease-in-out text-[1.1rem]"
-                                >
-                                    <CloseUploadIcon />
-                                </div>
+                                </span>
                             </div>
                         </div>
                     )

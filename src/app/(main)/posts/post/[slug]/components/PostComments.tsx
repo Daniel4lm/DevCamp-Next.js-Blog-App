@@ -6,13 +6,14 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import 'react-quill/dist/quill.snow.css'
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false })
 import { quillFormats, quillCommentModules } from "@/lib/quillEditorConf"
-import { PostComment } from "@/app/models/Comment"
+import { PostComment } from "@/models/Comment"
 import CommentComponent from "./Comment"
-import { useCommentsQuery } from "@/app/hooks/api"
-import Modal from "@/app/components/Modal"
+import { useCommentsQuery } from "@/hooks/api"
+import Modal from "@/components/Modal"
 import EditReplyComment from "./EditReplyComment"
 import { User as SessionUser } from "next-auth"
 import Link from "next/link"
+import { useRouter } from 'next/navigation'
 import { useSession } from "next-auth/react"
 
 interface CommentsProps {
@@ -44,6 +45,7 @@ function PostComments({ data, postComments, currentUser }: CommentsProps) {
     const [action, setAction] = useState<'EDIT' | 'REPLY' | 'DELETE' | 'NONE'>('NONE')
     const [comment, setComment] = useState<PostComment>()
     const { data: session } = useSession()
+    const router = useRouter()
     const queryClient = useQueryClient()
     const { data: comments, refetch: refetchComments, isLoading } = useCommentsQuery(data.postId, postComments)
 
@@ -98,6 +100,7 @@ function PostComments({ data, postComments, currentUser }: CommentsProps) {
     const onContentChange = (value: string) => setContent(value)
     const onActionChange = (value: 'EDIT' | 'REPLY' | 'DELETE' | 'NONE', comment: PostComment) => {
         setAction(value)
+        //router.push(`/posts/post/${}`)
         setComment(comment)
 
         // if (value === 'DELETE') {

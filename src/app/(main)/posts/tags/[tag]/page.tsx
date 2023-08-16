@@ -1,10 +1,10 @@
 "use client"
 
-import { SmallPostCard } from "@/app/components/CardsComponent"
-import Skeleton from "@/app/components/skeletons/Skeleton"
-import { Post, Tag, User } from "@prisma/client"
+import { useState } from "react"
 import { useInfiniteQuery } from "@tanstack/react-query"
-import { useEffect, useState } from "react"
+import { SmallPostCard } from "@/components/CardsComponent"
+import Skeleton from "@/components/skeletons/Skeleton"
+import { Post, Tag, User } from "@prisma/client"
 
 type PageProps = {
     params: {

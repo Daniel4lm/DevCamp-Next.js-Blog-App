@@ -1,19 +1,19 @@
 "use client"
 
 import React, { useEffect, useRef } from 'react'
-import { usePostQuery } from '@/app/hooks/api'
+import { usePostQuery } from '@/hooks/api'
 import { User as SessionUser } from "next-auth"
 import 'highlight.js/styles/github-dark.css'
 import Image from 'next/image'
 import Link from 'next/link'
 import hljs from 'highlight.js/lib/common'
-import { UserAvatar } from '@/app/components/CoreComponents'
+import { UserAvatar } from '@/components/CoreComponents'
 import { formatPostDate } from '@/lib/helperFunctions'
-import { ChatIcon, DownloadIcon, EmptyHeartIcon, PostTagIcon } from '@/app/components/Icons'
+import { ChatIcon, DownloadIcon, EmptyHeartIcon, PostTagIcon } from '@/components/Icons'
 import PostComments from './PostComments'
 import ScrollToTopButton from './ScrollToTop'
 import PostSidebar from './PostSidebar'
-import ToolTip from '@/app/components/Tooltip'
+import ToolTip from '@/components/Tooltip'
 
 hljs.configure({
     languages: ['javascript', 'java', 'css', 'php', 'go'],
@@ -205,7 +205,9 @@ const PostBody = ({ postSlug, currentUser }: { postSlug: string, currentUser: Se
                             </div>
                             <div className="flex items-center ml-4">
                                 <PostTagIcon />
-                                {/* post tag placeholder */}
+                                <span className="px-2 text-sm md:text-base font-bold focus:outline-none">
+                                    {post?.totalBookmarks}
+                                </span>
                             </div>
                         </div>
                     </div>

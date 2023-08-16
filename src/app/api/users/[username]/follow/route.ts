@@ -1,10 +1,9 @@
-
+import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '../../../auth/[...nextauth]/authOptions'
+import { authOptions } from '@/api/auth/[...nextauth]/authOptions'
 import UserTask from '@/lib/user'
-import { NextResponse } from 'next/server'
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
 
     const url = new URL(request.url)
     const username = url.searchParams.get("username") || ''
@@ -22,7 +21,7 @@ export async function GET(request: Request) {
     }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
 
     const { username } = await request.json()
 
@@ -40,7 +39,7 @@ export async function POST(request: Request) {
     }
 }
 
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
 
     const { username } = await request.json()
 

@@ -29,13 +29,13 @@ function LogoutPage() {
                     <h1 className="my-4 text-xl md:text-2xl text-center font-medium">Are you sure you want to sign out?</h1>
                     <div className="w-full flex flex-wrap items-center justify-center gap-4 py-6">
                         <button
-                            className={'block px-4 xs:px-8 py-1 xs:py-2 md:w-max border border-indigo-400 shadow rounded-full font-semibold text-sm text-gray-50 hover:bg-indigo-500 bg-indigo-400 cursor-pointer'}
+                            className={'block px-4 xs:px-8 py-1 xs:py-2 md:w-max border-2 border-indigo-400 shadow rounded-full font-semibold text-sm text-gray-50 hover:bg-indigo-500 hover:border-indigo-500 bg-indigo-400 cursor-pointer'}
                             onClick={() => router.back()}
                         >
                             Go back
                         </button>
                         <button
-                            className={'block px-4 xs:px-8 py-1 xs:py-2 md:w-max border border-indigo-400 shadow rounded-full font-semibold text-sm text-indigo-500 hover:border-indigo-500 hover:bg-indigo-500 hover:text-white cursor-pointer'}
+                            className={'block px-4 xs:px-8 py-1 xs:py-2 md:w-max border-2 border-indigo-400 rounded-full font-semibold text-sm text-indigo-500 hover:border-indigo-500 hover:bg-indigo-500 hover:text-white cursor-pointer'}
                             onClick={onLogOut}
                         >
                             Log out

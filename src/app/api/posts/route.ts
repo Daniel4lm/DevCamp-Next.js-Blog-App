@@ -3,10 +3,8 @@ import prisma from '@/lib/db/prismaClient'
 import PostTask from '@/lib/posts'
 import { createSlug } from '@/lib/helperFunctions'
 import { maybeRemoveOldImage, maybeUploadImage } from '@/lib/fileHelpers'
-// import { Post } from '@prisma/client'
-// const fs = require('fs')
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url)
 
@@ -16,11 +14,9 @@ export async function GET(request: Request) {
 
     const curPageNum: number = (Number(curPage) || 0)
     const curLimit: number = (Number(limit) || 5)
-
-    /* Pagination borders */
     const minRange: number = curPageNum * curLimit
 
-    const posts = PostTask.getPaginatedPosts(curLimit, minRange, username)
+    const posts = PostTask.getPaginatedPosts(curLimit, minRange, { author: { username: username } })
 
     const getPostsCount = username ? PostTask.getNumOfUserPosts(username) : PostTask.getNumOfRecords()
 
@@ -97,7 +93,6 @@ export async function POST(request: NextRequest) {
     try {
         const formData = await request.formData()
         let formEntries = Object.fromEntries(formData)
-
         const { userEmail, tags, photoUrl, ...params } = formEntries // await request.json();
         const email = userEmail as string
         const postTags = tags ? (tags as string).split(',') : []

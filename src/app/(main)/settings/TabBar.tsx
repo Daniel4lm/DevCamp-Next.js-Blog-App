@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { ReactNode } from 'react'
 import { usePathname } from 'next/navigation'
-import { ConfirmIcon, SettingsIcon } from '@/app/components/Icons'
+import { ConfirmIcon, SettingsIcon } from '@/components/Icons'
 
 interface TabBarProps {
     styleClass: string
@@ -17,7 +17,9 @@ function TabBar({ styleClass, currentUriPath }: TabBarProps) {
     return (
         <div className={styleClass}>
             <ul className="flex flex-row items-center justify-center md:flex-col">
-                <Link href={`/user/${pathUsername}/account/edit`} className="w-1/2 md:w-full">
+                <p className='w-full hidden md:block p-2 text-lg font-medium'>User settings</p>
+                <hr className="w-full hidden md:block my-2 dark:border-gray-600" />
+                <Link href={`/settings/account/${pathUsername}`} className="w-1/2 md:w-full">
                     <SidebarLinkTag
                         title="Edit Profile"
                         currentUriPath={currentUriPath}
@@ -27,7 +29,7 @@ function TabBar({ styleClass, currentUriPath }: TabBarProps) {
                     </SidebarLinkTag>
                 </Link>
 
-                <Link href={`/user/${pathUsername}/account/password`} className="w-1/2 md:w-full">
+                <Link href={`/settings/password/${pathUsername}`} className="w-1/2 md:w-full">
                     <SidebarLinkTag
                         title="Change Password"
                         currentUriPath={currentUriPath}
@@ -50,7 +52,7 @@ interface SidebarLinkTagProps {
 
 const SidebarLinkTag = ({ title, currentUriPath, menuLink, children }: SidebarLinkTagProps) => {
     return (
-        <li className={`flex items-center justify-between m-1 p-4 ${selectedLink(currentUriPath, menuLink)}`}>
+        <li className={`flex items-center justify-between m-1 px-4 py-6 ${selectedLink(currentUriPath, menuLink)}`}>
             <span className="mr-2">{title}</span>
             {children}
         </li>
@@ -59,9 +61,9 @@ const SidebarLinkTag = ({ title, currentUriPath, menuLink, children }: SidebarLi
 
 const selectedLink = (currentUri: string, menuLink: string) => {
     if (currentUri === menuLink) {
-        return 'max-h-14 rounded-full md:rounded-lg bg-indigo-100 dark:bg-slate-400 text-gray-900 ease-in-out'
+        return 'max-h-12 rounded-full md:rounded-lg bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-200 text-gray-900 ease-in-out'
     } else {
-        return 'max-h-14 rounded-full md:rounded-lg hover:bg-gray-100 dark:hover:bg-slate-500 ease-in-out'
+        return 'max-h-12 rounded-full md:rounded-lg bg-gray-100 dark:bg-slate-500 hover:bg-indigo-100 hover:bg-indigo-200 dark:hover:bg-slate-500 ease-in-out'
     }
 }
 

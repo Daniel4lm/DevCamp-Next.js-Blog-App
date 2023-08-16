@@ -2,20 +2,19 @@
 
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
-import { CommentIcon, CopyLinkIcon, DeleteIcon, EditIcon, EmptyHeartIcon, HeartIcon, LinkIcon, OptsIcon, PostTagIcon } from "@/app/components/Icons"
-import Modal from "@/app/components/Modal"
-import ToolTip from "@/app/components/Tooltip"
-import useModalShow from "@/app/hooks/useModalShow"
-import useOutsideClick from "@/app/hooks/useOutsideClick"
-import { User as SessionUser } from "next-auth"
-
-import { copyPostUrl, getURL } from "@/lib/helperFunctions"
-import { Post, Tag, Like, Prisma } from "@prisma/client"
-import { PostComment } from "@/models/Comment"
-
 import { usePathname, useRouter } from "next/navigation"
-import SmartLink from "@/app/components/navigation/SmartLink"
-import LikeComponent from "@/app/components/LikeComponent"
+import { User as SessionUser } from "next-auth"
+import { Post, Tag, Like, PostBookmark } from "@prisma/client"
+import { CommentIcon, DeleteIcon, EditIcon, LinkIcon, OptsIcon, PostTagIcon } from "@/components/Icons"
+import Modal from "@/components/Modal"
+import ToolTip from "@/components/Tooltip"
+import useModalShow from "@/hooks/useModalShow"
+import useOutsideClick from "@/hooks/useOutsideClick"
+import { copyPostUrl, getURL } from "@/lib/helperFunctions"
+import { PostComment } from "@/models/Comment"
+import SmartLink from "@/components/navigation/SmartLink"
+import LikeComponent from "@/components/LikeComponent"
+import BookmarkPost from "@/components/BookmarkComponent"
 
 interface PostProps {
     data: (Post & {
@@ -23,6 +22,7 @@ interface PostProps {
             [x: string]: string | number | null
             [x: number]: string | number | null
         }
+        bookmarks: PostBookmark[]
         tags: Tag[]
         likes: Like[]
         comments: PostComment[]
@@ -105,6 +105,7 @@ const OptsMenu = ({ data, currentUser, isOpen, closeFunc }: OptsMenuProps) => {
                     </button>
                 </div>
             </Modal>
+
             <ul
                 id="opts-menu"
                 ref={isOpen === 'open' ? menuRef : null}
@@ -174,19 +175,18 @@ const PostSidebar = ({ data, currentUser }: PostProps) => {
     //     commentsSection && window.scrollTo({ behavior: 'smooth', top: commentsSection?.getBoundingClientRect().top })
     // }
 
-    function isLiked(currentUser: SessionUser | undefined, data: (Post & {
-        comments: PostComment[]
-        author: { [x: string]: string | number | null }
-        likes: Like[]
-        tags: Tag[]
-    } | undefined)) {
-        return data?.likes.some(like => like.authorId === currentUser?.id)
+    function isLiked(currentUser: SessionUser | undefined, postData: Pick<PostProps, 'data'> | undefined) {
+        return postData?.data?.likes.some(like => like.authorId === currentUser?.id)
+    }
+
+    function isBookmarked(currentUser: SessionUser | undefined, postData: Pick<PostProps, 'data'> | undefined) {
+        return postData?.data?.bookmarks.some(bookmark => bookmark.authorId === currentUser?.id)
     }
 
     useEffect(() => {
 
         const postSidebar = document.getElementById('post-sidebar')
-        
+
         function handlePageScroll() {
             if (window.scrollY > 100) {
                 postSidebar?.classList.replace('opacity-0', 'opacity-1')
@@ -216,12 +216,12 @@ const PostSidebar = ({ data, currentUser }: PostProps) => {
                         currentUser={currentUser}
                         resource={data as Post}
                         resourceType="post"
-                        isLiked={isLiked(currentUser, data) || false}
+                        isLiked={isLiked(currentUser, { data: data }) || false}
                     />
                 </ToolTip>
 
                 <ToolTip position="right" title="Jump to comments">
-                    <div className="flex sm:flex-col py-2 items-center">
+                    <div className="flex sm:flex-col py-1 items-center">
                         <SmartLink
                             href="#post-comments-section"
                             isScrollAble
@@ -237,25 +237,12 @@ const PostSidebar = ({ data, currentUser }: PostProps) => {
                     </div>
                 </ToolTip>
 
-                <ToolTip position="right" title="Tag the Post">
-                    <div className="flex sm:flex-col py-2 items-center">
-                        {currentUser && currentUser.id !== data?.authorId ?
-                            (<div className="rounded-full p-2 cursor-pointer border border-transparent hover:text-indigo-600 hover:border-indigo-300 hover:bg-indigo-50 dark:hover:bg-transparent dark:hover:border-transparent">
-                                {/* <.live_component
-                                    id="post-tag-comp"
-                                    module={TagComponent}
-                                    current_user={@current_user}
-                                    post={@post}
-                                /> */}
-                                <PostTagIcon />
-                            </div>)
-                            :
-                            (<div id="post-like-icon" className="py-2">
-                                <PostTagIcon />
-                            </div>)
-                        }
-                        <span id="post-total-taged" className="mx-1 sm:mx-2">0</span>
-                    </div>
+                <ToolTip position="right" title="Save the Post">
+                    <BookmarkPost
+                        currentUser={currentUser}
+                        post={data as Post}
+                        isBookmarked={isBookmarked(currentUser, { data: data }) || false}
+                    />
                 </ToolTip>
 
                 <div id="post-opts" className="relative flex sm:flex-col py-2 items-center">

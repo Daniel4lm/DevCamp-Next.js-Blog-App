@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
 import UserSignupForm from "./Form"
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions"
-import SmartLink from "@/app/components/navigation/SmartLink"
+import SmartLink from "@/components/navigation/SmartLink"
 
 export default async function UserRegistrationPage() {
 

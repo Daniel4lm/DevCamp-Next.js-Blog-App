@@ -1,8 +1,8 @@
-import { User } from "@/app/models/User"
 import type { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import prisma from '@/lib/db/prismaClient'
 import { compareSync } from "bcryptjs"
+import { User } from "@/models/User"
 
 export const authOptions: NextAuthOptions = {
     session: {

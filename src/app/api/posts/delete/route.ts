@@ -1,10 +1,10 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { Post } from "@prisma/client"
 import PostTask from '@/lib/posts'
 import prisma from '@/lib/db/prismaClient'
 import { maybeRemoveOldImage } from '@/lib/fileHelpers'
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     const { id }: Pick<Post, "id"> = await request.json()
 
     if (!id) {

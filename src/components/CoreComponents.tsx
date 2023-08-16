@@ -52,8 +52,6 @@ function Modal({
     const initialRender = useRef(true)
     const isOpen = urlParams.get('dialog')
 
-    console.log('dialog... ', isOpen)
-
     useEffect(() => {
 
         if (initialRender.current) {

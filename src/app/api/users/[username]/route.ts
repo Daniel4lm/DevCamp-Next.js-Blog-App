@@ -1,12 +1,9 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import UserTask from '@/lib/user'
 import prisma from '@/lib/db/prismaClient'
-import { join } from 'path'
-import { mkdir, stat, writeFile } from 'fs/promises'
 import { maybeRemoveOldImage, maybeUploadImage } from '@/lib/fileHelpers'
-const fs = require('fs')
 
-export async function GET(request: Request, { params }: { params: { username: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { username: string } }) {
 
     const username = params?.username
 
@@ -23,7 +20,7 @@ export async function GET(request: Request, { params }: { params: { username: st
     }
 }
 
-export async function PUT(request: Request) {
+export async function PUT(request: NextRequest) {
 
     try {
         const formData = await request.formData()
@@ -33,13 +30,12 @@ export async function PUT(request: Request) {
             where: { id: formEntries.id as string }
         })
 
-        if (!foundUser) {
-            return NextResponse.json({ error: 'User not found or email is missing!' }, { status: 404 })
-        }
+        if (!foundUser) return NextResponse.json({ error: 'User not found or email is missing!' }, { status: 404 })
 
         let maybeParamsWithPhoto = formEntries
 
         const userAvatar = formData.get("avatarUrl") as Blob | null
+
         if (userAvatar && formEntries.avatarUrl !== 'undefined') {
             maybeParamsWithPhoto = await maybeUploadImage(
                 formEntries,
@@ -60,6 +56,7 @@ export async function PUT(request: Request) {
         }
 
         const updatedUser = await UserTask.updateUser(maybeParamsWithPhoto)
+
         return NextResponse.json({ updatedUser }, { status: 200 })
     } catch (err: any) {
         let error_response = {

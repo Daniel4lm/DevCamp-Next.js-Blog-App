@@ -1,8 +1,8 @@
 "use client"
 
-import { UserAvatar } from '@/app/components/CoreComponents'
-import { ReplyIcon } from '@/app/components/Icons'
-import { PostComment } from '@/app/models/Comment'
+import { UserAvatar } from '@/components/CoreComponents'
+import { ReplyIcon } from '@/components/Icons'
+import { PostComment } from '@/models/Comment'
 import { FormEvent, useState } from 'react'
 import Link from "next/link"
 import dynamic from "next/dynamic"

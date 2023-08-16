@@ -1,8 +1,8 @@
+import Link from 'next/link'
+import Image from 'next/image'
 import { Inter } from 'next/font/google'
-import Image from 'next/image';
+import { AuthProvider } from '@/context/AuthProvider'
 import '@/app/globals.css'
-import Link from 'next/link';
-import { AuthProvider } from '../context/AuthProvider';
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' })
 
@@ -32,7 +32,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: initialThemeScript }} ></script>
         <AuthProvider>
           <main role="main" className="relative w-full min-h-screen bg-main-background antialiased dark:bg-main-dark-github dark:text-slate-100">
-            <section className="w-full bg-indigo-900 dark:border-b dark:border-gray-600 h-48 py-8 px-10 ">
+            <section className="w-full bg-indigo-900 dark:border-b dark:border-gray-600 min-h-[250px] py-8 px-10 ">
               <div className="w-full flex justify-center text-white">
                 <Link href={'/'} className="flex items-center gap-3 mx-4">
                   <Image

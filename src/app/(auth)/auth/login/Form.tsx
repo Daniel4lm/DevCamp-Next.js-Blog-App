@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { useSearchParams, useRouter } from "next/navigation"
-import { HidePassIcon, ShowPassIcon } from '@/app/components/Icons'
-import { LoginType } from '@/app/models/AuthTypes'
+import { HidePassIcon, ShowPassIcon } from '@/components/Icons'
+import { LoginType } from '@/models/AuthTypes'
 import { signIn } from 'next-auth/react'
 import { object, z } from 'zod'
 import { Field, Form, Formik } from 'formik'

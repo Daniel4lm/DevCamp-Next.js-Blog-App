@@ -1,6 +1,6 @@
-import UserTask from '@/lib/user'
-import { genSaltSync, hashSync } from 'bcryptjs'
 import { NextRequest, NextResponse } from 'next/server'
+import { genSaltSync, hashSync } from 'bcryptjs'
+import UserTask from '@/lib/user'
 
 function encryptPassword(receivedPassword: string) {
     let saltRounds = 10
@@ -8,14 +8,12 @@ function encryptPassword(receivedPassword: string) {
     return hashSync(receivedPassword, salt)
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     const { username, fullName, email, password } = await request.json()
 
     try {
         const maybeDuplicate = await UserTask.getUser(username)
-        if (maybeDuplicate) {
-            return NextResponse.json({ message: 'User already exists!' }, { status: 409 })
-        }
+        if (maybeDuplicate) return NextResponse.json({ message: 'User already exists!' }, { status: 409 })
 
         let encryptedPassword = encryptPassword(password)
 

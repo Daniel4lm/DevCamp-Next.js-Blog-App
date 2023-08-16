@@ -57,13 +57,11 @@ export default async function UserProfile({ params }: PageProps) {
     const { username } = params
     const session = await getServerSession(authOptions)
     let userData: UserDataProps | null = null
-    // let userFollow: UserFollowingProps | null = null
 
     const queryClient = getQueryClient()
 
     try {
         userData = await UserTask.getUser(username) as UserDataProps
-        // userFollow = await UserTask.getUserFollowing(session?.user.id || '', userData?.id || '')
 
         await queryClient.prefetchQuery({
             queryKey: ['user', username],

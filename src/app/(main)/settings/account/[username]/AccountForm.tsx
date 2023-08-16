@@ -6,16 +6,15 @@ import { useSession } from 'next-auth/react'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { Formik, Form, Field } from 'formik'
-import FormikTextArea from '@/app/components/FormikControls'
+import FormikTextArea from '@/components/forms/FormikControls'
 import { object, z } from 'zod'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
-import { CloseUploadIcon, ThemeIcon, UploadImage } from '@/app/components/Icons'
+import { CloseUploadIcon, ThemeIcon, UploadImage } from '@/components/Icons'
 
 const MAX_FILE_SIZE = 5000000
 
 interface AccountFormProps {
     userData: { [x: string]: string }
-
 }
 
 async function updateUser({ formData, username }: { formData: FormData, username: string }) {
@@ -51,6 +50,7 @@ function AccountForm({ userData }: AccountFormProps) {
                 }
                 return
             }
+
             updateSession({
                 ...session,
                 user: {
@@ -64,6 +64,7 @@ function AccountForm({ userData }: AccountFormProps) {
                     }
                 }
             })
+            
             router.replace(`/user/${username}`)
         }
     })
@@ -148,12 +149,12 @@ function AccountForm({ userData }: AccountFormProps) {
     }
 
     return (
-        <div className="relative w-full py-8 text-sm md:text-base border rounded-lg bg-white dark:bg-[#344453] dark:text-slate-300 dark:border-gray-600 shadow-md shadow-slate-200 dark:shadow-none">
+        <div className="relative w-full py-8 text-sm md:text-base border-t border-b md:border md:rounded-lg bg-white dark:bg-[#344453] dark:text-slate-300 dark:border-gray-600 shadow-slate-200 dark:shadow-none">
             <>
                 <Formik
                     initialValues={userData}
                     validationSchema={toFormikValidationSchema(AccountValidationSchema)}
-                    onSubmit={(values, { setSubmitting }) => {
+                    onSubmit={(values) => {
 
                         setErrMsg(null)
 
@@ -172,7 +173,6 @@ function AccountForm({ userData }: AccountFormProps) {
                         } catch (err) {
                             console.error(err)
                         }
-                        setSubmitting(false)
                     }}
                 >
                     {({ values, errors, touched, isValid, isSubmitting }) => (
@@ -290,7 +290,7 @@ function AccountForm({ userData }: AccountFormProps) {
                             </div>
                             {values.username.length > 0 ? (
                                 <div className="w-max max-w-[50%] m-auto overflow-hidden">
-                                    <p className="leading-none rounded-full border-2 border-gray-200 dark:border-slate-400 px-3 py-2 text-lg truncate">
+                                    <p className="leading-none rounded-full border-2 border-gray-200 dark:border-slate-400 px-3 py-2 md:py-0 md:text-lg truncate">
                                         {values.username}
                                     </p>
                                 </div>
@@ -308,7 +308,7 @@ function AccountForm({ userData }: AccountFormProps) {
                                         id='fullname-field'
                                         name='fullName'
                                         type='text'
-                                        className={'w-full lg:w-4/6 text-sm md:text-base rounded p-2 border border-neutral-300 dark:bg-gray-700 dark:text-slate-100 dark:border-slate-500 text-semibold text-gray-600 focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-80 focus:border-transparent dark:focus:border-transparent dark:focus:ring-blue-400'}
+                                        className={'w-full text-sm md:text-base rounded p-2 duration-150 border border-neutral-300 dark:bg-gray-700 dark:text-slate-100 dark:border-slate-500 text-semibold text-gray-600 focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-80 focus:border-transparent dark:focus:border-transparent dark:focus:ring-blue-400'}
                                     />
                                     {touched.fullName && errors.fullName ? (
                                         <span key={`${errors.fullName}`} className='invalid-feedback'>{errors.fullName}</span>
@@ -322,7 +322,7 @@ function AccountForm({ userData }: AccountFormProps) {
                                     <Field
                                         name='username'
                                         type='text'
-                                        className={'w-full lg:w-4/6 text-sm md:text-base rounded p-2 border border-neutral-300 dark:bg-gray-700 dark:text-slate-100 dark:border-slate-500 text-semibold text-gray-600 focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-80 focus:border-transparent dark:focus:border-transparent dark:focus:ring-blue-400'}
+                                        className={'w-full text-sm md:text-base rounded p-2 duration-150 border border-neutral-300 dark:bg-gray-700 dark:text-slate-100 dark:border-slate-500 text-semibold text-gray-600 focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-80 focus:border-transparent dark:focus:border-transparent dark:focus:ring-blue-400'}
                                     />
                                     {touched.username && errors.username ? (
                                         <span key={`${errors.username}`} className='invalid-feedback'>{errors.username}</span>
@@ -336,7 +336,7 @@ function AccountForm({ userData }: AccountFormProps) {
                                     <Field
                                         name='location'
                                         type='text'
-                                        className={'w-full lg:w-4/6 text-sm md:text-base rounded p-2 border border-neutral-300 dark:bg-gray-700 dark:text-slate-100 dark:border-slate-500 text-semibold text-gray-600 focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-80 focus:border-transparent dark:focus:border-transparent dark:focus:ring-blue-400'}
+                                        className={'w-full text-sm md:text-base rounded p-2 duration-150 border border-neutral-300 dark:bg-gray-700 dark:text-slate-100 dark:border-slate-500 text-semibold text-gray-600 focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-80 focus:border-transparent dark:focus:border-transparent dark:focus:ring-blue-400'}
                                     />
                                     {touched.location && errors.location ? (
                                         <span key={`${errors.location}`} className='invalid-feedback'>{errors.location}</span>
@@ -350,7 +350,7 @@ function AccountForm({ userData }: AccountFormProps) {
                                     <Field
                                         name='website'
                                         type='text'
-                                        className={'w-full lg:w-4/6 text-sm md:text-base rounded p-2 border border-neutral-300 dark:bg-gray-700 dark:text-slate-100 dark:border-slate-500 text-semibold text-gray-600 focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-80 focus:border-transparent dark:focus:border-transparent dark:focus:ring-blue-400'}
+                                        className={'w-full text-sm md:text-base rounded p-2 duration-150 border border-neutral-300 dark:bg-gray-700 dark:text-slate-100 dark:border-slate-500 text-semibold text-gray-600 focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-80 focus:border-transparent dark:focus:border-transparent dark:focus:ring-blue-400'}
                                     />
                                     {touched.website && errors.website ? (
                                         <span key={`${errors.website}`} className='invalid-feedback'>{errors.website}</span>
@@ -370,7 +370,7 @@ function AccountForm({ userData }: AccountFormProps) {
                                         type='email'
                                         aria-invalid={errors.email ? 'true' : 'false'}
                                         aria-describedby="uidnote"
-                                        className={'w-full lg:w-4/6 text-sm md:text-base rounded p-2 border border-neutral-300 dark:bg-gray-700 dark:text-slate-100 dark:border-slate-500 text-semibold text-gray-600 focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-80 focus:border-transparent dark:focus:border-transparent dark:focus:ring-blue-400'}
+                                        className={'w-full text-sm md:text-base rounded p-2 duration-150 border border-neutral-300 dark:bg-gray-700 dark:text-slate-100 dark:border-slate-500 text-semibold text-gray-600 focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-80 focus:border-transparent dark:focus:border-transparent dark:focus:ring-blue-400'}
 
                                     />
                                     {touched.email && errors.email ? (
@@ -394,7 +394,7 @@ function AccountForm({ userData }: AccountFormProps) {
                                                     className='hidden peer p-0 right-2 top-1/2 -translate-y-1/2 cursor-pointer w-4 h-4 text-indigo-400 bg-gray-100 border-gray-300 focus:ring-indigo-400 dark:focus:ring-slate-400 dark:ring-offset-gray-500 focus:ring-2 dark:bg-slate-600 dark:border-slate-500' />
                                                 <label
                                                     htmlFor={theme}
-                                                    className='px-2 py-1 text-gray-600 flex justify-between items-center border dark:border-transparent rounded-full bg-gray-50 dark:bg-slate-500 cursor-pointer hover:border-transparent hover:ring-2 hover:ring-neutral-400 hover:dark:ring-neutral-400 hover:ring-opacity-40 dark:peer-checked:ring-slate-400 peer-checked:text-indigo-400 peer-checked:dark:ring-neutral-200 peer-checked:dark:text-white peer-checked:ring-2 peer-checked:ring-indigo-400 peer-checked:border-transparent peer-checked:ring-opacity-90 dark:text-slate-100'>
+                                                    className='px-4 py-1 text-gray-600 flex justify-between items-center border dark:border-transparent rounded-full bg-gray-50 dark:bg-slate-500 cursor-pointer duration-150 hover:border-transparent hover:ring-2 hover:ring-neutral-400 hover:dark:ring-neutral-400 hover:ring-opacity-40 dark:peer-checked:ring-slate-400 peer-checked:text-indigo-400 peer-checked:dark:ring-neutral-200 peer-checked:dark:text-white peer-checked:ring-2 peer-checked:ring-indigo-400 peer-checked:border-transparent peer-checked:ring-opacity-90 dark:text-slate-100'>
                                                     <span className="capitalize pr-4">{theme}</span>
                                                     <ThemeIcon type={theme} />
                                                 </label>
@@ -410,15 +410,12 @@ function AccountForm({ userData }: AccountFormProps) {
                                 <label className="block md:w-1/3 font-semibold text-right"></label>
                                 <div className="w-full pl-4 xs:pl-8 pr-4 xs:pr-8">
                                     <button type="submit" disabled={!isValid || isSubmitting}
-                                        className={'px-8 py-2 border-none shadow rounded-full font-semibold text-sm text-gray-50 hover:bg-indigo-500 bg-indigo-400 cursor-pointer'}
+                                        className={'px-6 py-2 border-2 border-indigo-400 bg-transparent rounded-full font-semibold text-indigo-500 dark:text-indigo-300 hover:border-indigo-500 hover:bg-indigo-500 hover:text-white cursor-pointer duration-150'}
                                     >
                                         {isSubmitting ? 'Saving...' : 'Update profile'}
                                     </button>
                                 </div>
                             </div>
-
-                            {/* {<pre>{JSON.stringify(values, null, 4)}</pre>
-                            <pre>{JSON.stringify(errors, null, 4)}</pre>} */}
                         </Form>
                     )}
                 </Formik>

@@ -6,6 +6,8 @@ function paginationQuery(take: number, skip: number) {
         include: {
             comments: true,
             tags: true,
+            bookmarks: true,
+            likes: true,
             author: {
                 select: excludeUserFields(['hashedPassword', 'refreshToken', 'posts'])
             },
@@ -16,9 +18,23 @@ function paginationQuery(take: number, skip: number) {
 }
 
 let PostTask = {
-    getNumOfRecords: async function () {
+    getNumOfRecords: async function (searchQuery = {}) {
+
+        // let query = {
+        //     _count: { id: true },
+        //     where: {}
+        // }
+
+        // if (Object.keys(searchQuery).length) {
+        //     query = {
+        //         ...query,
+        //         where: searchQuery
+        //     }
+        // }
+
         return await prismaClient.post.aggregate({
-            _count: { id: true }
+            _count: { id: true },
+            where: searchQuery
         })
     },
     getNumOfUserPosts: async function (username: string) {
@@ -42,6 +58,47 @@ let PostTask = {
             },
             _count: { id: true }
         })
+    },
+    createBookmark: async function (authorId: string, postId: string) {
+
+        const bookmark = prismaClient.postBookmark.create({
+            data: {
+                author: { connect: { id: authorId } },
+                post: { connect: { id: postId } }
+            },
+            include: {
+                author: { select: excludeUserFields(['hashedPassword', 'refreshToken']) },
+                post: true
+            }
+        })
+
+        await prismaClient.post.update({
+            where: { id: postId },
+            data: { totalBookmarks: { increment: 1 } }
+        })
+
+        return bookmark
+    },
+    deleteBookmark: async function (authorId: string, postId: string) {
+        const deletedBookmark = prismaClient.postBookmark.delete({
+            where: {
+                authorId_postId: {
+                    authorId: authorId,
+                    postId: postId
+                }
+            },
+            include: {
+                author: { select: excludeUserFields(['hashedPassword', 'refreshToken']) },
+                post: true
+            }
+        })
+
+        await prismaClient.post.update({
+            where: { id: postId },
+            data: { totalBookmarks: { decrement: 1 } }
+        })
+
+        return deletedBookmark
     },
     createLike: async function (authorId: string, resourceId: string, resourceType: 'post' | 'comment') {
 
@@ -144,35 +201,14 @@ let PostTask = {
             }
         })
     },
-    getPostsByTag: async function (take: number, skip: number, tag: string) {
-        let query = {
-            where: {
-                tags: {
-                    some: {
-                        name: tag
-                    }
-                }
-            },
-            include: {
-                comments: true,
-                tags: true,
-                author: {
-                    select: excludeUserFields(['hashedPassword', 'refreshToken', 'posts'])
-                },
-            },
-            take: take,
-            skip: skip
-        }
-        return await prismaClient.post.findMany(query)
-    },
-    getPaginatedPosts: async function (take: number, skip: number, username?: string) {
+    getPaginatedPosts: async function (take: number, skip: number, searchQuery = {}) {
 
         let query = paginationQuery(take, skip)
 
-        if (username) {
+        if (Object.keys(searchQuery).length) {
             query = {
                 ...query,
-                where: { author: { username: username } }
+                where: searchQuery
             }
         }
 
@@ -321,7 +357,7 @@ let PostTask = {
             return { name: tag }
         })
 
-        const maybeNewTags = await this.maybeCreateNewTags(postTags)
+        const maybeCreateNewTags = await this.maybeCreateNewTags(postTags)
 
         const readTimeData = Number(data.readTime as string)
         const dbData = { ...data, ...{ readTime: readTimeData } }
@@ -358,7 +394,7 @@ let PostTask = {
             return { name: tag }
         })
 
-        const maybeNewTags = await this.maybeCreateNewTags(postTags)
+        const maybeCreateNewTags = await this.maybeCreateNewTags(postTags)
 
         const readTimeData = Number(data.readTime as string)
         const dbData = { ...data, ...{ readTime: readTimeData } }
@@ -418,6 +454,7 @@ let PostTask = {
                 author: {
                     select: excludeUserFields(['hashedPassword', 'refreshToken'])
                 },
+                bookmarks: true,
                 likes: true,
                 tags: true,
                 comments: {

@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function Home() {
   return (
@@ -19,6 +20,12 @@ export default function Home() {
           height={37}
           priority
         />
+      </div>
+
+      <div className='flex flex-col items-center text-center gap-2 my-2'>
+        <Link href="/posts?dialog=y" className="text-2xl underline">Go to Products with Modal</Link>
+
+        <Link href="/posts" className="text-2xl underline">Go to Products without Modal</Link>
       </div>
 
       <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">

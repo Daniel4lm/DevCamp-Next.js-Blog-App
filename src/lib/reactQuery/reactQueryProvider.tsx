@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { ProviderType } from '@/app/context/types'
+import { ProviderType } from '@/context/types'
 
 
 function ReactQueryProvider({ children }: ProviderType) {

@@ -1,11 +1,11 @@
-import { ThemeProvider } from '@/context/themeContext'
 import { Inter } from 'next/font/google'
-import Navbar from '@/app/components/navigation/NavBar'
+import { getServerSession } from 'next-auth'
+import { ThemeProvider } from '@/context/ThemeContext'
+import Navbar from '@/components/navigation/NavBar'
 import ReactQueryProvider from '@/lib/reactQuery/reactQueryProvider'
 import '@/app/globals.css'
-import { AuthProvider } from '../context/AuthProvider'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '../api/auth/[...nextauth]/authOptions'
+import { AuthProvider } from '@/context/AuthProvider'
+import { authOptions } from '@/api/auth/[...nextauth]/authOptions'
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' })
 
@@ -30,9 +30,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
         detectThemeOnLoad()
     `
-  
+
   const clearTheme = `
-        const isDarkMode = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         function detectThemeOnLoad() {
           if (document.documentElement.classList.contains('light')) {
             document.documentElement.classList.remove('light')
@@ -43,7 +42,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
         detectThemeOnLoad()
     `
-  
+
   function maybeChangeThemeMode() {
     if (session && session.user) {
       return session.user.themeMode.toLowerCase()

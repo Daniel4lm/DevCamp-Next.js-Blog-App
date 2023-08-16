@@ -30,13 +30,16 @@
         "./src/*"
       ],
       "@/hooks*": [
-        "./src/app/hooks*"
+        "./src/hooks*"
       ],
       "@/context*": [
-        "./src/app/context*"
+        "./src/context*"
       ],
       "@/models*": [
-        "./src/app/models*"
+        "./src/models*"
+      ],
+      "@/api*": [
+        "./src/app/api*"
       ],
     }
   },

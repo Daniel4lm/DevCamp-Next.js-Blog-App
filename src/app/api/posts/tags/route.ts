@@ -1,22 +1,25 @@
-import PostTask from '@/lib/posts'
 import { NextRequest, NextResponse } from 'next/server'
+import PostTask from '@/lib/posts'
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url)
-
     const curPage = searchParams.get('page')
     const limit = searchParams.get('limit') || '5'
     const tag = searchParams.get('tag') || ''
 
     const curPageNum: number = (Number(curPage) || 0)
     const curLimit: number = (Number(limit) || 5)
-
-    /* Pagination borders */
     const minRange: number = curPageNum * curLimit
 
     try {
-        const posts = PostTask.getPostsByTag(curLimit, minRange, tag)
+        const posts = PostTask.getPaginatedPosts(curLimit, minRange, {
+            tags: {
+                some: {
+                    name: tag
+                }
+            }
+        })
         const getPostsCount = PostTask.getNumOfTagPosts(tag)
 
         const [pagePosts, totalCount] = await Promise.all([posts, getPostsCount])

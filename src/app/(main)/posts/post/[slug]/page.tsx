@@ -2,10 +2,10 @@ import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import PostBody from "./components/PostBody"
 import { Tag, Post, Prisma } from "@prisma/client"
-import { PostComment } from "@/app/models/Comment"
+import { PostComment } from "@/models/Comment"
 import getQueryClient from "@/lib/reactQuery/getQueryClient"
 import { dehydrate } from "@tanstack/react-query"
-import Hydrate from "@/app/components/hydrate.client"
+import Hydrate from "@/components/hydrate.client"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions"
 
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }) | null
 
     try {
-        const blogFetch = await fetch(`http://localhost:3000/api/posts/${slug}`)
+        const blogFetch = await fetch(`http://localhost:3000/api/posts/${slug}`, { cache: 'no-cache', })
         const postJson = await blogFetch.json();
         postData = postJson?.post;
     } catch (err: any) {

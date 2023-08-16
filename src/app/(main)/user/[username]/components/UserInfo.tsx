@@ -1,8 +1,8 @@
 "use client"
 
-import { CommentIcon, GlobeIcon, PinIcon, PostIcon, TagIcon } from "@/app/components/Icons"
+import { CommentIcon, GlobeIcon, PinIcon, PostIcon, TagIcon } from "@/components/Icons"
 import DefaultAvatar from 'public/defaultAvatar.png'
-import { useFollowingsQuery, useUserQuery } from "@/app/hooks/api"
+import { useFollowingsQuery, useUserQuery } from "@/hooks/api"
 import { displayWebsiteUri } from "@/lib/formHelpers"
 import Image from "next/image"
 import Link from "next/link"
@@ -10,7 +10,7 @@ import { User as SessionUser } from "next-auth"
 import { Post, Profile, Tag, User } from "@prisma/client"
 import FollowList from "./FollowList"
 import { UserButton } from "./UserButton"
-import UserInfoSkeleton from "@/app/components/skeletons/UserInfoSkeleton"
+import UserInfoSkeleton from "@/components/skeletons/UserInfoSkeleton"
 
 interface UserDataProps {
     id: string
@@ -68,7 +68,7 @@ function UserInfo({ user, currentUser }: { user: UserDataProps, currentUser: Ses
                                         {userInfo?.fullName}
                                     </h2>
                                 </div>
-                                <p className="max-w-full break-words my-2">
+                                <p className="max-w-full text-justify md:text-center break-words my-2">
                                     {userInfo?.profile?.bio ? <span>{userInfo?.profile?.bio}</span> : <span>No bio found</span>}
                                 </p>
                             </div>

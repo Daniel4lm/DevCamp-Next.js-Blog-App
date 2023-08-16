@@ -1,7 +1,6 @@
-import { headers } from "next/dist/client/components/headers"
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 
-export async function GET(request: Request, { params }: { params: { filename: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { filename: string } }) {
 
     const fileName = params?.filename
 

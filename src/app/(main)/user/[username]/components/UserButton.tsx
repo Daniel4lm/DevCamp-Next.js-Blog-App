@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react"
 import Link from 'next/link'
-import { Post, Profile, Tag, User } from "@prisma/client"
-import { User as SessionUser } from "next-auth"
 import { useMutation } from "@tanstack/react-query"
+import { User as SessionUser } from "next-auth"
+import { Post, Profile, Tag, User } from "@prisma/client"
 
 interface UserDataProps {
     id: string
@@ -29,11 +29,6 @@ interface UserButtonProps {
     maybeUserFollow?: boolean
     refetch?: () => void
 }
-
-// interface UserFollowingProps {
-//     followed: User,
-//     follower: User
-// }
 
 const ButtonStyle = {
     unfollow: 'py-1 px-5 text-red-500 border-2 rounded-full font-semibold hover:bg-gray-50 dark:hover:bg-transparent focus:outline-none',
@@ -92,9 +87,7 @@ function UserButton({ currentUser, user, maybeUserFollow, refetch }: UserButtonP
         }
     }
 
-    return (
-        <>{compareUsers()}</>
-    )
+    return (<>{compareUsers()}</>)
 }
 
 function RenderFollowLink({ stateText, changeFun }: { stateText: string, changeFun: () => void }) {
@@ -137,7 +130,7 @@ function RenderLoginLink({ stateText }: { stateText: string }) {
         <div className="my-2">
             <Link
                 href={'/auth/login'}
-                className="py-1 px-5 border-none shadow rounded-full first-letter:uppercase text-gray-100 hover:bg-indigo-500 bg-indigo-400"
+                className={`py-1 px-5 first-letter:uppercase ${ButtonStyle[stateText as keyof typeof ButtonStyle]}`}
             >
                 {stateText === 'follow' ? 'Follow' : 'Unfollow'}
             </Link>

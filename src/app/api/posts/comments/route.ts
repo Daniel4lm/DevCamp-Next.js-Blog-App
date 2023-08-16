@@ -1,7 +1,7 @@
 import PostTask from "@/lib/posts";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
     try {
 
         const { searchParams } = new URL(request.url)
@@ -9,7 +9,6 @@ export async function GET(request: Request) {
 
         const comments = await PostTask.getAllPostComments(postId)
         return NextResponse.json({ comments }, { status: 200 })
-
     } catch (err: any) {
         let error_response = {
             status: "error",

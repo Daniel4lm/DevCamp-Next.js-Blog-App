@@ -3,7 +3,7 @@ import UserLoginForm from "./Form"
 import Link from 'next/link'
 import { redirect } from "next/navigation"
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions"
-import SmartLink from "@/app/components/navigation/SmartLink"
+import SmartLink from "@/components/navigation/SmartLink"
 
 export default async function UserLoginPage() {
 

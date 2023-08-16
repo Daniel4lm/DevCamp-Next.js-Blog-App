@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from 'react'
-import { HidePassIcon, ShowPassIcon } from '@/app/components/Icons'
-import { SignupType } from '@/app/models/AuthTypes'
+import { HidePassIcon, ShowPassIcon } from '@/components/Icons'
+import { SignupType } from '@/models/AuthTypes'
 import { object, z } from 'zod'
 import { Field, Form, Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'

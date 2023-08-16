@@ -1,6 +1,6 @@
 "use client"
 
-import { ScrollToTopIcon } from "@/app/components/Icons"
+import { ScrollToTopIcon } from "@/components/Icons"
 import { useEffect } from "react"
 
 const ScrollToTopButton = () => {

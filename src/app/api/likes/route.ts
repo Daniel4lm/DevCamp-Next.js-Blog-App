@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import PostTask from "@/lib/posts"
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
 
     const { userId, resourceType, resourceId } = await request.json()
     let isLiked
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     }
 }
 
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
 
     const { userId, resourceType, resourceId } = await request.json()
 

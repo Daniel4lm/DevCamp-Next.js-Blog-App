@@ -2,17 +2,17 @@
 
 import { ChangeEvent, DragEvent, FormEvent, useEffect, useRef, useState } from "react"
 import { notFound, useRouter, useSearchParams } from 'next/navigation'
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { formChangesetValidation, ValidationTypes } from '@/lib/formHelpers'
-import MultiTagSelect from '@/app/components/MultiTagSelect'
+import MultiTagSelect from '@/components/forms/MultiTagSelect'
 import { createSlug, postReadingTime } from '@/lib/helperFunctions'
-import { Post } from '@/app/models/Post'
+import { Post } from '@/models/Post'
 import UploadImageContainer from "./ImageContainer"
 import dynamic from "next/dynamic"
 import Image from "next/image"
-const BodyEditor = dynamic(() => import("@/app/components/ContentEditor"), { ssr: false })
+const BodyEditor = dynamic(() => import("@/components/forms/ContentEditor"), { ssr: false })
 import 'react-quill/dist/quill.snow.css'
-import { User } from '@/app/models/User'
+import { User } from '@/models/User'
 
 type FormProps = {
     title: string,
@@ -26,13 +26,12 @@ const INITIAL_VALUE: FormProps = {
     body: ''
 }
 
-async function createOrUpdatePost({ formData, methodType }: { formData: FormData, methodType: string }) {
+async function createOrUpdatePost({ formData, methodType }: { formData: FormData, methodType: 'POST' | 'PUT' }) {
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/posts/`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/posts`, {
         method: methodType,
         body: formData
     })
-    // await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/revalidate?path=/`)
     return await res.json()
 }
 
@@ -231,6 +230,8 @@ function PostForm({ crud, currentUser }: { crud: string, currentUser: User | und
         if (file && checkFileFormat(file)) {
             setPostImage(file)
         }
+        // purge input target value to allow upload same file twice
+        event.target.value = ''
     }
 
     return (
@@ -249,7 +250,7 @@ function PostForm({ crud, currentUser }: { crud: string, currentUser: User | und
                 <div className="flex items-center flex-col px-4 lg:px-0">
                     <div
                         id="drag-drop-container"
-                        className={`w-full lg:w-3/4 border-2 ${fileDrag ? 'border-indigo-500 border-dashed' : 'border-gray-250 dark:border-slate-400'}  rounded-xl mx-auto mb-4 py-4 px-4 text-center flex flex-col justify-center items-center min-h-[220px]`}
+                        className={`w-full lg:w-3/4 border-2 ${fileDrag ? 'border-indigo-500 border-dashed' : 'border-gray-250 dark:border-slate-400'} rounded-xl mx-auto mb-4 py-4 px-4 text-center flex flex-col justify-center items-center min-h-[220px]`}
                         onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}
                     >
                         <UploadImageContainer uploadImage={postImage} valid={validFormat} cancelUpload={cancelImageUpload} />

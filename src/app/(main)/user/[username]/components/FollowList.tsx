@@ -1,15 +1,13 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
-import { Post, Profile, Tag, User, UserFollower } from "@prisma/client"
-import { UserIcon } from "@/app/components/Icons"
-import { UserButton } from "./UserButton"
-import { use, useState } from "react"
-import UserTask from "@/lib/user"
-import { useFollowingsQuery } from "@/app/hooks/api"
-import { UserAvatar } from "@/app/components/CoreComponents"
-import Modal from "@/app/components/Modal"
 import { User as SessionUser } from "next-auth"
+import { Post, Profile, Tag, User, UserFollower } from "@prisma/client"
+import { UserIcon } from "@/components/Icons"
+import { UserButton } from "./UserButton"
+import { UserAvatar } from "@/components/CoreComponents"
+import Modal from "@/components/Modal"
 
 
 interface UserDataProps {

@@ -1,7 +1,7 @@
 "use client"
 
-import { SmallPostCard } from "@/app/components/CardsComponent"
-import UserPostsSkeleton from "@/app/components/skeletons/UserPostsSkeleton"
+import { SmallPostCard } from "@/components/CardsComponent"
+import UserPostsSkeleton from "@/components/skeletons/UserPostsSkeleton"
 import { Comment, Post, Profile, Tag, User } from "@prisma/client"
 import { useCallback, useEffect, useRef, useState } from "react"
 
@@ -113,7 +113,7 @@ const PostsList = ({ user }: PostsListProps) => {
 
     return (
         <>
-            {isLoading || !userPosts.length ? (<UserPostsSkeleton />) :
+            {isLoading && !userPosts.length ? (<UserPostsSkeleton />) :
                 (
                     <>
                         <section className="w-full sm:w-10/12 md:w-2/3 xl:w-3/6 min-h-[45vh] dark:text-slate-100 mx-auto px-4 md:px-0 pb-8 mb-1 mt-6 sm:mt-0">
@@ -127,11 +127,12 @@ const PostsList = ({ user }: PostsListProps) => {
                                 {renderPosts}
                             </div>
                         </section>
+                        {isLoading || !userPosts.length ? (<UserPostsSkeleton />) : null }
 
                         {hasNextPage ? (
                             <>
-                                <div id="infinite-scroll-marker"></div>
-                                <div className="loader text-gray-300 dark:text-slate-400"></div>
+                                <div id="infinite-scroll-marker" className="h-24"></div>
+                                {/* {<div className="loader text-gray-300 dark:text-slate-400"></div>} */}
                             </>
                         ) : null}
                     </>
