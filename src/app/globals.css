@@ -17,11 +17,6 @@ html {
 }
 
 :root {
-  
-  /* color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424; */
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -120,6 +115,18 @@ input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration {
   display: none;
+}
+
+.article-item {
+  box-shadow: 0 2px 8px 0px rgba(107, 121, 243, 0.35)
+}
+
+.article-item:hover {
+  box-shadow: 0 1px 6px 0px rgba(107, 121, 243, 0.8)
+}
+
+#posts-search-input:focus + #clear-form-btn {
+  @apply opacity-100;
 }
 
 /* Skeleton classes */
@@ -289,7 +296,7 @@ svg:hover > .ql-fill {
 }
 
 .bottom-tooltip-text {
-  @apply invisible absolute opacity-60 text-center left-1/2 top-[140%] -translate-x-1/2 z-[1];
+  @apply invisible absolute opacity-60 text-center left-1/2 top-full -translate-y-1/2 z-[1];
 }
 
 .right-tooltip-text {
@@ -321,19 +328,19 @@ svg:hover > .ql-fill {
 }
 
 .top-tooltip-text.tooltip-text-hover {
-  @apply animate-[show-up-tooltip-top_0.6s_ease-in-out_forwards];
+  @apply animate-[show-up-tooltip-top_0.25s_forwards];
 }
 
 .bottom-tooltip-text.tooltip-text-hover {
-  @apply animate-[show-up-tooltip-top_0.8s_ease-in-out_forwards];
+  @apply animate-[show-up-tooltip-bottom_0.25s_forwards];
 }
 
 .left-tooltip-text.tooltip-text-hover {
-  @apply animate-[show-up-tooltip-left_0.8s_ease-in-out_forwards];
+  @apply animate-[show-up-tooltip-left_0.25s_forwards];
 }
 
 .right-tooltip-text.tooltip-text-hover {
-  @apply animate-[show-up-tooltip-right_0.8s_ease-in-out_forwards];
+  @apply animate-[show-up-tooltip-right_0.25s_forwards];
 }
 
 /* Active navigation link style */

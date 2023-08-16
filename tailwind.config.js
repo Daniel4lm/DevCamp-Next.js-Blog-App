@@ -14,12 +14,16 @@ module.exports = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))'
+          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'search-icon': "url('/images/search.svg')",
+        'search-icon-dark': "url('/images/search-dark.svg')"
       },
       boxShadow: {
         'card-shadow': '0px 0px 4px 0px rgb(219, 223, 227)',
         'card-shadow-hover': '0px 0px 6px 2px rgb(210, 209, 209)',
-        'side-menu-shadow': '0px 0px 20px -4px rgb(210, 209, 209)'
+        'side-menu-shadow': '0px 0px 20px -4px rgb(210, 209, 209)',
+        'article-shadow': '0 2px 8px 0px rgba(107, 121, 243, 0.35)',
+        'article-hover-shadow': '0 1px 6px 0px rgba(107, 121, 243, 0.8)'
       },
       colors: {
         'main-light': '#fafafa',
