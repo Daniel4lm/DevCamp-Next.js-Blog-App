@@ -125,10 +125,6 @@ input[type="search"]::-webkit-search-results-decoration {
   box-shadow: 0 1px 6px 0px rgba(107, 121, 243, 0.8)
 }
 
-#posts-search-input:focus + #clear-form-btn {
-  @apply opacity-100;
-}
-
 /* Skeleton classes */
 
 .skeleton {
@@ -158,7 +154,7 @@ input[type="search"]::-webkit-search-results-decoration {
 /* Alerts and form errors */
 
 .invalid-feedback {
-  @apply block my-2 text-red-700 dark:text-red-500;
+  @apply my-2 text-red-700 dark:text-red-500;
   animation: 0.2s ease-in 0s normal forwards 1 fade-in-scale-keys;
 }
 
@@ -296,7 +292,7 @@ svg:hover > .ql-fill {
 }
 
 .bottom-tooltip-text {
-  @apply invisible absolute opacity-60 text-center left-1/2 top-full -translate-y-1/2 z-[1];
+  @apply invisible absolute opacity-60 text-center left-1/2 top-[110%] -translate-y-1/2 z-[1];
 }
 
 .right-tooltip-text {
@@ -535,25 +531,25 @@ svg:hover > .ql-fill {
 @keyframes show-up-tooltip-top {
   0% {
     opacity: 0;
-    transform: translate(-50%, 0%);
+    transform: translate(-50%, 20%);
   }
 
   100% {
     visibility: visible;
     opacity: 0.8;
-    transform: translate(-50%, -10%);
+    transform: translate(-50%, 0%);
   }
 }
 
 @keyframes show-up-tooltip-bottom {
   0% {
     opacity: 0;
-    transform: translate(-50%, 0%);
+    transform: translate(-50%, -20%);
   }
 
   100% {
     visibility: visible;
     opacity: 0.8;
-    transform: translate(-50%, -20%);
+    transform: translate(-50%, 0%);
   }
 }
