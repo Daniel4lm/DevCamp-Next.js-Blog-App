@@ -1,4 +1,4 @@
-import { PostTagIcon, TagIcon } from './Icons'
+import { PostTagIcon, TagIcon } from '../Icons'
 import { Post } from "@prisma/client"
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { User as SessionUser } from "next-auth"
@@ -87,7 +87,7 @@ function BookmarkPost({ isBookmarked, currentUser, post }: BookmarkPostProps) {
                     </div>)
                     :
                     (<div id="bookmark-icon" className="px-2 md:px-0 py-2 text-slate-800">
-                        <TagIcon />
+                        <PostTagIcon isTaged={saved} />
                     </div>)
                 }
 

@@ -1,4 +1,4 @@
-import { HeartIcon, LikeIcon } from './Icons'
+import { HeartIcon, LikeIcon } from '../Icons'
 import { Post, Comment } from "@prisma/client"
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { User as SessionUser } from "next-auth"
@@ -44,6 +44,7 @@ function LikeComponent({ isLiked, currentUser, resource, resourceType }: LikeCom
             setLiked(true)
 
             if (resourceType === 'post') {
+                //queryClient.invalidateQueries(['post', resource.slug])
                 queryClient.setQueryData(['post', resource.slug],
                     (post: any) => {
                         return { ...post, ...{ totalLikes: post.totalLikes + 1 } }
