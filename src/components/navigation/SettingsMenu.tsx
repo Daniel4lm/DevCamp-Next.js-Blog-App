@@ -1,12 +1,12 @@
 "use client"
 
-import { ComponentPropsWithoutRef, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import useOutsideClick from '@/hooks/useOutsideClick'
-import { User } from '@/models/User'
-import { AvatarIcon, CloseSideMenuIcon, LogoutIcon, SavedListIcon, SettingsIcon2, SmallUserIcon, TagListIcon, UserIcon } from '../Icons'
+import { CloseSideMenuIcon, LogoutIcon, SettingsIcon2, SmallUserIcon, TagListIcon } from '../Icons'
 import SideMenu from './SideMenu'
+import { AvatarLink } from '../CoreComponents'
+import { User } from 'next-auth'
 
 enum MenuState {
     close = 'close',
@@ -44,7 +44,7 @@ export function SettingsMenu({ currentUser }: { currentUser: User }) {
                     className="cursor-pointer flex items-center justify-center text-neutral-600 flex-col dark:text-gray-200 hover:text-black hover:underline"
                     onClick={handleMenuOpen}
                 >
-                    <UserAvatar src={currentUser?.avatarUrl || ''} className="w-8 h-8 md:w-9 md:h-9 ring-2 ring-slate-200 dark:ring-slate-500 hover:bg-gray-100 dark:hover:bg-slate-500 hover:ring-[#B1B8F8] hover:ring-opacity-80" />
+                    <AvatarLink src={currentUser?.avatarUrl || ''} className="w-8 h-8 md:w-9 md:h-9 ring-2 ring-slate-200 dark:ring-slate-500 hover:bg-gray-100 dark:hover:bg-slate-500 hover:ring-[#B1B8F8] hover:ring-opacity-80" />
                     {/* {<span className='hidden xs:block'>Me</span>} */}
                 </div>
 
@@ -61,7 +61,7 @@ export function SettingsMenu({ currentUser }: { currentUser: User }) {
                     >
                         <li className="py-2 px-2 flex items-center justify-between">
                             <div className="flex items-center flex-1">
-                                <UserAvatar
+                                <AvatarLink
                                     withLink={`/user/${currentUser.username}`}
                                     src={currentUser?.avatarUrl || ''}
                                     className={"max-w-[2.1rem] max-h-[2.1rem] xs:max-w-[2.4rem] xs:max-h-[2.4rem] ring-2 ring-slate-200 dark:ring-slate-500 hover:bg-gray-100 dark:hover:bg-slate-500 hover:ring-[#B1B8F8] hover:ring-opacity-80"}
@@ -94,7 +94,7 @@ export function SettingsMenu({ currentUser }: { currentUser: User }) {
                             <li className="flex justify-start items-center gap-2 p-2 rounded-md hover:bg-indigo-50 dark:hover:bg-slate-600">
                                 <span className='text-slate-800 dark:text-inherit'>
                                     {/* {<SavedListIcon classNames='w-4 h-4' />} */}
-                                    <TagListIcon classNames='w-4 h-4'/>
+                                    <TagListIcon classNames='w-4 h-4' />
                                 </span>
                                 <span>Saved list</span>
                             </li>
@@ -118,37 +118,6 @@ export function SettingsMenu({ currentUser }: { currentUser: User }) {
                     </ul >
                 </SideMenu>
             </li>
-        </>
-    )
-}
-
-interface AvatarProps extends ComponentPropsWithoutRef<'img'> {
-    withLink?: string
-}
-
-function UserAvatar({ withLink, ...props }: AvatarProps) {
-
-    const renderIcon = () => {
-        if (!props.src || props.src === 'undefined') {
-            return <AvatarIcon styleClass={props.className} />
-        } else {
-            return <Image src={props.src} alt='User avatar' width={60} height={60} className={`rounded-full object-cover object-center bg-white dark:bg-slate-400 border border-gray-300 ${props.className}`} />
-        }
-    }
-
-    return (
-        <>
-            {withLink
-                ? (
-                    <Link href={withLink}>
-                        {renderIcon()}
-                    </Link>
-                )
-                : (
-                    <>
-                        {renderIcon()}
-                    </>
-                )}
         </>
     )
 }

@@ -5,7 +5,7 @@ import defaultAvatar from '../../public/defaultAvatar.png'
 import Image from "next/image"
 import { AvatarIcon, CloseIcon } from "./Icons"
 import { useSearchParams } from "next/navigation"
-import { useEffect, useRef } from "react"
+import { ComponentPropsWithoutRef, useEffect, useRef } from "react"
 
 const UserAvatar = ({ src, link, linkClass }: { src?: string, link: string, linkClass?: string }) => {
     return (
@@ -28,6 +28,39 @@ const UserAvatar = ({ src, link, linkClass }: { src?: string, link: string, link
         </Link >
     )
 }
+
+
+interface AvatarProps extends ComponentPropsWithoutRef<'img'> {
+    withLink?: string
+}
+
+function AvatarLink({ withLink, ...props }: AvatarProps) {
+
+    const renderIcon = () => {
+        if (!props.src || props.src === 'undefined') {
+            return <AvatarIcon styleClass={props.className} />
+        } else {
+            return <Image src={props.src} alt='User avatar' width={60} height={60} className={`rounded-full object-cover object-center bg-white dark:bg-slate-400 border border-gray-300 ${props.className}`} />
+        }
+    }
+
+    return (
+        <>
+            {withLink
+                ? (
+                    <Link href={withLink}>
+                        {renderIcon()}
+                    </Link>
+                )
+                : (
+                    <>
+                        {renderIcon()}
+                    </>
+                )}
+        </>
+    )
+}
+
 
 interface ModalProps {
     onClose: () => void
@@ -75,7 +108,7 @@ function Modal({
     }
 
     const showModal: JSX.Element | null = isOpen && isOpen !== '' ? (
-        <dialog ref={modalRef}> {/* bg-gray-800 opacity-60 */}
+        <dialog ref={modalRef}>
             <>
                 <div className="w-full h-full backdrop:bg-gray-800/50 fixed top-0 left-0 z-100 p-8 transition-all" />
                 <div className="fixed top-0 left-0 z-[150] w-full h-full overflow-hidden overflow-y-auto outline-0" onClick={closeModal}>
@@ -103,4 +136,4 @@ function Modal({
 }
 
 
-export { UserAvatar, Modal }
+export { AvatarLink, UserAvatar, Modal }
