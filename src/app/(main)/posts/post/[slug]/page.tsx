@@ -5,7 +5,7 @@ import { Tag, Post, Prisma } from "@prisma/client"
 import { PostComment } from "@/models/Comment"
 import getQueryClient from "@/lib/reactQuery/getQueryClient"
 import { dehydrate } from "@tanstack/react-query"
-import Hydrate from "@/components/hydrate.client"
+import Hydrate from "@/components/react-query/hydrate.client"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions"
 

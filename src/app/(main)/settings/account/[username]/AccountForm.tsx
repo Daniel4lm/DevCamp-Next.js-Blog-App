@@ -38,7 +38,7 @@ function AccountForm({ userData }: AccountFormProps) {
 
     const userMutation = useMutation({
         mutationFn: updateUser,
-        onSuccess: (userJson, { username }) => {
+        onSuccess: async (userJson, { username }) => {
 
             const updatedUser = userJson?.updatedUser
 
@@ -51,7 +51,7 @@ function AccountForm({ userData }: AccountFormProps) {
                 return
             }
 
-            updateSession({
+            await updateSession({
                 ...session,
                 user: {
                     ...(typeof session?.user === 'object' ? session?.user : {}),
@@ -65,6 +65,7 @@ function AccountForm({ userData }: AccountFormProps) {
                 }
             })
             
+            router.refresh()
             router.replace(`/user/${username}`)
         }
     })
@@ -178,9 +179,9 @@ function AccountForm({ userData }: AccountFormProps) {
                     {({ values, errors, touched, isValid, isSubmitting }) => (
                         <Form
                             id="user-settings-form"
-                            className='space-y-4 xs:space-y-6 md:space-y-10'
+                            className='space-y-4 xs:space-y-6 md:space-y-10 md:-mt-16'
                         >
-                            <div className="overflow-hidden mx-auto md:-mt-20 flex flex-col items-center mb-8">
+                            <div className="overflow-hidden mx-auto flex flex-col items-center mb-8">
                                 <div id="drag-drop-container" onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag}
                                     onDrop={handleDrop}
                                 >
@@ -410,7 +411,7 @@ function AccountForm({ userData }: AccountFormProps) {
                                 <label className="block md:w-1/3 font-semibold text-right"></label>
                                 <div className="w-full pl-4 xs:pl-8 pr-4 xs:pr-8">
                                     <button type="submit" disabled={!isValid || isSubmitting}
-                                        className={'px-6 py-2 border-2 border-indigo-400 bg-transparent rounded-full font-semibold text-indigo-500 dark:text-indigo-300 hover:border-indigo-500 hover:bg-indigo-500 hover:text-white cursor-pointer duration-150'}
+                                        className={'px-4 xs:px-6 py-1 xs:py-2 md:w-max border-2 border-indigo-400 bg-transparent rounded-xl font-semibold text-indigo-400 dark:text-indigo-400 hover:border-indigo-500 hover:bg-indigo-500 hover:text-white cursor-pointer duration-150'}
                                     >
                                         {isSubmitting ? 'Saving...' : 'Update profile'}
                                     </button>

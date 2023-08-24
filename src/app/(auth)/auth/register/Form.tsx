@@ -64,7 +64,7 @@ function UserSignupForm() {
                         setSuccess(`Welcome ${data.user.fullName}. Your account is created successfully!`)
                     } catch (err: any) {
                         setSuccess(null)
-                        setErrMsg(`Registrations error: ${err.message}`)
+                        setErrMsg(`Registration error: ${err.message}`)
                     }
                 }}
             >

@@ -1,12 +1,11 @@
 import { UserAvatar } from "@/components/CoreComponents"
-import { CommentIcon, DeleteIcon, EditIcon, HeartIcon, OptsIcon } from "@/components/Icons"
-import LikeComponent from "@/components/LikeComponent"
+import { DeleteIcon, EditIcon, OptsIcon } from "@/components/Icons"
+import LikeComponent from "@/components/posts-comments/LikeComponent"
 import useOutsideClick from "@/hooks/useOutsideClick"
 import { PostComment } from "@/models/Comment"
 import { formatPostDate } from "@/lib/helperFunctions"
 import { useSession } from "next-auth/react"
 import { User as SessionUser } from "next-auth"
-import { Comment } from "@prisma/client"
 import Link from "next/link"
 import { useRef, useState } from "react"
 
@@ -133,7 +132,7 @@ const Comment = ({ comment, density = 0, allComments, setAction }: CommentProps)
                                 <div className="flex items-center">
                                     <LikeComponent
                                         currentUser={sessionData.user}
-                                        resource={comment as Comment}
+                                        resource={comment}
                                         resourceType="comment"
                                         isLiked={isLiked(sessionData.user, comment) || false}
                                     />

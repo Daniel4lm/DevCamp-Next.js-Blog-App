@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     let userData: UserDataProps | null = null
 
     try {
-        const userResponse = UserTask.getUser(username)
+        const userResponse = UserTask.getUser({ username: username })
         userData = await userResponse
     } catch (err: any) {
         console.info(err.message)
@@ -51,8 +51,10 @@ export default async function PostFormPage({ params }: PageProps) {
     const { username } = params
     let userData: { [x: string]: string } | null = null
 
+    //console.log('PostFormPage... ')
+
     try {
-        const userResponse = await UserTask.getUser(username)
+        const userResponse = await UserTask.getUser({ username: username })
         userData = userResponse && {
             id: userResponse.id,
             email: userResponse?.email,
@@ -65,6 +67,7 @@ export default async function PostFormPage({ params }: PageProps) {
             avatarUrl: userResponse?.avatarUrl || ''
         }
 
+        //console.log('userResponse... ', userData)
     } catch (err: any) {
         console.info(err.message)
     }

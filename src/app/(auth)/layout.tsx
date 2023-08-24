@@ -31,7 +31,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.className}>
         <script dangerouslySetInnerHTML={{ __html: initialThemeScript }} ></script>
         <AuthProvider>
-          <main role="main" className="relative w-full min-h-screen bg-main-background antialiased dark:bg-main-dark-github dark:text-slate-100">
+          <main role="main" className="relative w-full min-h-screen antialiased dark:bg-main-dark-github dark:text-slate-100">
             <section className="w-full bg-indigo-900 dark:border-b dark:border-gray-600 min-h-[250px] py-8 px-10 ">
               <div className="w-full flex justify-center text-white">
                 <Link href={'/'} className="flex items-center gap-3 mx-4">

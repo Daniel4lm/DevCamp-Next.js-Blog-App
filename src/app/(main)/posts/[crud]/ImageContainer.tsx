@@ -1,4 +1,4 @@
-import { CloseUploadIcon, DeleteIcon, UnsupportedIcon, UploadImage } from '@/components/Icons'
+import { DeleteIcon, UnsupportedIcon, UploadImage } from '@/components/Icons'
 import React from 'react'
 
 function UploadImageContainer({ uploadImage, valid, cancelUpload }: { valid: boolean, uploadImage?: File, cancelUpload: () => void }) {

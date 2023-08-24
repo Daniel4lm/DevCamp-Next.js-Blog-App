@@ -29,11 +29,11 @@ function TabBar({ styleClass, currentUriPath }: TabBarProps) {
                     </SidebarLinkTag>
                 </Link>
 
-                <Link href={`/settings/password/${pathUsername}`} className="w-1/2 md:w-full">
+                <Link href={`/settings/verify-email/${pathUsername}`} className="w-1/2 md:w-full">
                     <SidebarLinkTag
-                        title="Change Password"
+                        title="Reset Password"
                         currentUriPath={currentUriPath}
-                        menuLink={`/settings/password/${pathUsername}`}
+                        menuLink={`/settings/verify-email/${pathUsername}`}
                     >
                         <ConfirmIcon />
                     </SidebarLinkTag>

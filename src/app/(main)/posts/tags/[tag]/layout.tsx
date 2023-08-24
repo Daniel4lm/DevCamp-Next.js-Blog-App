@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: PageProps) {
 export default function PostsLayout({ children }: { children: React.ReactNode }) {
     return (
         <>
-            <main role="main" className="relative w-full min-h-screen bg-main-background antialiased dark:bg-main-dark-github dark:text-slate-100 flex flex-col pt-12">
+            <main role="main" className="relative w-full min-h-screen antialiased dark:bg-main-dark-github dark:text-slate-100 flex flex-col pt-12">
                 {children}
             </main>
         </>

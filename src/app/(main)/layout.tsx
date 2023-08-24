@@ -60,7 +60,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <ReactQueryProvider>
               <>
                 <Navbar title="Campy" currentUser={session?.user} />
-                <main role="main" className="relative w-full min-h-screen bg-main-background antialiased dark:bg-main-dark dark:text-slate-100 flex flex-col">
+                <main role="main" className="relative w-full min-h-screen antialiased dark:bg-main-dark dark:text-slate-100 flex flex-col">
                   {children}
                 </main>
               </>
