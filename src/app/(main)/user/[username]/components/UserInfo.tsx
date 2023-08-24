@@ -7,42 +7,23 @@ import { displayWebsiteUri } from "@/lib/formHelpers"
 import Image from "next/image"
 import Link from "next/link"
 import { User as SessionUser } from "next-auth"
-import { Post, Profile, Tag, User } from "@prisma/client"
 import FollowList from "./FollowList"
 import { UserButton } from "./UserButton"
 import UserInfoSkeleton from "@/components/skeletons/UserInfoSkeleton"
-
-interface UserDataProps {
-    id: string
-    avatarUrl: string | null
-    email: string
-    username: string
-    fullName: string
-    postsCount: number
-    role: "user" | "admin"
-    profile: Profile | null
-    posts?: (Post & {
-        author: User;
-        tags: Tag[]
-    })[],
-    followersCount: number
-    followingCount: number
-}
+import { User } from "@/models/User"
+import { useSession } from "next-auth/react"
 
 interface UserFollowingProps {
     followed: User,
     follower: User
 }
 
-function UserInfo({ user, currentUser }: { user: UserDataProps, currentUser: SessionUser | undefined }) {
+function UserInfo({ user, currentUser }: { user: User, currentUser: SessionUser | undefined }) {
 
-    const { data: userInfo, refetch: refetchUserData, isLoading: isUserLoading, isSuccess: isUserSuccess } = useUserQuery(user.username, user)
-    const { data: followData, refetch: refetchUserFollow, isLoading: isFollowLoading, isSuccess: isFollowSuccess } = useFollowingsQuery(user.username, user?.id || '')
+    const { data } = useSession()
 
-    function refetchAllUserData() {
-        refetchUserData()
-        refetchUserFollow()
-    }
+    const { data: userInfo, isLoading: isUserLoading, isSuccess: isUserSuccess } = useUserQuery(user.username, user)
+    const { data: followData, isRefetching: isFollowLoading, isSuccess: isFollowSuccess } = useFollowingsQuery(user.username, user?.id || '')
 
     const isFoolowed = isFollowSuccess && followData.followers.find((followerData: UserFollowingProps) => followerData.follower.id === currentUser?.id)
 
@@ -61,6 +42,8 @@ function UserInfo({ user, currentUser }: { user: UserDataProps, currentUser: Ses
                             />
                         </div>
 
+                        <p>{data?.user.fullName}</p>
+
                         <div className="w-full">
                             <div className="flex flex-col xs:items-center p-4">
                                 <div className="flex items-center gap-2 md:flex-col">
@@ -73,12 +56,12 @@ function UserInfo({ user, currentUser }: { user: UserDataProps, currentUser: Ses
                                 </p>
                             </div>
 
-                            <ul className="flex xs:justify-center flex-wrap gap-2 xs:gap-8 px-4 xs:p-0 text-sm md:text-base">
+                            <ul className="flex xs:justify-center flex-wrap gap-2 xs:gap-8 px-4 xs:p-0 mb-2 text-sm md:text-base">
                                 {
                                     userInfo?.profile?.location ? (
                                         <li
                                             id="profile-posts-count"
-                                            className="flex items-center justify-center my-1 ml-2 xs:ml-0"
+                                            className="flex items-center justify-center my-1 ml-0"
                                         >
                                             <div className="text-indigo-500 dark:text-blue-400 mr-1"><PinIcon /></div>
                                             <span>Location <b>{userInfo?.profile?.location}</b></span>
@@ -90,7 +73,7 @@ function UserInfo({ user, currentUser }: { user: UserDataProps, currentUser: Ses
                                         <Link href={userInfo?.profile?.website}
                                             target="_blank"
                                             rel="noreferrer"
-                                            className="flex items-center justify-center my-1 px-2 py-1 text-sm xs:text-base rounded-full hover:bg-gray-100 dark:hover:bg-slate-500"
+                                            className="flex items-center justify-center my-1 px-2 py-1 text-sm xs:text-base hover:underline"
                                         >
                                             <div className="text-indigo-500 dark:text-blue-400 mr-1"><GlobeIcon /></div>
                                             <span className="font-medium mr-1">{displayWebsiteUri(userInfo?.profile?.website)}</span>
@@ -104,7 +87,7 @@ function UserInfo({ user, currentUser }: { user: UserDataProps, currentUser: Ses
                                     user={user}
                                     currentUser={currentUser}
                                     maybeUserFollow={isFoolowed ? true : false}
-                                    refetch={refetchAllUserData}
+                                    isSaving={isFollowLoading}
                                 />
                             </div>
 
@@ -112,7 +95,7 @@ function UserInfo({ user, currentUser }: { user: UserDataProps, currentUser: Ses
                                 followData={followData}
                                 currentUser={currentUser}
                                 user={userInfo}
-                                refetch={refetchAllUserData}
+                                isSaving={isFollowLoading}
                             />
                         </div>
                     </section>
