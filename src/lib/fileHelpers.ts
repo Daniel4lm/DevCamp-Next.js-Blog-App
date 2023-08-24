@@ -3,7 +3,6 @@ import { join } from 'path'
 import { mkdir, stat, writeFile } from 'fs/promises'
 import sharp from 'sharp'
 
-
 const maybeRemoveOldImage = (fileName: string, url = 'public/') => {
     let oldImagePath = join(url, fileName)
 

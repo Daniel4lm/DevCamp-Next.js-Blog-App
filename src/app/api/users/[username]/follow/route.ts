@@ -29,10 +29,13 @@ export async function POST(request: NextRequest) {
     const followerId = session?.user.id || ''
 
     try {
-        const user = await UserTask.getUser(username)
+        const user = await UserTask.getUser({ username: username })
         const userId = user?.id || ''
 
-        const followedRecord = UserTask.createUserFollower(followerId, userId)
+        const isAlreadyFollower = await UserTask.isAlreadyFollower(followerId, userId)
+        if (isAlreadyFollower) return NextResponse.json({ error: 'User is already followed!' }, { status: 409 })
+
+        const followedRecord = await UserTask.createUserFollower(followerId, userId)
         return NextResponse.json({ followedRecord: followedRecord }, { status: 200 })
     } catch (err: any) {
         return NextResponse.json({ error: err.message }, { status: 500 })
@@ -47,10 +50,10 @@ export async function DELETE(request: NextRequest) {
     const followerId = session?.user.id || ''
 
     try {
-        const user = await UserTask.getUser(username)
+        const user = await UserTask.getUser({ username: username })
         const userId = user?.id || ''
 
-        const unfollowedRecord = UserTask.unfollowUser(followerId, userId)
+        const unfollowedRecord = await UserTask.unfollowUser(followerId, userId)
         return NextResponse.json({ unfollowedRecord: unfollowedRecord }, { status: 200 })
     } catch (err: any) {
         return NextResponse.json({ error: err.message }, { status: 500 })

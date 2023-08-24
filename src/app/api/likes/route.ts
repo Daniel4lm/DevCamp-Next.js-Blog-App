@@ -9,10 +9,10 @@ export async function POST(request: NextRequest) {
     try {
         if (resourceType === 'post') {
             isLiked = await PostTask.isPostLiked(userId, resourceId)
-            if (isLiked) return NextResponse.json({ error: 'Blog post is already liked!' })
+            if (isLiked) return NextResponse.json({ error: 'Blog post is already liked!' }, { status: 409 })
         } else if (resourceType === 'comment') {
             isLiked = await PostTask.isCommentLiked(userId, resourceId)
-            if (isLiked) return NextResponse.json({ error: 'Blog post is already liked!' })
+            if (isLiked) return NextResponse.json({ error: 'Blog post is already liked!' }, { status: 409 })
         }
 
         const like = await PostTask.createLike(userId, resourceId, resourceType)
