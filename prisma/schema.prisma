@@ -11,27 +11,44 @@ datasource db {
 }
 
 model User {
-  id             String         @id @default(cuid())
-  avatarUrl      String?
-  username       String         @unique
-  fullName       String
-  email          String         @unique
-  hashedPassword String
-  role           String         @default("user") // user, admin
-  bookmarks      PostBookmark[]
-  comments       Comment[]
-  followings     UserFollower[] @relation("Followings")
-  followers      UserFollower[] @relation("Followers")
-  likes          Like[]
-  posts          Post[]
-  profile        Profile?
-  followersCount Int            @default(0)
-  followingCount Int            @default(0)
-  postsCount     Int            @default(0)
-  insertedAt     DateTime       @default(now())
-  updatedAt      DateTime?      @updatedAt
+  id                  String               @id @default(cuid())
+  avatarUrl           String?
+  username            String               @unique
+  fullName            String
+  email               String               @unique
+  hashedPassword      String
+  role                UserRole             @default(USER) // user, admin
+  bookmarks           PostBookmark[]
+  comments            Comment[]
+  followings          UserFollower[]       @relation("Followings")
+  followers           UserFollower[]       @relation("Followers")
+  likes               Like[]
+  posts               Post[]
+  profile             Profile?
+  followersCount      Int                  @default(0)
+  followingCount      Int                  @default(0)
+  postsCount          Int                  @default(0)
+  insertedAt          DateTime             @default(now())
+  updatedAt           DateTime?            @updatedAt
+  passwordUpdatedAt   DateTime?
+  resetPasswordTokens ResetPasswordToken[]
 
   @@map("users")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+model ResetPasswordToken {
+  id        String    @id @default(cuid())
+  userId    String
+  token     String    @unique
+  createdAt DateTime  @default(now())
+  resetedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model UserFollower {
