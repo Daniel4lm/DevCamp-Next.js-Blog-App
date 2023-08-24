@@ -20,7 +20,7 @@ export default function MyPaginator({ numOfPages, urlOptions, search }: MyPagina
         <Link
             key={`link-${index}`}
             href={{
-                pathname: '/posts/search',
+                pathname: '/feed',
                 query: {
                     page: index + 1,
                     ...(search ? { term: search } : {}),
@@ -40,7 +40,7 @@ export default function MyPaginator({ numOfPages, urlOptions, search }: MyPagina
         <div className="flex flex-wrap justify-center items-center gap-2">
             <Link
                 href={{
-                    pathname: '/posts/search',
+                    pathname: '/feed',
                     query: {
                         page: urlOptions.page > 1 ? urlOptions.page - 1 : 1,
                         ...(search ? { term: search } : {}),
@@ -58,7 +58,7 @@ export default function MyPaginator({ numOfPages, urlOptions, search }: MyPagina
             {links}
             <Link
                 href={{
-                    pathname: '/posts/search',
+                    pathname: '/feed',
                     query: {
                         page: !isForwardBtn ? urlOptions.page : urlOptions.page + 1,
                         ...(search ? { term: search } : {}),
