@@ -1,14 +1,6 @@
+import { encryptPassword } from '@/lib/helperFunctions'
 import { PrismaClient } from '@prisma/client'
-import { hashSync, genSaltSync } from "bcryptjs"
-
 const prisma = new PrismaClient()
-
-function encryptPassword(receivedPassword: string) {
-    let saltRounds = 10
-    // generate the password hash
-    let salt = genSaltSync(saltRounds)
-    return hashSync(receivedPassword, salt)
-}
 
 async function seedUsers() {
     // Perform database queries here
