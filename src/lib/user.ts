@@ -1,9 +1,10 @@
 import prismaClient from '@/lib/db/prismaClient'
+import { randomUUID } from 'crypto'
 
 let UserTask = {
-    getUser: async function (username: string) {
-        return await prismaClient.user.findUnique({
-            where: { username: username },
+    getUser: async function (searchQuery = {}) {
+        return await prismaClient.user.findFirst({
+            where: searchQuery,
             select: {
                 id: true,
                 avatarUrl: true,
@@ -22,6 +23,57 @@ let UserTask = {
                 followersCount: true,
                 followingCount: true
             }
+        })
+    },
+    getActivePasswordResetStatus: async function (userId: string) {
+        return await prismaClient.resetPasswordToken.findFirst({
+            where: {
+                userId: userId,
+                createdAt: {
+                    gt: new Date(Date.now() - 24 * 60 * 60 * 1000), // 24 hours ago
+                },
+                resetedAt: null
+            }
+        })
+    },
+    createResetPasswordToken: async function (userId: string) {
+        return await prismaClient.resetPasswordToken.create({
+            data: {
+                userId: userId,
+                token: `${randomUUID()}-${randomUUID()}`.replace(/-/g, '')
+            }
+        })
+    },
+    resetUserPassword: async function (password: string, token: string) {
+
+        const updateDate = new Date()
+
+        const invalidatedToken = await prismaClient.resetPasswordToken.update({
+            where: {
+                token: token
+            },
+            data: {
+                resetedAt: updateDate,
+            }
+        })
+
+        if (invalidatedToken.resetedAt) {
+            return await prismaClient.user.update({
+                where: {
+                    id: invalidatedToken.userId
+                },
+                data: {
+                    passwordUpdatedAt: updateDate,
+                    hashedPassword: password
+                }
+            })
+        }
+    },
+    getUsers: async function (searchQuery = {}) {
+
+        return await prismaClient.user.findMany({
+            where: searchQuery,
+
         })
     },
     getUserFollowing: async function (followerId: string, followedId: string) {
@@ -50,10 +102,6 @@ let UserTask = {
                 }
             }
         })
-        // return await prismaClient.user.findUnique({
-        //     where: { username: username },
-        //     select: { followings: { include: { follower: true } } }
-        // })
     },
     getFollowing: async function (userID: string) {
         return await prismaClient.userFollower.findMany({
@@ -67,12 +115,32 @@ let UserTask = {
                 }
             }
         })
-        // return await prismaClient.user.findUnique({
-        //     where: { username: username },
-        //     select: { followers: { include: { followed: true } } }
-        // })
+    },
+    isAlreadyFollower: async function (followerId: string, userId: string) {
+        return await prismaClient.userFollower.findUnique({
+            where: {
+                followedId_followerId: {
+                    followedId: userId,
+                    followerId: followerId
+                }
+            },
+        })
     },
     createUserFollower: async function (followerId: string, userId: string) {
+
+        const userFollower = await prismaClient.userFollower.upsert({
+            where: {
+                followedId_followerId: {
+                    followedId: userId,
+                    followerId: followerId
+                }
+            },
+            update: {},
+            create: {
+                followedId: userId,
+                followerId: followerId
+            }
+        })
 
         const updateFollowingCount = await prismaClient.user.updateMany({
             where: {
@@ -92,48 +160,48 @@ let UserTask = {
             }
         })
 
-        return await prismaClient.userFollower.upsert({
-            where: {
-                followedId_followerId: {
-                    followedId: userId,
-                    followerId: followerId
-                }
-            },
-            update: {},
-            create: {
-                followedId: userId,
-                followerId: followerId
-            }
-        })
+        return userFollower
     },
     unfollowUser: async function (followerId: string, userId: string) {
 
-        const updateFollowingCount = await prismaClient.user.updateMany({
-            where: {
-                id: followerId
-            },
-            data: {
-                followingCount: { decrement: 1 }
-            }
-        })
+        let unfollowUser
 
-        const updateFollowersCount = await prismaClient.user.updateMany({
-            where: {
-                id: userId
-            },
-            data: {
-                followersCount: { decrement: 1 }
-            }
-        })
-
-        return await prismaClient.userFollower.delete({
-            where: {
-                followedId_followerId: {
-                    followedId: userId,
-                    followerId: followerId
+        try {
+            unfollowUser = await prismaClient.userFollower.delete({
+                where: {
+                    followedId_followerId: {
+                        followedId: userId,
+                        followerId: followerId
+                    }
                 }
-            }
-        })
+            })
+
+        } catch (error) {
+            return error
+        }
+
+        console.log('backend unfollowUser... ', unfollowUser)
+
+        if (unfollowUser) {
+            const updateFollowingCount = await prismaClient.user.updateMany({
+                where: {
+                    id: followerId
+                },
+                data: {
+                    followingCount: { decrement: 1 }
+                }
+            })
+
+            const updateFollowersCount = await prismaClient.user.updateMany({
+                where: {
+                    id: userId
+                },
+                data: {
+                    followersCount: { decrement: 1 }
+                }
+            })
+        }
+        return unfollowUser
     },
     createNewUser: async function (data: {
         username: string
