@@ -3,43 +3,27 @@
 import { useState } from "react"
 import Link from "next/link"
 import { User as SessionUser } from "next-auth"
-import { Post, Profile, Tag, User, UserFollower } from "@prisma/client"
+import { UserFollower } from "@prisma/client"
 import { UserIcon } from "@/components/Icons"
 import { UserButton } from "./UserButton"
 import { UserAvatar } from "@/components/CoreComponents"
 import Modal from "@/components/Modal"
-
-
-interface UserDataProps {
-    id: string
-    avatarUrl: string | null
-    email: string
-    username: string
-    fullName: string
-    postsCount: number
-    role: "user" | "admin"
-    profile: Profile | null
-    posts?: (Post & {
-        author: User;
-        tags: Tag[]
-    })[],
-    followersCount: number
-    followingCount: number
-}
-
-interface FollowListProps {
-    followData: UserFollowingListProps
-    currentUser: SessionUser | undefined
-    user: UserDataProps
-    refetch?: () => void
-}
+import { User } from "@/models/User"
 
 interface UserFollowingListProps {
     followers: User[],
     followings: User[]
 }
 
-function FollowList({ followData, currentUser, user, refetch }: FollowListProps) {
+interface FollowListProps {
+    followData: UserFollowingListProps
+    currentUser: SessionUser | undefined
+    user: User
+    refetch?: () => void
+    isSaving: boolean
+}
+
+function FollowList({ followData, currentUser, user, isSaving }: FollowListProps) {
 
     const [followSection, setFollowSection] = useState<'followings' | 'followers' | 'none'>('none')
     const followList = followData && followSection !== 'none' ? followData[followSection] : []
@@ -97,7 +81,7 @@ function FollowList({ followData, currentUser, user, refetch }: FollowListProps)
                                                 currentUser={currentUser}
                                                 user={followUser}
                                                 maybeUserFollow={maybeUserFollow}
-                                                refetch={refetch}
+                                                isSaving={isSaving}
                                             />
                                         </span>
                                     )}
@@ -110,7 +94,7 @@ function FollowList({ followData, currentUser, user, refetch }: FollowListProps)
 
             <ul className="flex xs:justify-center flex-wrap gap-2 xs:gap-8 px-4 xs:p-0 text-sm md:text-base">
                 <li
-                    className="flex items-center justify-center cursor-pointer my-1 px-3 py-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-500"
+                    className="flex items-center justify-center cursor-pointer my-1 px-3 py-1 ring-2 ring-gray-250 rounded-full hover:bg-slate-100 dark:hover:bg-slate-500"
                     id="profile-followers-count"
                     onClick={() => setFollowSection('followers')}
                 >
@@ -119,7 +103,7 @@ function FollowList({ followData, currentUser, user, refetch }: FollowListProps)
                 </li>
 
                 <li
-                    className="flex items-center justify-center cursor-pointer my-1 px-3 py-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-500"
+                    className="flex items-center justify-center cursor-pointer my-1 px-3 py-1 ring-2 ring-gray-250 rounded-full hover:bg-slate-100 dark:hover:bg-slate-500"
                     id="profile-following-count"
                     onClick={() => setFollowSection('followings')}
                 >

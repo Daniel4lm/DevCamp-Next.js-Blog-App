@@ -1,31 +1,33 @@
-import { Post } from "./Post"
+import { UserPost } from "./Post"
 
 export interface User {
     id?: string | null
-    avatarUrl?: string | null
+    avatarUrl: string | null
     username: string
     fullName: string
     email: string
     hashedPassword?: string | null
-    insertedAt?: string | null
-    updatedAt?: string | null
-    postsCount?: number | null
-    role: 'user' | 'admin'
+    insertedAt?: Date | null
+    updatedAt?: Date | null
+    postsCount: number
+    role: 'USER' | 'ADMIN'
     refreshToken?: string | null
     profile?: Profile | null
-    posts?: Post[] | null
+    posts?: UserPost[] | null
+    followersCount: number
+    followingCount: number
 }
 
 export interface Profile {
     id: string
-    bio?: string | null
     userId: string | null
-    password_updatedAt?: string | null
-    lastLogin?: string | null
+    bio: string | null
+    password_updatedAt: Date | null
+    lastLogin: Date | null
     themeMode: ThemeMode
-    website?: string | null
-    location?: string | null
-    user: User
+    website: string | null
+    location: string | null
+    user: User 
 }
 
 export enum ThemeMode {

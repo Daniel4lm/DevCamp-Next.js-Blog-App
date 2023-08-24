@@ -16,7 +16,7 @@ export default async function PostFormPage({ params }: PageProps) {
 
     return (
         <>
-            <PostForm crud={crud} currentUser={session?.user as User} />
+            <PostForm crud={crud} currentUser={session?.user} />
         </>
     )
 }

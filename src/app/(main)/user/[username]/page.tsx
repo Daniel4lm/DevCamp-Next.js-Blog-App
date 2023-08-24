@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation"
 import { Metadata } from "next"
-import { Post, Profile, Tag, User } from "@prisma/client"
 import UserTask from "@/lib/user"
 import PostsList from "./components/PostsList"
 import { getServerSession } from "next-auth"
@@ -8,6 +7,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/authOptions"
 import UserInfo from "./components/UserInfo"
 import getQueryClient from "@/lib/reactQuery/getQueryClient"
 import { Hydrate, dehydrate } from "@tanstack/react-query"
+import { User } from "@/models/User"
 
 type PostProps = Pick<User, "username">
 
@@ -15,31 +15,14 @@ type PageProps = {
     params: PostProps
 }
 
-interface UserDataProps {
-    id: string
-    avatarUrl: string | null
-    email: string
-    username: string
-    fullName: string
-    postsCount: number
-    role: "user" | "admin"
-    profile: Profile | null
-    posts?: (Post & {
-        author: User;
-        tags: Tag[]
-    })[],
-    followersCount: number
-    followingCount: number
-}
-
 /* SEO */
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { username } = params
-    let userData: UserDataProps | null = null
+    let userData: User | null = null
 
     try {
-        const userResponse = UserTask.getUser(username)
-        userData = await userResponse as UserDataProps
+        const userResponse = UserTask.getUser({ username: username })
+        userData = await userResponse as User
     } catch (err: any) {
         console.info(err.message)
         return notFound()
@@ -56,19 +39,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function UserProfile({ params }: PageProps) {
     const { username } = params
     const session = await getServerSession(authOptions)
-    let userData: UserDataProps | null = null
+    let userData: User | null = null
 
     const queryClient = getQueryClient()
 
     try {
-        userData = await UserTask.getUser(username) as UserDataProps
+        userData = await UserTask.getUser({ username: username }) as User
 
         await queryClient.prefetchQuery({
             queryKey: ['user', username],
             queryFn: async function () {
                 const userFetch = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/users/${username}`)
                 const userJson = await userFetch.json()
-                return userJson.user
+                return userJson.user as User
             },
         })
     } catch (err: any) {

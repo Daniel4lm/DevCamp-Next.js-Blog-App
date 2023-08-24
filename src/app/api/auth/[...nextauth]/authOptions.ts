@@ -1,8 +1,7 @@
-import type { NextAuthOptions } from "next-auth"
+import type { NextAuthOptions, User } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import prisma from '@/lib/db/prismaClient'
 import { compareSync } from "bcryptjs"
-import { User } from "@/models/User"
 
 export const authOptions: NextAuthOptions = {
     session: {
@@ -50,8 +49,8 @@ export const authOptions: NextAuthOptions = {
                             username: foundUser.username,
                             avatarUrl: foundUser.avatarUrl,
                             themeMode: foundUser.profile?.themeMode,
-                            role: foundUser?.role || 'user'
-                        }
+                            role: foundUser.role
+                        } as User
                     }
                     // If we return null then an error will be displayed advising the user to check their details.
                     // We can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter

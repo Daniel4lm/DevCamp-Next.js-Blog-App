@@ -1,24 +1,7 @@
 import { Post, Prisma, Profile, Tag, Like, PostBookmark } from "@prisma/client"
 import { useQuery } from "@tanstack/react-query"
 import { PostComment } from "../models/Comment"
-import { User } from "next-auth"
-
-interface UserDataProps {
-    id: string
-    avatarUrl: string | null
-    email: string
-    username: string
-    fullName: string
-    postsCount: number
-    role: "user" | "admin"
-    profile: Profile | null
-    posts?: (Post & {
-        author: User;
-        tags: Tag[]
-    })[],
-    followersCount: number
-    followingCount: number
-}
+import { User } from "@/models/User"
 
 const usePostQuery = (slug: string) => {
     return useQuery({
@@ -29,7 +12,7 @@ const usePostQuery = (slug: string) => {
             return postJson.post as (Post & {
                 bookmarks: PostBookmark[]
                 comments: PostComment[]
-                author: { [x: string]: string | number | null }
+                author: User
                 likes: Like[]
                 tags: Tag[]
                 _count: Prisma.PostCountOutputType;
@@ -39,7 +22,7 @@ const usePostQuery = (slug: string) => {
     })
 }
 
-const useUserQuery = (username: string, userData?: UserDataProps) => {
+const useUserQuery = (username: string, userData?: User) => {
     return useQuery({
         queryKey: ['user', username],
         enabled: username != null,
@@ -52,7 +35,7 @@ const useUserQuery = (username: string, userData?: UserDataProps) => {
     })
 }
 
-const useCommentsQuery = (postId: string, initialComments: PostComment[]) => {
+const useCommentsQuery = (postId: string, initialComments?: PostComment[]) => {
     return useQuery({
         queryKey: [`comments-${postId}-post`],
         queryFn: async function () {
@@ -60,7 +43,7 @@ const useCommentsQuery = (postId: string, initialComments: PostComment[]) => {
             const pComments = await commentsRes.json()
             return pComments.comments as PostComment[]
         },
-        // initialData: initialComments
+        initialData: initialComments
     })
 }
 

@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { User as SessionUser } from "next-auth"
 import { Post, Tag, Like, PostBookmark } from "@prisma/client"
-import { CommentIcon, DeleteIcon, EditIcon, LinkIcon, OptsIcon, PostTagIcon } from "@/components/Icons"
+import { CommentIcon, DeleteIcon, EditIcon, LinkIcon, OptsIcon } from "@/components/Icons"
 import Modal from "@/components/Modal"
 import ToolTip from "@/components/Tooltip"
 import useModalShow from "@/hooks/useModalShow"
@@ -13,15 +13,13 @@ import useOutsideClick from "@/hooks/useOutsideClick"
 import { copyPostUrl, getURL } from "@/lib/helperFunctions"
 import { PostComment } from "@/models/Comment"
 import SmartLink from "@/components/navigation/SmartLink"
-import LikeComponent from "@/components/LikeComponent"
-import BookmarkPost from "@/components/BookmarkComponent"
+import LikeComponent from "@/components/posts-comments/LikeComponent"
+import BookmarkPost from "@/components/posts-comments/BookmarkComponent"
+import { User } from "@/models/User"
 
 interface PostProps {
     data: (Post & {
-        author: {
-            [x: string]: string | number | null
-            [x: number]: string | number | null
-        }
+        author: User
         bookmarks: PostBookmark[]
         tags: Tag[]
         likes: Like[]
@@ -32,10 +30,7 @@ interface PostProps {
 
 interface OptsMenuProps {
     data: (Post & {
-        author: {
-            [x: string]: string | number | null
-            [x: number]: string | number | null
-        };
+        author: User
         tags: Tag[]
         likes: Like[]
         comments: PostComment[]

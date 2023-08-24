@@ -1,12 +1,11 @@
 
 import Link from 'next/link'
-import { AppIcon, HambButton, HomeIcon, HomeIconFill, NewIcon, NewIconFill } from '../Icons'
+import { AppIcon } from '../Icons'
 import { ThemeToggle } from '../ThemeToggle'
 import { SettingsMenu } from './SettingsMenu'
-import { User } from '@/models/User'
-import SmartLink from './SmartLink'
 import ToolTip from '../Tooltip'
 import WorkMenu from './WorkMenu'
+import { User } from 'next-auth'
 
 interface NavBarProps {
     title?: string
@@ -19,7 +18,7 @@ export default function Navbar({ title, currentUser }: NavBarProps) {
         <header id="app-navbar" className="h-16 border-b dark:border-transparent flex fixed top-0 w-full bg-white dark:bg-navbar-dark dark:text-slate-100 z-50">
             <div className="flex justify-between items-center px-2 py-0 mx-auto w-full md:w-11/12"> {/* 2xl:w-8/12 */}
                 <div className="flex justify-center items-center gap-2 xs:gap-0">
-                    
+
                     <Link href="/" className="flex items-center gap-2 mx-4">
                         <AppIcon />
                         <h4 className="text-lg md:text-xl font-normal">{title}</h4>
@@ -37,7 +36,7 @@ export default function Navbar({ title, currentUser }: NavBarProps) {
                                         id="notifications-comp"
                                         current_user={@current_user}
                                         /> */}
-                                    <SettingsMenu currentUser={currentUser as User} />
+                                    <SettingsMenu currentUser={currentUser} />
                                 </>
                             )
                             : (

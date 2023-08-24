@@ -1,32 +1,19 @@
 "use client"
 
-import { SmallPostCard } from "@/components/CardsComponent"
+import { SmallPostCard } from "@/components/posts-comments/CardsComponent"
 import UserPostsSkeleton from "@/components/skeletons/UserPostsSkeleton"
-import { Comment, Post, Profile, Tag, User } from "@prisma/client"
+import { PostComment } from "@/models/Comment"
+import { UserPost } from "@/models/Post"
+import { User } from "@/models/User"
+import { Comment, Tag } from "@prisma/client"
 import { useCallback, useEffect, useRef, useState } from "react"
 
 interface PostsListProps {
-    user: {
-        id: string
-        avatarUrl: string | null
-        email: string
-        username: string
-        fullName: string
-        postsCount: number
-        profile: Profile | null
-        posts?: (Post & {
-            author: User;
-            tags: Tag[]
-        })[]
-    }
+    user: User
 }
 
 interface PostResultsProps {
-    posts: (Post & {
-        comments: Comment[]
-        author: User
-        tags: Tag[]
-    })[]
+    posts: UserPost[]
     totalPages: number
     totalCount: number
 }
@@ -40,17 +27,8 @@ async function getPosts(page: number, username: string, cursor?: string) {
 const PostsList = ({ user }: PostsListProps) => {
     const [page, setPage] = useState(0)
     const [hasNextPage, setHasNextPage] = useState(false)
-    // const [cursor, setCursor] = useState('')
     const [isLoading, setIsLoading] = useState(false)
-    const [userPosts, setUserPosts] = useState<(Post & {
-        comments?: Comment[]
-        author: User
-        tags: Tag[]
-        posts?: (Post & {
-            author: User
-            tags: Tag[]
-        })[]
-    })[]>([])
+    const [userPosts, setUserPosts] = useState<UserPost[]>([])
 
     let intersObserver = useRef<IntersectionObserver | null>()
 
@@ -84,7 +62,6 @@ const PostsList = ({ user }: PostsListProps) => {
         try {
             getPosts(page, user.username)
                 .then(results => {
-                    // setCursor(results.posts[results.posts.length - 1].id)
                     if (!ignore) {
                         setUserPosts(prev => [...prev, ...results.posts])
                         setHasNextPage(page < totalPages - 1)
@@ -127,7 +104,7 @@ const PostsList = ({ user }: PostsListProps) => {
                                 {renderPosts}
                             </div>
                         </section>
-                        {isLoading || !userPosts.length ? (<UserPostsSkeleton />) : null }
+                        {isLoading || !userPosts.length ? (<UserPostsSkeleton />) : null}
 
                         {hasNextPage ? (
                             <>

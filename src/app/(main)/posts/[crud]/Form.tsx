@@ -6,13 +6,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { formChangesetValidation, ValidationTypes } from '@/lib/formHelpers'
 import MultiTagSelect from '@/components/forms/MultiTagSelect'
 import { createSlug, postReadingTime } from '@/lib/helperFunctions'
-import { Post } from '@/models/Post'
+import { UserPost } from '@/models/Post'
 import UploadImageContainer from "./ImageContainer"
 import dynamic from "next/dynamic"
 import Image from "next/image"
 const BodyEditor = dynamic(() => import("@/components/forms/ContentEditor"), { ssr: false })
 import 'react-quill/dist/quill.snow.css'
-import { User } from '@/models/User'
+import { User as SessionUser } from "next-auth"
 
 type FormProps = {
     title: string,
@@ -35,7 +35,7 @@ async function createOrUpdatePost({ formData, methodType }: { formData: FormData
     return await res.json()
 }
 
-function PostForm({ crud, currentUser }: { crud: string, currentUser: User | undefined }) {
+function PostForm({ crud, currentUser }: { crud: string, currentUser: SessionUser | undefined }) {
 
     const router = useRouter()
     const searchParams = useSearchParams()
@@ -65,7 +65,7 @@ function PostForm({ crud, currentUser }: { crud: string, currentUser: User | und
                 return
             }
 
-            const postArticle: Post = postJson?.newPost || postJson?.updatedPost
+            const postArticle: UserPost = postJson?.newPost || postJson?.updatedPost
             if (postJson?.newPost) queryClient.setQueryData(['posts', postArticle.authorId], postArticle)
             setSaving(false)
             router.push(`/user/${postArticle?.author.username}`)
@@ -103,14 +103,14 @@ function PostForm({ crud, currentUser }: { crud: string, currentUser: User | und
                 return;
             }
 
-            const postData: Post = postJson?.post;
+            const postData: UserPost = postJson?.post;
             setPostData({
                 title: postData.title,
                 body: postData.body,
                 tags: postData.tags?.map(tag => tag.name) || []
             })
 
-            setShowImage(postData.photo_url)
+            setShowImage(postData?.photo_url || '')
         }
 
         if (fetchRun.current === true && crud === 'edit') {
@@ -208,7 +208,7 @@ function PostForm({ crud, currentUser }: { crud: string, currentUser: User | und
 
     const checkFileFormat = (file: File) => {
         if (file) {
-            if (['image/png', 'image/jpeg', 'image/jpg'].includes(file?.type)) {
+            if (['image/png', 'image/jpeg', 'image/jpg', 'image/webp'].includes(file?.type)) {
                 setValidFormat(true)
                 return true
             } else {
@@ -284,7 +284,7 @@ function PostForm({ crud, currentUser }: { crud: string, currentUser: User | und
                                 </label>
                             ) : null
                         }
-                        <input id='postImage' hidden type='file' accept='image/png, image/jpeg, image/jpg' onChange={onImageUpload} />
+                        <input id='postImage' hidden type='file' accept='image/png, image/jpeg, image/jpg, image/webp' onChange={onImageUpload} />
                     </div>
                 </div>
 
