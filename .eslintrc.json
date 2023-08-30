@@ -16,10 +16,13 @@
     ]
   },
   "plugins": [
-    "react"
+    "react",
+    "@tanstack/query"
   ],
   "rules": {
     "react/no-unescaped-entities": "off",
     "react/display-name": "off"
+    //"@tanstack/query/exhaustive-deps": "error",
+    //"@tanstack/query/prefer-query-object-syntax": "error"
   }
 }

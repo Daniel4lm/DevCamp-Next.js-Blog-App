@@ -154,8 +154,8 @@ input[type="search"]::-webkit-search-results-decoration {
 /* Alerts and form errors */
 
 .invalid-feedback {
-  @apply my-2 text-red-700 dark:text-red-500;
-  animation: 0.2s ease-in 0s normal forwards 1 fade-in-scale-keys;
+  @apply flex my-2 text-red-700 dark:text-red-500;
+  animation: 0.4s ease-in 0s normal forwards 1 show-down-link;
 }
 
 .invalid-feedback::first-letter {
@@ -194,7 +194,7 @@ input[type="search"]::-webkit-search-results-decoration {
 #new-comment-form .ql-container,
 #change-comment-form .ql-toolbar,
 #change-comment-form .ql-container {
-  @apply border-none mb-2;
+  @apply border-b border-transparent mb-2;
 }
 
 .ql-stroke {
@@ -426,7 +426,21 @@ svg:hover > .ql-fill {
    left: 3.5em;
  }
 
- @keyframes show-down-link {
+ @keyframes loader-show {
+  0% {
+    visibility: hidden;
+    opacity: 0;
+    transform: translate(-50%, 0%);
+  }
+  
+  100% {
+    visibility: visible;
+    opacity: 1;
+    transform: translate(0%, 0%);
+  }
+}
+
+@keyframes show-down-link {
   0% {
     visibility: hidden;
     opacity: 0;

@@ -22,7 +22,7 @@ function SearchSwitcher({ urlOptions }: SearchSwitcherProps) {
         const urlParams = mergeUrlParams({
             ...urlOptions,
             inf: pagination === 'infinite' ? 'y' : undefined,
-            limit: pagination === 'classic' ? 6 : urlOptions.limit,
+            limit: pagination === 'infinite' ? 6 : urlOptions.limit,
             page: pagination === 'infinite' ? 1 : urlOptions.page
         })
 

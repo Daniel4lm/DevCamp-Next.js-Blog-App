@@ -24,7 +24,6 @@ const PostBody = ({ postSlug, currentUser }: { postSlug: string, currentUser: Se
 
     const { data: post } = usePostQuery(postSlug)
     const effectRun = useRef(false)
-    // const { data: sessionData, status } = useSession()
     const postImageName = (post?.photo_url || '').split('/').at(-1)
 
     useEffect(() => {
@@ -162,7 +161,7 @@ const PostBody = ({ postSlug, currentUser }: { postSlug: string, currentUser: Se
                                 src={post?.photo_url}
                                 width={800}
                                 height={850}
-                                sizes="(min-width: 2460px) 768px, (min-width: 1280px) calc(29.83vw + 40px), 
+                                sizes="(min-width: 2460px) 768px, 
                                 (min-width: 1240px) 704px, (min-width: 1040px) calc(51.11vw + 80px), 
                                 (min-width: 980px) 704px, 
                                 (min-width: 640px) 

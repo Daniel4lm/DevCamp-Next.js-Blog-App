@@ -51,8 +51,6 @@ export default async function PostFormPage({ params }: PageProps) {
     const { username } = params
     let userData: { [x: string]: string } | null = null
 
-    //console.log('PostFormPage... ')
-
     try {
         const userResponse = await UserTask.getUser({ username: username })
         userData = userResponse && {
@@ -67,7 +65,6 @@ export default async function PostFormPage({ params }: PageProps) {
             avatarUrl: userResponse?.avatarUrl || ''
         }
 
-        //console.log('userResponse... ', userData)
     } catch (err: any) {
         console.info(err.message)
     }

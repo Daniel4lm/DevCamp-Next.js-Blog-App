@@ -180,8 +180,6 @@ let UserTask = {
             return error
         }
 
-        console.log('backend unfollowUser... ', unfollowUser)
-
         if (unfollowUser) {
             const updateFollowingCount = await prismaClient.user.updateMany({
                 where: {
