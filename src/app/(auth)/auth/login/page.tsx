@@ -15,7 +15,7 @@ export default async function UserLoginPage() {
             <section className="w-[95%] md:w-2/3 xl:w-[40rem] bg-white dark:bg-[#344453] dark:text-slate-100 border border-b-0 border-gray-300 dark:border-gray-600 flex flex-col place-items-center mx-auto py-4 md:p-6 sm:rounded-t-lg -mt-24">
                 <UserLoginForm />
                 <p className="text-md px-10 text-center mt-4 text-indigo-600 hover:underline">
-                    <Link href={'/auth/reset-password'}>Forgot password?</Link>
+                    <Link href={'/settings/verify-email'}>Forgot password?</Link>
                 </p>
             </section>
 

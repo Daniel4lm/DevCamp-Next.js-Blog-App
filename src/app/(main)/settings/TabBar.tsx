@@ -2,8 +2,8 @@
 
 import Link from 'next/link'
 import { ReactNode } from 'react'
-import { usePathname } from 'next/navigation'
 import { ConfirmIcon, SettingsIcon } from '@/components/Icons'
+import { useSession } from 'next-auth/react'
 
 interface TabBarProps {
     styleClass: string
@@ -11,29 +11,28 @@ interface TabBarProps {
 }
 
 function TabBar({ styleClass, currentUriPath }: TabBarProps) {
-    const pathname = usePathname()
-    const pathUsername = pathname.split('/').filter(path => path !== '').at(-1)
+    const { data: userData } = useSession()
 
     return (
         <div className={styleClass}>
             <ul className="flex flex-row items-center justify-center md:flex-col">
                 <p className='w-full hidden md:block p-2 text-lg font-medium'>User settings</p>
                 <hr className="w-full hidden md:block my-2 dark:border-gray-600" />
-                <Link href={`/settings/account/${pathUsername}`} className="w-1/2 md:w-full">
+                <Link href={`/settings/account/${userData?.user.username}`} className="w-1/2 md:w-full">
                     <SidebarLinkTag
                         title="Edit Profile"
                         currentUriPath={currentUriPath}
-                        menuLink={`/settings/account/${pathUsername}`}
+                        menuLink={`/settings/account/${userData?.user.username}`}
                     >
                         <SettingsIcon />
                     </SidebarLinkTag>
                 </Link>
 
-                <Link href={`/settings/verify-email/${pathUsername}`} className="w-1/2 md:w-full">
+                <Link href={`/settings/verify-email`} className="w-1/2 md:w-full">
                     <SidebarLinkTag
                         title="Reset Password"
                         currentUriPath={currentUriPath}
-                        menuLink={`/settings/verify-email/${pathUsername}`}
+                        menuLink={`/settings/verify-email`}
                     >
                         <ConfirmIcon />
                     </SidebarLinkTag>

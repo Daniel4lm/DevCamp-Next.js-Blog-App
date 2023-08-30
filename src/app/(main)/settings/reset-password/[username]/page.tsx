@@ -16,10 +16,10 @@ function ForgotPasswordPage({ searchParams }: {
 }) {
 
   const { email, token } = searchParams
-  const router = useRouter()
   const [passwordToggle, setPasswordToggle] = useState<'newPassword' | 'passwordConfirm' | null>()
   const [errMsg, setErrMsg] = useState<string | null>('')
   const [successMsg, setSuccess] = useState<string | null>(null)
+  const router = useRouter()
 
   if (!email || !token) return notFound()
 
@@ -49,8 +49,8 @@ function ForgotPasswordPage({ searchParams }: {
   }
 
   async function onLogOut() {
-    await signOut()
-    router.push("/")
+    await signOut({ redirect: true, callbackUrl: "/" })
+    //router.push("/")
   }
 
   return (
@@ -231,9 +231,34 @@ function ForgotPasswordPage({ searchParams }: {
               <label className="block md:w-1/3 font-semibold text-right"></label>
               <div className="w-full pl-4 xs:pl-8 pr-4 xs:pr-8">
                 <button type="submit" disabled={!isValid || isSubmitting}
-                  className={'px-4 xs:px-6 py-1 xs:py-2 md:w-max border-2 border-indigo-400 bg-transparent rounded-xl font-semibold text-indigo-400 dark:text-indigo-400 hover:border-indigo-500 hover:bg-indigo-500 hover:text-white cursor-pointer duration-150'}
+                  className={'px-4 xs:px-6 py-2 md:w-max border-2 border-indigo-400 bg-transparent overflow-hidden dark:bg-indigo-400/20 text-indigo-400 dark:text-indigo-200 rounded-xl font-semibold hover:text-gray-50 hover:bg-indigo-500 dark:hover:bg-indigo-500 hover:border-indigo-500 cursor-pointer duration-150'}
                 >
-                  {isSubmitting ? 'Saving...' : 'Change Password'}
+                  {
+                    isSubmitting ? (
+                      <span className={
+                        "flex items-center transition ease-in-out duration-150 animate-[loader-show_0.25s] cursor-not-allowed w-full h-auto"
+                      }>
+                        <svg
+                          className="animate-spin -ml-1 mr-3 h-5 w-5"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4">
+                          </circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          >
+                          </path>
+                        </svg>
+                        Saving...
+                      </span>
+                    ) : (
+                      <span>Change Password</span>
+                    )
+                  }
                 </button>
               </div>
             </div>

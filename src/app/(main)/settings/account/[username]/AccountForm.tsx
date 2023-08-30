@@ -1,15 +1,15 @@
 "use client"
 
 import { ChangeEvent, DragEvent, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { useSession } from 'next-auth/react'
 import { useMutation } from '@tanstack/react-query'
-import { useRouter } from 'next/navigation'
 import { Formik, Form, Field } from 'formik'
-import FormikTextArea from '@/components/forms/FormikControls'
-import { object, z } from 'zod'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
+import { object, z } from 'zod'
 import { CloseUploadIcon, ThemeIcon, UploadImage } from '@/components/Icons'
+import FormikTextArea from '@/components/forms/FormikControls'
 
 const MAX_FILE_SIZE = 5000000
 
@@ -64,7 +64,7 @@ function AccountForm({ userData }: AccountFormProps) {
                     }
                 }
             })
-            
+
             router.refresh()
             router.replace(`/user/${username}`)
         }
@@ -395,7 +395,7 @@ function AccountForm({ userData }: AccountFormProps) {
                                                     className='hidden peer p-0 right-2 top-1/2 -translate-y-1/2 cursor-pointer w-4 h-4 text-indigo-400 bg-gray-100 border-gray-300 focus:ring-indigo-400 dark:focus:ring-slate-400 dark:ring-offset-gray-500 focus:ring-2 dark:bg-slate-600 dark:border-slate-500' />
                                                 <label
                                                     htmlFor={theme}
-                                                    className='px-4 py-1 text-gray-600 flex justify-between items-center border dark:border-transparent rounded-full bg-gray-50 dark:bg-slate-500 cursor-pointer duration-150 hover:border-transparent hover:ring-2 hover:ring-neutral-400 hover:dark:ring-neutral-400 hover:ring-opacity-40 dark:peer-checked:ring-slate-400 peer-checked:text-indigo-400 peer-checked:dark:ring-neutral-200 peer-checked:dark:text-white peer-checked:ring-2 peer-checked:ring-indigo-400 peer-checked:border-transparent peer-checked:ring-opacity-90 dark:text-slate-100'>
+                                                    className='px-4 py-1 text-gray-600 flex justify-between items-center border dark:border-transparent rounded-full bg-gray-50 dark:bg-slate-500 dark:bg-slate-400/20 cursor-pointer duration-150 hover:border-transparent hover:ring-2 hover:ring-neutral-400 dark:hover:ring-indigo-300/60 hover:ring-opacity-40 peer-checked:ring-indigo-400 dark:peer-checked:ring-indigo-400 peer-checked:text-indigo-400 dark:peer-checked:text-white peer-checked:ring-2 peer-checked:border-transparent peer-checked:ring-opacity-90 dark:text-slate-100'>
                                                     <span className="capitalize pr-4">{theme}</span>
                                                     <ThemeIcon type={theme} />
                                                 </label>
@@ -411,9 +411,35 @@ function AccountForm({ userData }: AccountFormProps) {
                                 <label className="block md:w-1/3 font-semibold text-right"></label>
                                 <div className="w-full pl-4 xs:pl-8 pr-4 xs:pr-8">
                                     <button type="submit" disabled={!isValid || isSubmitting}
-                                        className={'px-4 xs:px-6 py-1 xs:py-2 md:w-max border-2 border-indigo-400 bg-transparent rounded-xl font-semibold text-indigo-400 dark:text-indigo-400 hover:border-indigo-500 hover:bg-indigo-500 hover:text-white cursor-pointer duration-150'}
+                                        className={'px-4 xs:px-6 py-1 xs:py-2 md:w-max border-2 border-indigo-400 bg-transparent overflow-hidden dark:bg-indigo-400/20 text-indigo-400 dark:text-indigo-200 rounded-xl font-semibold hover:text-gray-50 hover:bg-indigo-500 dark:hover:bg-indigo-500 hover:border-indigo-500 cursor-pointer duration-150'}
                                     >
-                                        {isSubmitting ? 'Saving...' : 'Update profile'}
+
+                                        {
+                                            isSubmitting ? (
+                                                <span className={
+                                                    "flex items-center transition ease-in-out duration-150 animate-[loader-show_0.25s] cursor-not-allowed w-full h-auto"
+                                                }>
+                                                    <svg
+                                                        className="animate-spin -ml-1 mr-3 h-5 w-5"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4">
+                                                        </circle>
+                                                        <path
+                                                            className="opacity-75"
+                                                            fill="currentColor"
+                                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                                        >
+                                                        </path>
+                                                    </svg>
+                                                    Saving...
+                                                </span>
+                                            ) : (
+                                                <span>Update profile</span>
+                                            )
+                                        }
                                     </button>
                                 </div>
                             </div>

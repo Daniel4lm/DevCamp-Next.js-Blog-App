@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { Field, Form, Formik } from 'formik'
 import { toFormikValidationSchema } from 'zod-formik-adapter'
 import { object, z } from 'zod'
@@ -10,7 +9,6 @@ function VerifyEmail() {
 
     const [errMsg, setErrMsg] = useState<string | null>('')
     const [successMessage, setSuccessMessage] = useState('')
-    const router = useRouter()
 
     const LoginValidationSchema = object({
         email: z.string().trim().min(8, { message: 'Email must be 8 or more characters long!' }).email({ message: 'Invalid email. Please enter your registered email!' })
@@ -88,7 +86,7 @@ function VerifyEmail() {
                                 <button
                                     type="submit"
                                     disabled={!isValid || isSubmitting}
-                                    className={'block px-4 xs:px-6 py-1 xs:py-2 md:w-max border-2 border-indigo-400 rounded-xl font-semibold text-sm sm:text-base text-indigo-500 hover:border-indigo-500 hover:bg-indigo-500 hover:text-white cursor-pointer'}>
+                                    className={'block px-4 xs:px-6 py-1 xs:py-2 md:w-max border-2 border-indigo-400 bg-transparent dark:bg-indigo-400/20 text-indigo-400 dark:text-indigo-200 rounded-xl font-semibold hover:text-gray-50 hover:bg-indigo-500 dark:hover:bg-indigo-500 hover:border-indigo-500 cursor-pointer duration-150'}>
                                     {isSubmitting ? 'Sending email...' : 'Request reset password link'}
                                 </button>
                             </div>
