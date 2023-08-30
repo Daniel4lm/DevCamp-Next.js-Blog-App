@@ -42,12 +42,12 @@ export default function Navbar({ title, currentUser }: NavBarProps) {
                             : (
                                 <>
                                     <li className="hidden xs:block">
-                                        <Link href="/api/auth/signin" className="ml-2 py-[0.4rem] px-3 text-gray-700 rounded-full font-medium duration-150 ease-in-out bg-transparent border dark:border-none hover:bg-gray-200 dark:hover:bg-slate-500 dark:text-slate-100">
+                                        <Link href="/api/auth/signin" className="ml-2 py-[0.4rem] px-4 text-gray-700 rounded-lg font-medium duration-150 ease-in-out bg-transparent hover:underline dark:border-none dark:text-slate-100">
                                             Log In
                                         </Link>
                                     </li>
                                     <li className="hidden xs:block">
-                                        <Link href="/auth/register" className="ml-2 py-[0.4rem] px-3 text-gray-700 rounded-full font-medium duration-150 ease-in-out bg-transparent border dark:border-none hover:bg-gray-200 dark:hover:bg-slate-500 dark:text-slate-100">
+                                        <Link href="/auth/register" className="ml-2 py-[0.4rem] px-4 text-gray-700 rounded-lg font-medium duration-150 ease-in-out bg-transparent border border-slate-300 dark:border-none hover:bg-slate-100 dark:hover:bg-slate-500 dark:text-slate-100">
                                             Sign Up
                                         </Link>
                                     </li>

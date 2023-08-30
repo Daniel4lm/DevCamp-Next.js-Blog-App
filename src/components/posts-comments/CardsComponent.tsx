@@ -33,7 +33,7 @@ const SmallPostCard = forwardRef<HTMLDivElement, PostCardProps>(({ postData }, r
         <article
             ref={ref ? ref : null}
             id={`post-${postData?.id}`}
-            className="relative group flex flex-col overflow-hidden min-h-[12rem] bg-white xs:border border-gray-200 rounded-xl md:rounded-lg xs:shadow md:flex-row hover:ring-2 hover:border-transparent hover:ring-indigo-300 xs:hover:bg-slate-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+            className="relative group flex flex-col overflow-hidden min-h-[12rem] bg-white xs:border border-gray-200 rounded-xl md:rounded-lg xs:shadow md:flex-row hover:ring-2 hover:border-transparent hover:ring-indigo-300 xs:hover:bg-slate-50 dark:border-gray-700 dark:bg-slate-600/60 dark:hover:bg-gray-700"
         >
             <Link href={`/posts/post/${postData?.slug}`} className="absolute opacity-0 left-0 w-full h-full">"Link to post"</Link>
             {postData?.photo_url ? (

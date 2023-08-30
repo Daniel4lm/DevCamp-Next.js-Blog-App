@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     const numOfPages: number = (Math.ceil(totalCount._count.id / curLimit))
 
     return NextResponse.json({
-        posts: pagePosts,
+        posts: pagePosts.posts,
         totalPages: numOfPages,
         totalCount: totalCount._count.id
     })
@@ -37,7 +37,7 @@ export async function PUT(request: NextRequest) {
         let formEntries = Object.fromEntries(formData)
         const { tags, photoUrl, slug, ...params } = formEntries
         const newSlug = createSlug(params.title as string)
-
+        const published = formEntries.published === 'true' ? true : false
         const postTags = tags ? (tags as string).split(',') : []
 
         const foundPost = await prisma.post.findUnique({
@@ -50,7 +50,7 @@ export async function PUT(request: NextRequest) {
 
         // if(typeof(params.published) === 'boolean')
 
-        let maybeParamsWithPhoto = params
+        let maybeParamsWithPhoto: { [k: string]: string | File | boolean } = { ...params, published }
         maybeParamsWithPhoto["slug"] = newSlug
 
         const postPhoto = formData.get("photoUrl") as Blob | null
@@ -101,17 +101,13 @@ export async function POST(request: NextRequest) {
             where: { email: email }
         })
 
-        if (!email || !foundUser) {
-            return NextResponse.json({ error: 'User not found or email is missing!' }, { status: 404 })
-        }
+        if (!email || !foundUser) return NextResponse.json({ error: 'User not found or email is missing!' }, { status: 404 })
 
         const alreadyPost = await prisma.post.findUnique({
             where: { slug: params.slug as string }
         })
 
-        if (alreadyPost) {
-            return NextResponse.json({ error: 'Blog post already exists!' }, { status: 403 })
-        }
+        if (alreadyPost) return NextResponse.json({ error: 'Blog post already exists!' }, { status: 403 })
 
         let maybeParamsWithPhoto = params
 
