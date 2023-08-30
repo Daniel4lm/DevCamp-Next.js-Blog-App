@@ -11,7 +11,6 @@ import FollowList from "./FollowList"
 import { UserButton } from "./UserButton"
 import UserInfoSkeleton from "@/components/skeletons/UserInfoSkeleton"
 import { User } from "@/models/User"
-import { useSession } from "next-auth/react"
 
 interface UserFollowingProps {
     followed: User,
@@ -19,8 +18,6 @@ interface UserFollowingProps {
 }
 
 function UserInfo({ user, currentUser }: { user: User, currentUser: SessionUser | undefined }) {
-
-    const { data } = useSession()
 
     const { data: userInfo, isLoading: isUserLoading, isSuccess: isUserSuccess } = useUserQuery(user.username, user)
     const { data: followData, isRefetching: isFollowLoading, isSuccess: isFollowSuccess } = useFollowingsQuery(user.username, user?.id || '')
@@ -42,8 +39,6 @@ function UserInfo({ user, currentUser }: { user: User, currentUser: SessionUser 
                             />
                         </div>
 
-                        <p>{data?.user.fullName}</p>
-
                         <div className="w-full">
                             <div className="flex flex-col xs:items-center p-4">
                                 <div className="flex items-center gap-2 md:flex-col">
@@ -56,7 +51,7 @@ function UserInfo({ user, currentUser }: { user: User, currentUser: SessionUser 
                                 </p>
                             </div>
 
-                            <ul className="flex xs:justify-center flex-wrap gap-2 xs:gap-8 px-4 xs:p-0 mb-2 text-sm md:text-base">
+                            <ul className="flex xs:justify-center flex-wrap gap-2 xs:gap-8 px-4 xs:p-0 my-4 text-sm md:text-base">
                                 {
                                     userInfo?.profile?.location ? (
                                         <li

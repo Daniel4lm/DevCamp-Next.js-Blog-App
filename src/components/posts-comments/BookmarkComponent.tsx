@@ -1,5 +1,5 @@
+import { UserPost } from '@/models/Post'
 import { PostTagIcon, TagIcon } from '../Icons'
-import { Post } from "@prisma/client"
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { User as SessionUser } from "next-auth"
 import { useState } from 'react'
@@ -7,7 +7,7 @@ import { useState } from 'react'
 interface BookmarkPostProps {
     isBookmarked: boolean
     currentUser: SessionUser | undefined
-    post: Post
+    post: UserPost
 }
 
 interface HandleLikeProps {
@@ -75,18 +75,18 @@ function BookmarkPost({ isBookmarked, currentUser, post }: BookmarkPostProps) {
         <>
             <div className='flex sm:flex-col py-1 items-center' >
                 {currentUser && currentUser.id !== post?.authorId ?
-                    (<div className={`rounded-full p-2 ${saved ? 'text-blue-500 dark:text-blue-500' : ''} cursor-pointer border border-transparent hover:text-blue-500 hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-transparent dark:hover:border-transparent`}>
+                    (<div className={`rounded-full p-2 ${saved ? 'text-blue-500 dark:text-blue-500' : ''} cursor-pointer border border-transparent hover:text-blue-500 dark:hover:text-blue-500 dark:text-slate-100 hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-transparent dark:hover:border-transparent`}>
                         <button
                             id={`bookmark-component-${post.id}`}
                             disabled={mutationFunction.isLoading || delay}
                             onClick={changeBookmarkStatus}
-                            className="focus:outline-none block"
+                            className="focus:outline-none block "
                         >
                             <PostTagIcon isTaged={saved} />
                         </button>
                     </div>)
                     :
-                    (<div id="bookmark-icon" className="px-2 md:px-0 py-2 text-slate-800">
+                    (<div id="bookmark-icon" className="px-2 md:px-0 py-2 text-slate-800 dark:text-slate-500">
                         <PostTagIcon isTaged={saved} />
                     </div>)
                 }

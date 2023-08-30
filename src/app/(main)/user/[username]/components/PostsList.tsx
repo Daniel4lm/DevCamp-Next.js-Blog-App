@@ -2,10 +2,8 @@
 
 import { SmallPostCard } from "@/components/posts-comments/CardsComponent"
 import UserPostsSkeleton from "@/components/skeletons/UserPostsSkeleton"
-import { PostComment } from "@/models/Comment"
 import { UserPost } from "@/models/Post"
 import { User } from "@/models/User"
-import { Comment, Tag } from "@prisma/client"
 import { useCallback, useEffect, useRef, useState } from "react"
 
 interface PostsListProps {
@@ -107,10 +105,7 @@ const PostsList = ({ user }: PostsListProps) => {
                         {isLoading || !userPosts.length ? (<UserPostsSkeleton />) : null}
 
                         {hasNextPage ? (
-                            <>
-                                <div id="infinite-scroll-marker" className="h-24"></div>
-                                {/* {<div className="loader text-gray-300 dark:text-slate-400"></div>} */}
-                            </>
+                            <div id="infinite-scroll-marker" className="h-24"></div>
                         ) : null}
                     </>
                 )

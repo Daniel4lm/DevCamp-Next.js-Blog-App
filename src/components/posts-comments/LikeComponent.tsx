@@ -1,3 +1,4 @@
+import { UserPost } from '@/models/Post'
 import { HeartIcon, LikeIcon } from '../Icons'
 import { Post, Comment } from "@prisma/client"
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -7,7 +8,7 @@ import { useState } from 'react'
 interface LikeComponentProps {
     isLiked: boolean
     currentUser: SessionUser | undefined
-    resource: Post | Comment & { slug?: string; }
+    resource: UserPost | Comment & { slug?: string; }
     resourceType: 'post' | 'comment'
 }
 
@@ -88,18 +89,18 @@ function LikeComponent({ isLiked, currentUser, resource, resourceType }: LikeCom
         <>
             <div className={`${LikeStyle[resourceType as keyof typeof LikeStyle]}`} >
                 {currentUser && currentUser.id !== resource?.authorId ?
-                    (<div className={`rounded-full ${resourceType === 'post' ? 'p-2 hover:border-indigo-300 hover:bg-indigo-50' : ''} cursor-pointer border border-transparent dark:hover:bg-transparent dark:hover:border-transparent`}>
+                    (<div className={`rounded-full ${resourceType === 'post' ? 'p-2 hover:border-indigo-300 hover:bg-indigo-50' : ''} cursor-pointer border border-transparent text-slate-800 dark:text-slate-100 hover:text-[#6B78F3] dark:hover:text-[#6B78F3] dark:hover:bg-transparent dark:hover:border-transparent`}>
                         <button
                             id={`like-component-${resource.id}`}
                             disabled={mutationFunction.isLoading || delay}
                             onClick={changeLikeStatus}
-                            className="focus:outline-none block text-slate-800 hover:text-[#6B78F3]"
+                            className="focus:outline-none block "
                         >
                             <LikeIcon liked={liked} />
                         </button>
                     </div>)
                     :
-                    (<div id="like-icon" className="px-2 md:px-0 py-2 text-slate-800">
+                    (<div id="like-icon" className="px-2 md:px-0 py-2 text-slate-800 dark:text-slate-500">
                         <HeartIcon />
                     </div>)
                 }
