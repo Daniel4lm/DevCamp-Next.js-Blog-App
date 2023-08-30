@@ -1,4 +1,5 @@
 import prismaClient from '@/lib/db/prismaClient'
+import { resolve } from 'path'
 
 function paginationQuery(take: number, skip: number) {
     return {
@@ -205,6 +206,7 @@ let PostTask = {
 
         let query = paginationQuery(take, skip)
 
+        
         if (Object.keys(searchQuery).length) {
             query = {
                 ...query,
@@ -212,7 +214,15 @@ let PostTask = {
             }
         }
 
-        return await prismaClient.post.findMany(query)
+        const getPostsCount = this.getNumOfRecords(searchQuery)
+
+        //return await prismaClient.post.findMany(query)
+        await new Promise(resolve => setTimeout(resolve, 1000))
+
+        return {
+            posts: await prismaClient.post.findMany(query),
+            count: (await getPostsCount)._count
+        }
     },
     getPostSlugs: async function () {
         return await prismaClient.post.findMany({
