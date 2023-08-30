@@ -1,7 +1,7 @@
 
 # Instacamp Blog App
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This is a [Next.js](https://nextjs.org/) ver.13.4 project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 This app, partially inspired by [Dev.to](https://dev.to/) is a small app platform as part of my personal challenge to help me improve my coding knowledge.
 
 InstaCamp is made with the Next.js React web framework.
@@ -79,17 +79,17 @@ Comming soon ...
    
 Implement next features:  
 
-- [ ] Finish welcome/home feed page
+- [x] Finish welcome/home feed page
 - User Settings page
-  - [ ] Add web page with user account form
-  - [ ] Add web page with user password-change form
+  - [x] Add web page with user account form
+  - [x] Add web page with user password-change form
 - [x] Resize user avatar image while uploading(Implemented by using sharp package)
-- [ ] Complete page for searching posts by topic/tag(or incorporate it with the home page due the similar logic)
+- [x] Complete page for searching posts by topic/tag(or incorporate it with the home page due the similar logic)
 - [x] User can make comment on other comment. Maybe something like @mention or comment reply(implemented comment reply system)
 - [ ] Cover more code with tests
 - [x] Register/Login and customize their account(implemented by using NextAuth)
-- [ ] Implement Like feature for posts and comments
-- [ ] Implement Bookmark/tag feature for posts
+- [x] Implement Like feature for posts and comments
+- [x] Implement Bookmark/tag feature for posts
 - [x] Implement Follow/Unfollow users feature
 - [ ] Receive activity messages when:
   - other users comment or like their posts/comments
@@ -117,6 +117,16 @@ datasource db {
   provider = "mysql" or "postgresql" <- your db provider name
   url      = env("DATABASE_URL")
 }
+```
+
+Migrate your database and create prisma client:
+
+```bash 
+# db migration 
+npm run/yarn/pnpm migrate:dev
+
+# generate prisma client
+npm run/yarn/pnpm prisma:generate
 ```
 
 Seed your db with command:
