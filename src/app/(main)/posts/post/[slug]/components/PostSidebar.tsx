@@ -4,37 +4,24 @@ import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { User as SessionUser } from "next-auth"
-import { Post, Tag, Like, PostBookmark } from "@prisma/client"
 import { CommentIcon, DeleteIcon, EditIcon, LinkIcon, OptsIcon } from "@/components/Icons"
 import Modal from "@/components/Modal"
 import ToolTip from "@/components/Tooltip"
 import useModalShow from "@/hooks/useModalShow"
 import useOutsideClick from "@/hooks/useOutsideClick"
 import { copyPostUrl, getURL } from "@/lib/helperFunctions"
-import { PostComment } from "@/models/Comment"
 import SmartLink from "@/components/navigation/SmartLink"
 import LikeComponent from "@/components/posts-comments/LikeComponent"
 import BookmarkPost from "@/components/posts-comments/BookmarkComponent"
-import { User } from "@/models/User"
+import { UserPost } from "@/models/Post"
 
 interface PostProps {
-    data: (Post & {
-        author: User
-        bookmarks: PostBookmark[]
-        tags: Tag[]
-        likes: Like[]
-        comments: PostComment[]
-    } | undefined)
+    data: UserPost | undefined
     currentUser: SessionUser | undefined
 }
 
 interface OptsMenuProps {
-    data: (Post & {
-        author: User
-        tags: Tag[]
-        likes: Like[]
-        comments: PostComment[]
-    } | undefined)
+    data: UserPost | undefined
     currentUser: SessionUser | undefined
     isOpen: 'open' | 'close'
     closeFunc: () => void
@@ -171,11 +158,11 @@ const PostSidebar = ({ data, currentUser }: PostProps) => {
     // }
 
     function isLiked(currentUser: SessionUser | undefined, postData: Pick<PostProps, 'data'> | undefined) {
-        return postData?.data?.likes.some(like => like.authorId === currentUser?.id)
+        return (postData?.data?.likes || []).some(like => like.authorId === currentUser?.id)
     }
 
     function isBookmarked(currentUser: SessionUser | undefined, postData: Pick<PostProps, 'data'> | undefined) {
-        return postData?.data?.bookmarks.some(bookmark => bookmark.authorId === currentUser?.id)
+        return (postData?.data?.bookmarks || []).some(bookmark => bookmark.authorId === currentUser?.id)
     }
 
     useEffect(() => {
@@ -209,7 +196,7 @@ const PostSidebar = ({ data, currentUser }: PostProps) => {
                 <ToolTip position="right" title="Like the Post">
                     <LikeComponent
                         currentUser={currentUser}
-                        resource={data as Post}
+                        resource={data as UserPost}
                         resourceType="post"
                         isLiked={isLiked(currentUser, { data: data }) || false}
                     />
@@ -223,7 +210,7 @@ const PostSidebar = ({ data, currentUser }: PostProps) => {
                         >
                             <div
                                 id="post-comment-icon"
-                                className="rounded-full p-2 cursor-pointer border border-transparent hover:border-orange-200 hover:bg-orange-100 hover:text-amber-500 dark:hover:bg-transparent dark:hover:border-transparent"
+                                className="rounded-full p-2 cursor-pointer border border-transparent hover:border-amber-400/40 hover:bg-amber-200/20 hover:text-amber-500 dark:hover:bg-transparent dark:hover:border-transparent"
                             >
                                 <CommentIcon />
                             </div>
@@ -235,7 +222,7 @@ const PostSidebar = ({ data, currentUser }: PostProps) => {
                 <ToolTip position="right" title="Save the Post">
                     <BookmarkPost
                         currentUser={currentUser}
-                        post={data as Post}
+                        post={data as UserPost}
                         isBookmarked={isBookmarked(currentUser, { data: data }) || false}
                     />
                 </ToolTip>
