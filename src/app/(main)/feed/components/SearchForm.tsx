@@ -12,7 +12,7 @@ import { mergeUrlParams } from '@/lib/helperFunctions'
 export default function SearchForm({ initValue, searchResults, urlOptions }: {
     initValue?: string,
     urlOptions: { [x: string]: string | number | boolean | undefined },
-    searchResults: User[]
+    searchResults?: User[]
 }) {
     const [value, setValue] = useState(initValue || '')
     const [openList, setOpenList] = useState(false)
@@ -123,14 +123,14 @@ export default function SearchForm({ initValue, searchResults, urlOptions }: {
                 </div>
             </form>
 
-            {openList ? (
+            {searchResults && openList ? (
                 <ul
                     id="post-search-list"
                     className={
-                        `absolute z-50 top-[110%] left-0 w-full border bg-white dark:bg-slate-600 dark:text-slate-100 border-slate-300 dark:border-slate-500 rounded-lg overflow-hidden shadow-lg ${searchResults.length > 0 ? "h-auto" : "h-40"} #{@overflow_y_scroll_ul}`
+                        `absolute z-50 top-[110%] left-0 w-full border bg-white dark:bg-slate-600 dark:text-slate-100 border-slate-300 dark:border-slate-500 rounded-lg overflow-hidden shadow-lg ${searchResults?.length > 0 ? "h-auto" : "h-40"} #{@overflow_y_scroll_ul}`
                     }
                 >
-                    {searchResults.length ? (
+                    {searchResults?.length ? (
                         <>
                             <p className="p-2 text-sm">Found users</p>
                             <hr />
