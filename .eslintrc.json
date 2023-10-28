@@ -6,7 +6,11 @@
   },
   "extends": [
     "next",
-    "next/core-web-vitals"
+    "next/core-web-vitals",
+    "plugin:testing-library/react",
+    "plugin:jest-dom/recommended",
+    "plugin:jest/recommended",
+    "plugin:jest/style"
   ],
   "overrides": [],
   "parserOptions": {
@@ -17,11 +21,25 @@
   },
   "plugins": [
     "react",
-    "@tanstack/query"
+    "@tanstack/query",
+    "cypress"
   ],
   "rules": {
     "react/no-unescaped-entities": "off",
-    "react/display-name": "off"
+    "react/display-name": "off",
+    "cypress/no-assigning-return-values": "error",
+    "cypress/no-unnecessary-waiting": "error",
+    "cypress/assertion-before-screenshot": "warn",
+    "cypress/no-force": "warn",
+    "cypress/no-async-tests": "error",
+    "cypress/no-pause": "error",
+    "jest/expect-expect": [
+      "off",
+      {
+        "assertFunctionNames": ["expect"],
+        "additionalTestBlockFunctions": []
+      }
+    ]
     //"@tanstack/query/exhaustive-deps": "error",
     //"@tanstack/query/prefer-query-object-syntax": "error"
   }
