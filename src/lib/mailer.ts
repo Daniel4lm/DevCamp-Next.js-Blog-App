@@ -13,7 +13,7 @@ function sendEmail(messageData: MailgunMessageData) {
     return new Promise((resolve, rej) => {
         client.messages.create(MAIL_DOMAIN, messageData)
             .then((res) => {
-                console.log('mailgun res ... ', res)
+                console.info('mailgun res ... ', res)
                 resolve(res)
             })
             .catch((err) => {
@@ -31,17 +31,31 @@ export function sendConfirmationEmail(userEmail: string, username: string, token
         html:
             `
             <p>
-                Hi. Someone requested a password reset for your account. If this was not you,
+                Hi <b>${username}</b>. Someone(hopefully you) requested a password reset for your account. If this was not you,
                 please disregard this email.
             </p>
             <p>You can reset your password by visiting the url below:</p>
-            
-            <a href="${process.env.NEXT_PUBLIC_SITE_URL}/settings/reset-password/${username}?email=${userEmail}&token=${token}" 
+            <a style="background-color: #348eda;
+                        border-color: #348eda;
+                        color: #fff;
+                        border-radius: 55px;
+                        display: inline-block;
+                        font-size: 14px;
+                        font-weight: bold;
+                        margin: 0;
+                        padding: 12px 25px;
+                        text-decoration: none;
+                        text-transform: capitalize;"
+                href="${process.env.NEXT_PUBLIC_SITE_URL}/settings/reset-password/${username}?email=${userEmail}&token=${token}" 
                 target="_blank"
             >
                 Reset your Intacamp password
             </a>
-            <p>Thanks, InstaCamp Team</p>
+            <br>
+            <br>
+            <p style="margin-top:15px;">For security reasons, this link is only valid for four hours.</p>
+
+            <p><b>Thanks, InstaCamp Team</b></p>
             `
         ,
         'recipient-variables': JSON.stringify({
