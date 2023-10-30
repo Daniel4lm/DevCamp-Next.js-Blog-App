@@ -1,11 +1,13 @@
-import { Post, Prisma, Profile, Tag, Like, PostBookmark } from "@prisma/client"
+import { Post, Prisma, Tag, Like, PostBookmark } from "@prisma/client"
 import { useQuery } from "@tanstack/react-query"
 import { PostComment } from "../models/Comment"
 import { User } from "@/models/User"
 
-const usePostQuery = (slug: string) => {
+const usePostQuery = (slug: string, condition: boolean = true) => {
     return useQuery({
         queryKey: ['post', slug],
+        enabled: condition,
+        retry: 4,
         queryFn: async function () {
             const blogFetch = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/posts/${slug}`)
             const postJson = await blogFetch.json()
@@ -23,16 +25,36 @@ const usePostQuery = (slug: string) => {
 }
 
 const useUserQuery = (username: string, userData?: User) => {
-    return useQuery({
+    return useQuery(useUserQueryData(username, userData))
+}
+
+const useUserQueryData = (username: string, userData?: User) => {
+    return {
         queryKey: ['user', username],
         enabled: username != null,
         queryFn: async function () {
             const userFetch = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/users/${username}`)
             const userJson = await userFetch.json()
-            return userJson.user
+            return userJson.user as User
         },
         initialData: userData,
-    })
+    }
+}
+
+const useFollowingsQuery = (username: string, userId: string) => {
+    return useQuery(useFollowingsQueryData(username, userId))
+}
+
+const useFollowingsQueryData = (username: string, userId: string) => {
+    return {
+        queryKey: [`user-${username}-followings`],
+        enabled: username != null && userId != null,
+        queryFn: async function () {
+            const followRes = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/users/${username}/follow?username=${userId}`)
+            const followData = await followRes.json()
+            return followData
+        },
+    }
 }
 
 const useCommentsQuery = (postId: string, initialComments?: PostComment[]) => {
@@ -47,17 +69,4 @@ const useCommentsQuery = (postId: string, initialComments?: PostComment[]) => {
     })
 }
 
-const useFollowingsQuery = (username: string, userId: string) => {
-    return useQuery({
-        queryKey: [`user-${username}-followings`],
-        enabled: username != null && userId != null,
-        queryFn: async function () {
-            const followRes = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/users/${username}/follow?username=${userId}`)
-            const followData = await followRes.json()
-            return followData
-        },
-    })
-}
-
-
-export { useCommentsQuery, useFollowingsQuery, usePostQuery, useUserQuery }
+export { useCommentsQuery, useFollowingsQuery, usePostQuery, useUserQuery, useUserQueryData, useFollowingsQueryData }
