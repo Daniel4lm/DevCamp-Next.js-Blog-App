@@ -3,36 +3,42 @@ import { randomUUID } from 'crypto'
 
 let UserTask = {
     getUser: async function (searchQuery = {}) {
-        return await prismaClient.user.findFirst({
-            where: searchQuery,
-            select: {
-                id: true,
-                avatarUrl: true,
-                email: true,
-                username: true,
-                fullName: true,
-                postsCount: true,
-                role: true,
-                profile: true,
-                posts: {
-                    include: {
-                        author: true,
-                        tags: true
-                    }
-                },
-                followersCount: true,
-                followingCount: true
-            }
-        })
+
+        try {
+            return await prismaClient.user.findFirst({
+                where: searchQuery,
+                select: {
+                    id: true,
+                    avatarUrl: true,
+                    email: true,
+                    username: true,
+                    fullName: true,
+                    postsCount: true,
+                    role: true,
+                    profile: true,
+                    posts: {
+                        include: {
+                            author: true,
+                            tags: true
+                        }
+                    },
+                    followersCount: true,
+                    followingCount: true
+                }
+            })
+        } catch (err) {
+            if (err instanceof Error) console.error(`Error: ${err.message}`)
+            return undefined
+        }
     },
     getActivePasswordResetStatus: async function (userId: string) {
         return await prismaClient.resetPasswordToken.findFirst({
             where: {
                 userId: userId,
                 createdAt: {
-                    gt: new Date(Date.now() - 24 * 60 * 60 * 1000), // 24 hours ago
+                    gt: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
                 },
-                resetedAt: null
+                resetAt: null
             }
         })
     },
@@ -48,26 +54,51 @@ let UserTask = {
 
         const updateDate = new Date()
 
-        const invalidatedToken = await prismaClient.resetPasswordToken.update({
+        const passwordResetToken = await prismaClient.resetPasswordToken.findUnique({
             where: {
-                token: token
-            },
-            data: {
-                resetedAt: updateDate,
+                token: token,
+                createdAt: {
+                    gt: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
+                },
+                resetAt: null
             }
         })
 
-        if (invalidatedToken.resetedAt) {
-            return await prismaClient.user.update({
-                where: {
-                    id: invalidatedToken.userId
-                },
-                data: {
-                    passwordUpdatedAt: updateDate,
-                    hashedPassword: password
-                }
-            })
-        }
+        const invalidatedToken = prismaClient.resetPasswordToken.update({
+            where: {
+                id: passwordResetToken?.id
+            },
+            data: {
+                resetAt: updateDate,
+            }
+        })
+
+        const updatedUser = prismaClient.user.update({
+            where: {
+                id: passwordResetToken?.userId
+            },
+            data: {
+                passwordUpdatedAt: updateDate,
+                hashedPassword: password
+            }
+        })
+
+        // if (invalidatedToken.resetAt) {
+        //     return await prismaClient.user.update({
+        //         where: {
+        //             id: invalidatedToken.userId
+        //         },
+        //         data: {
+        //             passwordUpdatedAt: updateDate,
+        //             hashedPassword: password
+        //         }
+        //     })
+        // }
+
+
+        return await prismaClient.$transaction([
+            invalidatedToken, updatedUser
+        ])
     },
     getUsers: async function (searchQuery = {}) {
 
@@ -222,7 +253,7 @@ let UserTask = {
     },
     updateUser: async function (userData: any) {
 
-        const { bio, location, website, siteTheme, ...data } = userData
+        const { bio, fontName, location, siteTheme, website, ...data } = userData
 
         return await prismaClient.user.update({
             where: {
@@ -235,12 +266,27 @@ let UserTask = {
                         bio: bio,
                         location: location,
                         website: website,
-                        themeMode: siteTheme
+                        themeMode: siteTheme,
+                        fontName: fontName
                     }
                 }
             },
             include: {
                 profile: true
+            }
+        })
+    },
+    updateProfile: async function (userId: string, data: {}) {
+
+        return await prismaClient.profile.update({
+            where: {
+                userId: userId
+            },
+            data: {
+                ...data
+            },
+            include: {
+                user: true
             }
         })
     }

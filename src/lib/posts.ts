@@ -1,5 +1,6 @@
 import prismaClient from '@/lib/db/prismaClient'
-import { resolve } from 'path'
+import { ArticleColumnType, Prisma } from '@prisma/client'
+//import { User } from '@/models/User'
 
 function paginationQuery(take: number, skip: number) {
     return {
@@ -10,7 +11,7 @@ function paginationQuery(take: number, skip: number) {
             bookmarks: true,
             likes: true,
             author: {
-                select: excludeUserFields(['hashedPassword', 'refreshToken', 'posts'])
+                select: prismaExclude('User', ['hashedPassword'])
             },
         },
         take: take,
@@ -206,7 +207,6 @@ let PostTask = {
 
         let query = paginationQuery(take, skip)
 
-        
         if (Object.keys(searchQuery).length) {
             query = {
                 ...query,
@@ -219,9 +219,19 @@ let PostTask = {
         //return await prismaClient.post.findMany(query)
         await new Promise(resolve => setTimeout(resolve, 1000))
 
-        return {
-            posts: await prismaClient.post.findMany(query),
-            count: (await getPostsCount)._count
+        try {
+            return {
+                posts: await prismaClient.post.findMany(query),
+                count: (await getPostsCount)._count
+            }
+        } catch (err) {
+            if (err instanceof Error) console.error(`Error: ${err.message}`)
+            return {
+                posts: [],
+                count: {
+                    id: 0
+                }
+            }
         }
     },
     getPostSlugs: async function () {
@@ -336,6 +346,45 @@ let PostTask = {
                 postId: postId
             },
             _count: { id: true }
+        })
+    },
+    getAllArticlesGroupedInColumns: async function (userId: string) {
+        return await prismaClient.articleBoardColumn.findMany({
+            select: {
+                id: true,
+                title: true,
+                type: true,
+                description: true,
+                posts: {
+                    where: {
+                        authorId: userId
+                    },
+                    include: {
+                        author: true,
+                        tags: true
+                    }
+                },
+                color: true
+            }
+        })
+    },
+    moveArticle: async function (articleId: string, columnType: ArticleColumnType) {
+
+        console.log('Prisma side - move-article ', articleId, columnType)
+
+        const boardColumn = await prismaClient.articleBoardColumn.findFirst({
+            where: {
+                type: columnType
+            }
+        })
+
+        return await prismaClient.post.update({
+            where: {
+                id: articleId
+            },
+            data: {
+                columnId: boardColumn?.id
+            },
         })
     },
     // getPostComments: async function (take: number, skip: number, postId: string) {
@@ -494,9 +543,14 @@ function excludeUserFields(keys: string[]) {
         insertedAt: true,
         updatedAt: true,
         postsCount: true,
-        refreshToken: true,
         profile: true,
-        posts: true
+        posts: true,
+        comments: true,
+        bookmarks: true,
+        likes: true,
+        passwordUpdatedAt: true,
+        followings: true,
+        followers: true
     }
 
     return Object.entries(userFields).reduce((acc: any, cv) => {
@@ -507,6 +561,37 @@ function excludeUserFields(keys: string[]) {
         }
     }, {})
 }
+
+type A<T extends string> = T extends `${infer U}ScalarFieldEnum` ? U : never;
+type Entity = A<keyof typeof Prisma>;
+type Keys<T extends Entity> = Extract<
+    keyof (typeof Prisma)[keyof Pick<typeof Prisma, `${T}ScalarFieldEnum`>],
+    string
+>;
+
+export function prismaExclude<T extends Entity, K extends Keys<T>>(
+    type: T,
+    omit: K[],
+) {
+    type Key = Exclude<Keys<T>, K>;
+    type TMap = Record<Key, true>;
+    const result: TMap = {} as TMap;
+    for (const key in Prisma[`${type}ScalarFieldEnum`]) {
+        if (!omit.includes(key as K)) {
+            result[key as Key] = true;
+        }
+    }
+    return result;
+}
+
+// function exclude(
+//     user: User,
+//     keys: string[]
+// ): Omit<User, string> {
+//     return Object.fromEntries(
+//         Object.entries(user).filter(([key]) => !keys.includes(key))
+//     )
+// }
 
 /*
 function filterUserFields<User, Key extends keyof User>(user: User, keys: Key[]): Omit<User, Key> {
