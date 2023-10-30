@@ -13,7 +13,7 @@ function ReactQueryProvider({ children }: ProviderType) {
     return (
         <QueryClientProvider client={queryClient}>
             {children}
-            <ReactQueryDevtools initialIsOpen />
+            {process.env.REACT_APP_SHOW_DEV_TOOLS ? <ReactQueryDevtools initialIsOpen /> : null}
         </QueryClientProvider>
     )
 }
