@@ -1,4 +1,5 @@
 import { DeleteIcon, UnsupportedIcon, UploadImage } from '@/components/Icons'
+import Image from 'next/image'
 import React from 'react'
 
 function UploadImageContainer({ uploadImage, valid, cancelUpload }: { valid: boolean, uploadImage?: File, cancelUpload: () => void }) {
@@ -19,7 +20,7 @@ function UploadImageContainer({ uploadImage, valid, cancelUpload }: { valid: boo
                             <p className="drag-sub-el text-sm md:text-base font-light text-gray-500 dark:text-gray-50">
                                 Your file must be in JPG or PNG format
                             </p>
-                            <label htmlFor='postImage' className="flex cursor-pointer justify-center my-8 text-[#7B8DE1]">
+                            <label htmlFor='post-upload-image' className="flex cursor-pointer justify-center my-8 text-[#7B8DE1]">
                                 {valid ?
                                     <UploadImage />
                                     :
@@ -49,7 +50,13 @@ function UploadImageContainer({ uploadImage, valid, cancelUpload }: { valid: boo
                                             id="post-image"
                                             className={`relative min-w-[8rem] h-[8rem] mx-auto bg-white rounded-lg p-1 while-submitting-form`}
                                         >
-                                            <img src={uploadImage ? URL.createObjectURL(uploadImage) : ''} className="w-full h-full rounded-lg object-cover object-center" />
+                                            <Image
+                                                alt='Blog Upload Photo'
+                                                src={uploadImage ? URL.createObjectURL(uploadImage) : ''}
+                                                className="w-full h-full rounded-lg object-cover object-center"
+                                                width={600}
+                                                height={400}
+                                            />
                                             <div
                                                 id="cancel-image-upload"
                                                 onClick={cancelUpload}

@@ -1,5 +1,5 @@
-import PostTask from "@/lib/posts";
 import { NextRequest, NextResponse } from "next/server";
+import PostTask from "@/lib/posts";
 
 export async function GET(request: NextRequest) {
     try {

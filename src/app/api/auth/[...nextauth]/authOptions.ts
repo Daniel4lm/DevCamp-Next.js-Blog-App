@@ -49,6 +49,9 @@ export const authOptions: NextAuthOptions = {
                             username: foundUser.username,
                             avatarUrl: foundUser.avatarUrl,
                             themeMode: foundUser.profile?.themeMode,
+                            fontName: foundUser.profile?.fontName,
+                            profileVisited: foundUser.profile?.profileVisited,
+                            kanbanColumnsReviewed: foundUser.profile?.kanbanColumnsReviewed,
                             role: foundUser.role
                         } as User
                     }

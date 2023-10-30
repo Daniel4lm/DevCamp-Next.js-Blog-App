@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import isBrowser from '@/lib/isBrowser'
 
 function useDarkMode(status?: "authenticated" | "loading" | "unauthenticated") {
-    const [themeMode, setThemeMode] = useState<string>(() => getModeFromChache())
+    const [themeMode, setThemeMode] = useState<'light' | 'dark'>(() => getModeFromChache())
 
     function getModeFromChache() {
         const checkMode = isBrowser() && window.localStorage.getItem('theme')

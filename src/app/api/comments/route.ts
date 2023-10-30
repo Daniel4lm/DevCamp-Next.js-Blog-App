@@ -1,6 +1,6 @@
-import PostTask from "@/lib/posts"
 import { NextRequest, NextResponse } from "next/server"
 import prisma from '@/lib/db/prismaClient'
+import PostTask from "@/lib/posts"
 
 export async function POST(request: NextRequest) {
     try {

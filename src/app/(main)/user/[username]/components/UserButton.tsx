@@ -141,7 +141,7 @@ function RenderUserEdit({ username }: { username: string }) {
         <div className="my-2">
             <Link
                 href={`/settings/account/${username}`}
-                className="py-1 px-4 border-2 rounded-full font-semibold hover:bg-gray-50 dark:hover:bg-inherit"
+                className="py-1 px-4 border-2 rounded-full font-semibold hover:bg-gray-50 dark:hover:bg-inherit dark:border-slate-400"
             >
                 Edit Profile
             </Link>

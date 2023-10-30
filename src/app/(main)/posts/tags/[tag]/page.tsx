@@ -59,12 +59,12 @@ export default function PostsListByTag({ params }: PageProps) {
                         <Skeleton classes='text width-50 my-2' />
                     </>
                 ) : (
-                    <h3 className="mx-auto text-base sm:text-lg text-center font-light my-2">
+                    <h3 className="mx-auto text-base sm:text-lg text-center font-light my-4">
                         {totalCount > 0 ? `Results of ${totalCount} ${totalCount === 1 ? "post" : "posts"}` : `There is no results for ${tag}`}
                     </h3>
                 )}
             </div>
-            <section className="w-full sm:w-10/12 md:w-2/3 xl:w-3/6 min-h-[45vh] dark:text-slate-100 mx-auto px-2 xs:px-4 md:px-0 pb-8 mb-1 mt-6 sm:mt-0">
+            <section className="w-full sm:w-10/12 md:w-2/3 xl:w-3/6 2xl:max-w-[44rem] min-h-[45vh] dark:text-slate-100 mx-auto px-2 xs:px-4 md:px-0 pb-8 mb-1 mt-6 sm:mt-0">
                 <div id="posts-list-slug" className="flex flex-col gap-y-4 mt-4">
                     {
                         userPosts?.pages.map((page) => {

@@ -1,6 +1,6 @@
+import { NextRequest, NextResponse } from "next/server"
 import PostTask from "@/lib/posts"
 import UserTask from "@/lib/user"
-import { NextRequest, NextResponse } from "next/server"
 
 export async function GET(request: NextRequest) {
 

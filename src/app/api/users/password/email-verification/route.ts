@@ -1,6 +1,6 @@
+import { NextRequest, NextResponse } from "next/server"
 import { sendConfirmationEmail } from "@/lib/mailer"
 import UserTask from "@/lib/user"
-import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
 
@@ -8,10 +8,10 @@ export async function POST(request: NextRequest) {
 
     try {
         const user = await UserTask.getUser({ email: email })
-        if (!user) return NextResponse.json({ error: 'User not found!' }, { status: 404 })
+        if (!user) return NextResponse.json({ error: 'User not found!', status: 404 }, { status: 404 })
 
         const maybeActiveRequest = await UserTask.getActivePasswordResetStatus(user.id)
-        if (maybeActiveRequest) return NextResponse.json({ message: "Email to reset password was already sent!" })
+        if (maybeActiveRequest) return NextResponse.json({ message: "Email to reset password was already sent!", status: 403 }, { status: 403 })
 
         const newResetToken = await UserTask.createResetPasswordToken(user.id)
 

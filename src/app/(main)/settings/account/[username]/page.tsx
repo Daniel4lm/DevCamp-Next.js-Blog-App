@@ -28,7 +28,7 @@ interface UserDataProps {
 /* SEO */
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { username } = params
-    let userData: UserDataProps | null = null
+    let userData: UserDataProps | null | undefined = null
 
     try {
         const userResponse = UserTask.getUser({ username: username })
@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function PostFormPage({ params }: PageProps) {
 
     const { username } = params
-    let userData: { [x: string]: string } | null = null
+    let userData: { [x: string]: string } | null | undefined = null
 
     try {
         const userResponse = await UserTask.getUser({ username: username })
@@ -62,6 +62,7 @@ export default async function PostFormPage({ params }: PageProps) {
             website: userResponse?.profile?.website || '',
             bio: userResponse?.profile?.bio || '',
             siteTheme: userResponse?.profile?.themeMode || 'LIGHT',
+            fontName: userResponse.profile?.fontName || 'font-default',
             avatarUrl: userResponse?.avatarUrl || ''
         }
 

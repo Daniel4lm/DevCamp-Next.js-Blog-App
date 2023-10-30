@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
         const numOfPages: number = (Math.ceil(totalCount._count.id / curLimit))
 
         return NextResponse.json({
-            posts: pagePosts,
+            posts: pagePosts.posts,
             totalPages: numOfPages,
             totalCount: totalCount._count.id
         })

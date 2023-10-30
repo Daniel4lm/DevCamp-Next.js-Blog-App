@@ -6,7 +6,7 @@ function PaginationSkeleton() {
 
             {[...Array(6).keys()].map(i => {
                 return (
-                    <div key={`card-${i}-1`} className='w-full h-[300px] xl:h-[340px] rounded-xl p-2 border-2'>
+                    <div key={`card-${i}-1`} className='w-full h-[300px] xl:h-[340px] rounded-xl p-2 border-2 dark:border-slate-500'>
 
                         <Skeleton classes='width-100 h-[220px] mb-2' />
                         <hr />

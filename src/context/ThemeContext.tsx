@@ -6,7 +6,7 @@ import { ProviderType, ThemeStateType } from './types'
 import { useSession } from 'next-auth/react'
 
 const ThemeContext = createContext<ThemeStateType>({
-    themeMode: '',
+    themeMode: 'light',
     toggleMode: () => null
 })
 

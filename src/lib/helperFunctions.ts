@@ -6,7 +6,7 @@ import relativeTime from "dayjs/plugin/relativeTime"
 export function createSlug(title: string) {
     return title.toLowerCase()
         .trim()
-        .replaceAll(/[^a-zA-Z0-9 &]/g, '')
+        .replaceAll(/[^a-zA-Z0-9&]/g, ' ')
         .replaceAll("&", "and")
         .replaceAll(/(\s{1,})/g, " ")
         .split(' ')
@@ -31,7 +31,7 @@ export function postReadingTime(innerText: string) {
 
 export function getURL(path: string) {
     const baseURL = !isBrowser ? process.env.NEXT_PUBLIC_SITE_URL : window.location.origin
-    return new URL(path, baseURL).toString();
+    return new URL(path, baseURL).toString()
 }
 
 export function mergeUrlParams(options: {}) {

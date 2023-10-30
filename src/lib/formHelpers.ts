@@ -99,5 +99,6 @@ export const formChangesetValidation = (formInstance: IObjectKeys, fieldName: st
 }
 
 export const displayWebsiteUri = (website: string) => {
+    if (!website) return null
     return website.replace('https://', '').replace('http://', '')
 }

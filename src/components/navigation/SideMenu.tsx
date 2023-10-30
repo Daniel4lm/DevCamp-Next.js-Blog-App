@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import { CloseIcon, CloseSideMenuIcon } from "../Icons"
 
 interface SideMenuProps {
@@ -27,7 +28,7 @@ const positionClass = {
     right: 'right-0 top-0 rounded-l-2xl'
 }
 
-function SideMenu(props: SideMenuProps) {
+export function SideMenu(props: SideMenuProps) {
 
     // function hideMobileMenu() {
     //     props.closeFunc()
@@ -49,4 +50,6 @@ function SideMenu(props: SideMenuProps) {
     )
 }
 
-export default SideMenu
+//export default SideMenu
+
+export const MemoizedSideMenu = React.memo(SideMenu)
