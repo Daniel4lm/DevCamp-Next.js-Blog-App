@@ -13,6 +13,9 @@ declare module "next-auth" {
         username: string,
         avatarUrl: string,
         themeMode: string,
+        fontName: string,
+        profileVisited: boolean,
+        kanbanColumnsReviewed: string[],
         role: 'USER' | 'ADMIN'
     }
 

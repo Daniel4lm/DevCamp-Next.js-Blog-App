@@ -1,10 +1,13 @@
 import { Like, PostBookmark } from "@prisma/client";
 import { User } from "./User";
 import { PostComment } from "./Comment";
+import { ArticleBoardColumn } from "./ArticleBoard";
 
 export interface UserPost {
     id: string
     authorId: string
+    columnId: string
+    boardColumn?: ArticleBoardColumn
     title: string
     slug: string
     body: string

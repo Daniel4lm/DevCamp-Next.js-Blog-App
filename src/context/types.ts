@@ -5,6 +5,6 @@ export interface ProviderType {
 }
 
 export interface ThemeStateType {
-    themeMode: string
+    themeMode: 'light' | 'dark'
     toggleMode: () => void
 }

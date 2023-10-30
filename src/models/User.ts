@@ -1,3 +1,4 @@
+import { PostComment } from "./Comment"
 import { UserPost } from "./Post"
 
 export interface User {
@@ -6,16 +7,21 @@ export interface User {
     username: string
     fullName: string
     email: string
-    hashedPassword?: string | null
-    insertedAt?: Date | null
-    updatedAt?: Date | null
+    hashedPassword?: string | null | undefined
+    insertedAt?: Date | null | undefined
+    updatedAt?: Date | null | undefined
     postsCount: number
     role: 'USER' | 'ADMIN'
-    refreshToken?: string | null
-    profile?: Profile | null
-    posts?: UserPost[] | null
+    profile?: Profile | null | undefined
+    posts?: UserPost[] | null | undefined
     followersCount: number
     followingCount: number
+    bookmarks?: []
+    comments?: PostComment[]
+    passwordUpdatedAt?: Date | null | undefined
+    resetPasswordTokens?: []
+    followings?: User[]
+    followers?: User[]
 }
 
 export interface Profile {
@@ -25,9 +31,11 @@ export interface Profile {
     password_updatedAt: Date | null
     lastLogin: Date | null
     themeMode: ThemeMode
+    profileVisited: boolean
+    kanbanColumnsReviewed?: string[]
     website: string | null
     location: string | null
-    user: User 
+    user: User
 }
 
 export enum ThemeMode {
