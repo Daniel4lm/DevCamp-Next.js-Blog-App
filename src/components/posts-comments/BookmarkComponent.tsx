@@ -7,7 +7,9 @@ import { useState } from 'react'
 interface BookmarkPostProps {
     isBookmarked: boolean
     currentUser: SessionUser | undefined
-    post: UserPost
+    post: UserPost,
+    showCounter?: boolean
+    outerFunc?: (value: string | number | undefined) => void
 }
 
 interface HandleLikeProps {
@@ -24,7 +26,7 @@ async function handleBookmark({ userId, postId, method }: HandleLikeProps) {
     return await res.json()
 }
 
-function BookmarkPost({ isBookmarked, currentUser, post }: BookmarkPostProps) {
+function BookmarkPost({ isBookmarked, currentUser, post, showCounter = false, outerFunc }: BookmarkPostProps) {
 
     const [saved, setSaved] = useState(isBookmarked)
     const [delay, setDelay] = useState(false)
@@ -33,27 +35,35 @@ function BookmarkPost({ isBookmarked, currentUser, post }: BookmarkPostProps) {
 
     const createBookmark = useMutation({
         mutationFn: handleBookmark,
-        onSuccess: () => {
+        onSuccess: async () => {
             setSaved(true)
+            outerFunc && outerFunc(post.id)
+            const queryPost = await queryClient.getQueryData(['post', post.slug])
 
-            queryClient.setQueryData(['post', post.slug],
-                (post: any) => {
-                    return { ...post, ...{ totalBookmarks: post.totalBookmarks + 1 } }
-                }
-            )
+            if (queryPost) {
+                queryClient.setQueryData(['post', post.slug],
+                    (post: any) => {
+                        return { ...post, ...{ totalBookmarks: post.totalBookmarks + 1 } }
+                    }
+                )
+            }
         },
     })
 
     const unBookmark = useMutation({
         mutationFn: handleBookmark,
-        onSuccess: () => {
+        onSuccess: async () => {
             setSaved(false)
+            outerFunc && outerFunc(post.id)
+            const queryPost = await queryClient.getQueryData(['post', post.slug])
 
-            queryClient.setQueryData(['post', post.slug],
-                (post: any) => {
-                    return { ...post, ...{ totalBookmarks: post.totalBookmarks - 1 } }
-                }
-            )
+            if (queryPost) {
+                queryClient.setQueryData(['post', post.slug],
+                    (post: any) => {
+                        return { ...post, ...{ totalBookmarks: post.totalBookmarks - 1 } }
+                    }
+                )
+            }
         },
     })
 
@@ -75,23 +85,25 @@ function BookmarkPost({ isBookmarked, currentUser, post }: BookmarkPostProps) {
         <>
             <div className='flex sm:flex-col py-1 items-center' >
                 {currentUser && currentUser.id !== post?.authorId ?
-                    (<div className={`rounded-full p-2 ${saved ? 'text-blue-500 dark:text-blue-500' : ''} cursor-pointer border border-transparent hover:text-blue-500 dark:hover:text-blue-500 dark:text-slate-100 hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-transparent dark:hover:border-transparent`}>
+                    (<div className={`rounded-full p-2 ${saved ? 'text-sky-500 dark:text-sky-500' : ''} cursor-pointer border border-transparent dark:text-slate-100 hover:border-blue-300 hover:bg-blue-50 dark:hover:bg-transparent dark:hover:border-transparent`}>
                         <button
                             id={`bookmark-component-${post.id}`}
                             disabled={mutationFunction.isLoading || delay}
                             onClick={changeBookmarkStatus}
-                            className="focus:outline-none block "
+                            className="focus:outline-none block"
+                            data-testid="bookmark-post-component"
                         >
                             <PostTagIcon isTaged={saved} />
                         </button>
                     </div>)
                     :
-                    (<div id="bookmark-icon" className="px-2 md:px-0 py-2 text-slate-800 dark:text-slate-500">
+                    (<div data-testid="bookmark-post-icon" id="bookmark-icon" className="px-2 md:px-0 py-2 text-slate-800 dark:text-slate-500">
                         <PostTagIcon isTaged={saved} />
                     </div>)
                 }
-
-                <span id={`bookmarks-count-for-${post.id}`} className="mx-1 sm:mx-2">{post?.totalBookmarks}</span>
+                {showCounter ? (
+                    <span id={`bookmarks-count-for-${post.id}`} className="mx-1 sm:mx-2">{post?.totalBookmarks}</span>
+                ) : null}
             </div>
         </>
     )

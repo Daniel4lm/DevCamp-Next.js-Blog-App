@@ -94,13 +94,14 @@ function LikeComponent({ isLiked, currentUser, resource, resourceType }: LikeCom
                             id={`like-component-${resource.id}`}
                             disabled={mutationFunction.isLoading || delay}
                             onClick={changeLikeStatus}
-                            className="focus:outline-none block "
+                            className="focus:outline-none block"
+                            data-testid="like-post-component"
                         >
                             <LikeIcon liked={liked} />
                         </button>
                     </div>)
                     :
-                    (<div id="like-icon" className="px-2 md:px-0 py-2 text-slate-800 dark:text-slate-500">
+                    (<div data-testid="like-post-icon" id="like-icon" className="px-2 md:px-0 py-2 text-slate-800 dark:text-slate-500">
                         <HeartIcon />
                     </div>)
                 }
