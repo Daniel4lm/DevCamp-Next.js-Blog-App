@@ -3,7 +3,7 @@ version: '3.8'
 services:
   postgres:
     image: postgres
-    container_name: postgres
+    container_name: dev_postgres
     restart: always
     ports:
       - 5432:5432 # enables connecting locally via psql
@@ -13,6 +13,21 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+  testdb_postgres:
+    image: postgres
+    container_name: testdb_postgres
+    restart: always
+    ports:
+      - 3307:3306
+    expose:
+      - 3306
+    volumes:
+      - /postgres-test-data/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_TEST_DB}
 
   adminer:
     image: adminer
