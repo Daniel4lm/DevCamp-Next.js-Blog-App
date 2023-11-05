@@ -8,11 +8,15 @@ import UserInfo from "./components/UserInfo"
 import getQueryClient from "@/lib/reactQuery/getQueryClient"
 import { Hydrate, dehydrate } from "@tanstack/react-query"
 import { User } from "@/models/User"
+import StarredList from "./components/StarredList"
 
 type PostProps = Pick<User, "username">
 
 type PageProps = {
-    params: PostProps
+    params: PostProps,
+    searchParams: {
+        tab: string | undefined
+    }
 }
 
 /* SEO */
@@ -36,10 +40,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
 }
 
-export default async function UserProfile({ params }: PageProps) {
+export default async function UserProfile({ params, searchParams }: PageProps) {
     const { username } = params
     const session = await getServerSession(authOptions)
     let userData: User | null = null
+
+    const tabSection = searchParams?.tab || 'all'
 
     const queryClient = getQueryClient()
 
@@ -58,15 +64,29 @@ export default async function UserProfile({ params }: PageProps) {
         console.info(err.message)
     }
 
-    if (!userData) return notFound()
+    if (!tabSection || !userData) return notFound()
 
     const dehydratedState = dehydrate(queryClient)
+
+    function renderSections(userData: User) {
+        switch (tabSection) {
+            case 'all':
+                return (<PostsList user={userData} />)
+            case 'starred':
+                return (<StarredList currentUser={session?.user} user={userData} section={tabSection} />)
+            default:
+                return null
+        }
+    }
 
     return (
         <Hydrate state={dehydratedState}>
             <div>
                 <UserInfo currentUser={session?.user} user={userData} />
-                <PostsList user={userData} />
+                {
+                    renderSections(userData)
+                }
+
             </div>
         </Hydrate>
     )

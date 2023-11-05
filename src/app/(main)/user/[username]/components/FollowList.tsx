@@ -28,6 +28,8 @@ function FollowList({ followData, currentUser, user, isSaving }: FollowListProps
     const [followSection, setFollowSection] = useState<'followings' | 'followers' | 'none'>('none')
     const followList = followData && followSection !== 'none' ? followData[followSection] : []
 
+    const userFontName = currentUser?.fontName && currentUser?.fontName !== undefined ? `${currentUser?.fontName}` : 'font-default'
+
     function getFollowUser(follow: any) {
         if (followSection === 'followers') {
             return follow.follower
@@ -43,7 +45,7 @@ function FollowList({ followData, currentUser, user, isSaving }: FollowListProps
                 onClose={() => setFollowSection('none')}
                 type="DIALOG"
                 title={followSection}
-                style="bg-white dark:bg-slate-600 dark:text-slate-100 w-full md:w-2/3 lg:w-1/2 min-h-[6rem] border rounded-md flex flex-col mx-auto opacity-100 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                style={`bg-white ${userFontName} dark:bg-slate-600 dark:text-slate-100 w-11/12 sm:w-10/12 md:w-3/4 xl:w-3/6 2xl:w-2/5 min-h-[6rem] border rounded-md flex flex-col mx-auto opacity-100 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2`}
             >
                 {
                     followList.map((follow: any) => {
@@ -92,9 +94,9 @@ function FollowList({ followData, currentUser, user, isSaving }: FollowListProps
                 {!followList.length && (<div className="p-4">Empty list</div>)}
             </Modal>
 
-            <ul className="flex xs:justify-center flex-wrap gap-2 xs:gap-8 px-4 xs:p-0 text-sm md:text-base">
+            <ul className="flex justify-center flex-wrap gap-4 xs:gap-8 px-4 xs:p-0 text-sm md:text-base">
                 <li
-                    className="flex items-center justify-center cursor-pointer my-1 px-3 py-1 ring-2 ring-gray-250 rounded-full hover:bg-slate-100 dark:hover:bg-slate-500"
+                    className="flex items-center justify-center cursor-pointer duration-150 my-1 px-3 py-1 ring-1 hover:ring-2 ring-gray-250 dark:ring-slate-400 rounded-full hover:bg-slate-100 dark:hover:bg-slate-500"
                     id="profile-followers-count"
                     onClick={() => setFollowSection('followers')}
                 >
@@ -103,7 +105,7 @@ function FollowList({ followData, currentUser, user, isSaving }: FollowListProps
                 </li>
 
                 <li
-                    className="flex items-center justify-center cursor-pointer my-1 px-3 py-1 ring-2 ring-gray-250 rounded-full hover:bg-slate-100 dark:hover:bg-slate-500"
+                    className="flex items-center justify-center cursor-pointer duration-150 my-1 px-3 py-1 ring-1 hover:ring-2 ring-gray-250 dark:ring-slate-400 rounded-full hover:bg-slate-100 dark:hover:bg-slate-500"
                     id="profile-following-count"
                     onClick={() => setFollowSection('followings')}
                 >
