@@ -1,257 +1,292 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useEffect, useRef, useState } from "react"
-import { usePathname, useRouter } from "next/navigation"
-import { User as SessionUser } from "next-auth"
-import { CommentIcon, DeleteIcon, EditIcon, LinkIcon, OptsIcon } from "@/components/Icons"
-import Modal from "@/components/Modal"
-import ToolTip from "@/components/Tooltip"
-import useModalShow from "@/hooks/useModalShow"
-import useOutsideClick from "@/hooks/useOutsideClick"
-import { copyPostUrl, getURL } from "@/lib/helperFunctions"
-import SmartLink from "@/components/navigation/SmartLink"
-import LikeComponent from "@/components/posts-comments/LikeComponent"
-import BookmarkPost from "@/components/posts-comments/BookmarkComponent"
-import { UserPost } from "@/models/Post"
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { User as SessionUser } from "next-auth";
+import {
+  CommentIcon,
+  DeleteIcon,
+  EditIcon,
+  LinkIcon,
+  OptsIcon,
+} from "@/components/Icons";
+import Modal from "@/components/Modal";
+import { ToolTip } from "@/components/Tooltip";
+import useModalShow from "@/hooks/useModalShow";
+import useOutsideClick from "@/hooks/useOutsideClick";
+import { copyPostUrl, getURL } from "@/lib/helperFunctions";
+import SmartLink from "@/components/navigation/SmartLink";
+import LikeComponent from "@/components/posts-comments/LikeComponent";
+import BookmarkPost from "@/components/posts-comments/BookmarkComponent";
+import { UserPost } from "@/models/Post";
+import TableOfContent from "./TableOfContent";
 
 interface PostProps {
-    data: UserPost | undefined
-    currentUser: SessionUser | undefined
+  data: UserPost | undefined;
+  currentUser: SessionUser | undefined;
 }
 
 interface OptsMenuProps {
-    data: UserPost | undefined
-    currentUser: SessionUser | undefined
-    isOpen: 'open' | 'close'
-    closeFunc: () => void
+  data: UserPost | undefined;
+  currentUser: SessionUser | undefined;
+  isOpen: "open" | "close";
+  closeFunc: () => void;
 }
 
 const OptsMenu = ({ data, currentUser, isOpen, closeFunc }: OptsMenuProps) => {
+  const [isCopied, setIsCopied] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
+  const menuRef = useRef(null);
+  const { setShow, show, onHide } = useModalShow();
+  useOutsideClick(menuRef, closeFunc);
 
-    const [isCopied, setIsCopied] = useState(false)
-    const pathname = usePathname()
-    const router = useRouter()
-    const menuRef = useRef(null)
-    const { setShow, show, onHide } = useModalShow()
-    useOutsideClick(menuRef, closeFunc)
+  const userFontName =
+    currentUser?.fontName && currentUser?.fontName !== undefined
+      ? `${currentUser?.fontName}`
+      : "font-default";
 
-    const showDeleteModal = () => {
-        setShow(true)
-    }
+  const showDeleteModal = () => {
+    setShow(true);
+  };
 
-    const deletePost = async (id: string) => {
+  const deletePost = async (id: string) => {
+    await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/posts`, {
+      method: "DELETE",
+      body: JSON.stringify({ id }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-        await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/posts/delete`, {
-            method: 'POST',
-            body: JSON.stringify({ id }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
+    setShow(false);
+    closeFunc();
+    router.push(`/user/${data?.author.username}`);
+  };
 
-        setShow(false)
-        closeFunc()
-        router.push(`/user/${data?.author.username}`)
-    }
+  const handleCopied = (copied: boolean) => setIsCopied(copied);
 
-    const handleCopied = (copied: boolean) => setIsCopied(copied)
+  const copyUrl = () => {
+    const url = getURL(pathname);
+    copyPostUrl(url, handleCopied);
+  };
 
-    const copyUrl = () => {
-        const url = getURL(pathname)
-        copyPostUrl(url, handleCopied)
-    }
+  return (
+    <>
+      <Modal
+        isOpen={show}
+        onClose={onHide}
+        title={data?.title}
+        type="WARN"
+        style={`bg-white ${userFontName} dark:bg-slate-600 dark:text-slate-100 w-[20rem] sm:w-[24rem] min-h-[6rem] md:w-max border rounded-lg flex flex-col mx-auto opacity-100 left-1/2 top-[50vh] -translate-x-1/2 -translate-y-1/2`}
+      >
+        <p className="mx-auto font-light text-gray-600 dark:text-inherit pb-4 text-center">
+          Sure you want to delete the post {data?.title}?
+        </p>
+        <hr className="py-2 dark:border-gray-600" />
+        <div className="flex justify-center gap-4 mx-auto mt-2">
+          <button
+            className="bg-indigo-400 hover:bg-indigo-500 text-white rounded-full border-none px-4 py-1 font-semibold"
+            onClick={onHide}
+          >
+            Cancel
+          </button>
+          <button
+            className="border rounded-full border-indigo-400 hover:bg-indigo-500 hover:border-indigo-500 text-indigo-500 hover:text-white px-4 py-1 font-semibold"
+            onClick={() => deletePost(data!.id)}
+          >
+            Delete
+          </button>
+        </div>
+      </Modal>
 
-    return (
-        <>
-            <Modal
-                isOpen={show}
-                onClose={onHide}
-                title={data?.title}
-                type="DIALOG"
-                style="bg-white dark:bg-slate-600 dark:text-slate-100 w-[20rem] sm:w-[24rem] min-h-[6rem] md:w-max border rounded-lg flex flex-col mx-auto opacity-100 left-1/2 top-[50vh] -translate-x-1/2 -translate-y-1/2"
+      <ul
+        id="opts-menu"
+        data-testid="opts-menu-component"
+        ref={isOpen === "open" ? menuRef : null}
+        className="absolute min-w-[14rem] h-max bg-white dark:bg-menu-dark-github dark:text-slate-100 rounded-lg border border-gray-300 dark:border-gray-500 bottom-full -right-1/2 sm:top-0 sm:left-full sm:ml-1 p-2"
+      >
+        <li className="py-2 px-2 rounded-md">
+          <div
+            id="copy-url-picker"
+            data-testid="copy-url-picker"
+            className="flex justify-between cursor-pointer"
+            onClick={copyUrl}
+          >
+            <span>Copy link</span>
+            <LinkIcon />
+          </div>
+          {isCopied ? (
+            <div className="bg-sky-100 dark:bg-slate-400 rounded-md px-4 py-1 mt-2">
+              Copied to Clipboard
+            </div>
+          ) : null}
+        </li>
+        {currentUser && currentUser.id === data?.authorId ? (
+          <>
+            <div
+              id={`delete-post-${data?.id}`}
+              className="cursor-pointer"
+              onClick={showDeleteModal}
             >
-                <p className="mx-auto font-light text-gray-600 dark:text-inherit py-2">
-                    Sure you want to delete the post {data?.title}?
-                </p>
-                <div className="flex justify-center gap-4 mx-auto mt-2">
-                    <button className="bg-indigo-400 hover:bg-indigo-500 text-white rounded-full border-none px-4 py-1 font-semibold"
-                        onClick={onHide}
-                    >
-                        Cancel
-                    </button>
-                    <button className="border rounded-full border-indigo-400 hover:bg-indigo-500 hover:border-indigo-500 text-indigo-500 hover:text-white px-4 py-1 font-semibold"
-                        onClick={() => deletePost(data!.id)}
-                    >
-                        Delete
-                    </button>
+              <li className="py-2 px-2 rounded-md hover:bg-indigo-50 dark:hover:bg-slate-400 dark:hover:bg-opacity-50">
+                <div className="flex items-center justify-between">
+                  <span>Delete post</span>
+                  <div className="p-1">
+                    <DeleteIcon />
+                  </div>
                 </div>
-            </Modal>
+              </li>
+            </div>
 
-            <ul
-                id="opts-menu"
-                ref={isOpen === 'open' ? menuRef : null}
-                className="absolute min-w-[14rem] h-max bg-white dark:bg-menu-dark-github dark:text-slate-100 rounded-lg border border-gray-300 dark:border-gray-500 bottom-full -right-1/2 sm:top-0 sm:left-full sm:ml-1 p-2"
+            <Link
+              id="edit-post-#{@post.id}"
+              href={`/posts/edit?slug=${data?.slug}`}
             >
-                <li className="py-2 px-2 rounded-md">
-                    <div
-                        id="copy-url-picker"
-                        className="flex justify-between cursor-pointer"
-                        onClick={copyUrl}
-                    >
-                        <span>Copy link</span>
-                        <LinkIcon />
-                    </div>
-                    {isCopied ? (
-                        <div className="bg-sky-100 dark:bg-slate-400 rounded-md px-4 py-1 mt-2">
-                            Copied to Clipboard
-                        </div>
-                    ) : null}
-
-                </li>
-                {currentUser && currentUser.id === data?.authorId ?
-                    (
-                        <>
-                            <div
-                                id={`delete-post-${data?.id}`}
-                                className="cursor-pointer"
-                                onClick={showDeleteModal}
-                            >
-                                <li className="py-2 px-2 rounded-md hover:bg-indigo-50 dark:hover:bg-slate-400 dark:hover:bg-opacity-50">
-                                    <div className="flex items-center justify-between">
-                                        <span>Delete post</span>
-                                        <div className="p-1"><DeleteIcon /></div>
-                                    </div>
-                                </li>
-                            </div>
-
-                            <Link
-                                id="edit-post-#{@post.id}"
-                                href={`/posts/edit?slug=${data?.slug}`}
-                            >
-                                <li className="py-2 px-2 rounded-md hover:bg-indigo-50 dark:hover:bg-slate-400 dark:hover:bg-opacity-50 cursor-pointer">
-                                    <div className="flex items-center justify-between">
-                                        <span>Edit post</span>
-                                        <div className="p-1"><EditIcon /></div>
-                                    </div>
-                                </li>
-                            </Link>
-                        </>
-                    ) : null
-                }
-            </ul>
-        </>
-    )
-}
+              <li className="py-2 px-2 rounded-md hover:bg-indigo-50 dark:hover:bg-slate-400 dark:hover:bg-opacity-50 cursor-pointer">
+                <div className="flex items-center justify-between">
+                  <span>Edit post</span>
+                  <div className="p-1">
+                    <EditIcon />
+                  </div>
+                </div>
+              </li>
+            </Link>
+          </>
+        ) : null}
+      </ul>
+    </>
+  );
+};
 
 const PostSidebar = ({ data, currentUser }: PostProps) => {
+  const [menuOpen, setMenuOpen] = useState<"open" | "close">("close");
 
-    const [menuOpen, setMenuOpen] = useState<'open' | 'close'>('close')
+  const closeMenu = () => setMenuOpen("close");
+  const handleMenuOpen = () =>
+    setMenuOpen(menuOpen === "open" ? "close" : "open");
 
-    const closeMenu = () => setMenuOpen('close')
-    const handleMenuOpen = () => setMenuOpen(menuOpen === 'open' ? 'close' : 'open')
+  // const scrollToComments = (elemId: string) => {
+  //     const commentsSection = document.getElementById(elemId)
+  //     // commentsSection && commentsSection.scrollIntoView({ behavior: 'smooth', block: "start" })
+  //     commentsSection && window.scrollTo({ behavior: 'smooth', top: commentsSection?.getBoundingClientRect().top })
+  // }
 
-    // const scrollToComments = (elemId: string) => {
-    //     const commentsSection = document.getElementById(elemId)
-    //     // commentsSection && commentsSection.scrollIntoView({ behavior: 'smooth', block: "start" })
-    //     commentsSection && window.scrollTo({ behavior: 'smooth', top: commentsSection?.getBoundingClientRect().top })
-    // }
+  function isLiked(
+    currentUser: SessionUser | undefined,
+    postData: Pick<PostProps, "data"> | undefined
+  ) {
+    return (postData?.data?.likes || []).some(
+      (like) => like.authorId === currentUser?.id
+    );
+  }
 
-    function isLiked(currentUser: SessionUser | undefined, postData: Pick<PostProps, 'data'> | undefined) {
-        return (postData?.data?.likes || []).some(like => like.authorId === currentUser?.id)
+  function isBookmarked(
+    currentUser: SessionUser | undefined,
+    postData: Pick<PostProps, "data"> | undefined
+  ) {
+    return (postData?.data?.bookmarks || []).some(
+      (bookmark) => bookmark.authorId === currentUser?.id
+    );
+  }
+
+  useEffect(() => {
+    const postSidebar = document.getElementById("post-sidebar");
+
+    function handlePageScroll() {
+      if (window.scrollY > 100) {
+        postSidebar?.classList.replace("opacity-0", "opacity-1");
+        postSidebar?.classList.replace("translate-y-1/2", "-translate-y-1/2");
+      } else {
+        postSidebar?.classList.replace("opacity-1", "opacity-0");
+        postSidebar?.classList.replace("-translate-y-1/2", "translate-y-1/2");
+      }
     }
 
-    function isBookmarked(currentUser: SessionUser | undefined, postData: Pick<PostProps, 'data'> | undefined) {
-        return (postData?.data?.bookmarks || []).some(bookmark => bookmark.authorId === currentUser?.id)
-    }
+    handlePageScroll();
 
-    useEffect(() => {
+    postSidebar &&
+      window.innerWidth < 768 &&
+      window.addEventListener("scroll", handlePageScroll);
+    return () => window.removeEventListener("scroll", handlePageScroll);
+  }, []);
 
-        const postSidebar = document.getElementById('post-sidebar')
+  return (
+    <aside
+      id="post-sidebar"
+      className="fixed sm:sticky w-max sm:w-max h-max z-10 left-1/2 bottom-2 -translate-x-1/2 sm:translate-x-0 sm:left-auto sm:top-14 sm:p-6 border dark:text-slate-100 border-gray-300 rounded-full bg-white dark:bg-navbar-dark-github sm:dark:bg-transparent sm:border-0 sm:bg-transparent"
+      aria-label="Post actions"
+    >
+      <div className="flex justify-around items-center gap-x-2 px-4 sm:px-0 sm:flex-col sm:gap-x-0 rounded-full">
+        <ToolTip position="right" title="Like the Post">
+          <LikeComponent
+            currentUser={currentUser}
+            resource={data as UserPost}
+            resourceType="post"
+            isLiked={isLiked(currentUser, { data: data }) || false}
+          />
+        </ToolTip>
 
-        function handlePageScroll() {
-            if (window.scrollY > 100) {
-                postSidebar?.classList.replace('opacity-0', 'opacity-1')
-                postSidebar?.classList.replace('translate-y-1/2', '-translate-y-1/2')
-            } else {
-                postSidebar?.classList.replace('opacity-1', 'opacity-0')
-                postSidebar?.classList.replace('-translate-y-1/2', 'translate-y-1/2')
-            }
-        }
+        <ToolTip position="right" title="Jump to comments">
+          <div className="flex sm:flex-col py-1 items-center">
+            <SmartLink href="#post-comments-section" isScrollAble>
+              <div
+                id="post-comment-icon"
+                className="rounded-full p-2 cursor-pointer border border-transparent hover:border-amber-400/40 hover:bg-amber-200/20 hover:text-amber-500 dark:hover:bg-transparent dark:hover:border-transparent"
+              >
+                <CommentIcon />
+              </div>
+            </SmartLink>
+            <span id="post-total-comments" className="mx-1 sm:mx-2">
+              {data?.totalComments}
+            </span>
+          </div>
+        </ToolTip>
 
-        handlePageScroll()
+        <ToolTip position="right" title="Save the Post">
+          <BookmarkPost
+            currentUser={currentUser}
+            isBookmarked={isBookmarked(currentUser, { data: data }) || false}
+            post={data as UserPost}
+            showCounter
+          />
+        </ToolTip>
 
-        postSidebar && window.innerWidth < 768 && window.addEventListener('scroll', handlePageScroll)
-        return () => window.removeEventListener('scroll', handlePageScroll)
-    }, [])
-
-
-    return (
-        <aside
-            id="post-sidebar"
-            className="fixed sm:sticky w-max sm:w-max h-max z-[10] left-1/2 bottom-2 -translate-x-1/2 sm:translate-x-0 sm:left-auto sm:top-14 sm:p-6 border dark:text-slate-100 border-gray-300 rounded-full bg-white dark:bg-navbar-dark-github sm:dark:bg-transparent sm:border-0 sm:bg-transparent"
-            aria-label="Post actions"
+        <div
+          id="post-opts"
+          className="relative flex sm:flex-col py-2 items-center"
         >
-            <div className="flex justify-around items-center gap-x-2 px-4 sm:px-0 sm:flex-col sm:gap-x-0 rounded-full">
-                <ToolTip position="right" title="Like the Post">
-                    <LikeComponent
-                        currentUser={currentUser}
-                        resource={data as UserPost}
-                        resourceType="post"
-                        isLiked={isLiked(currentUser, { data: data }) || false}
-                    />
-                </ToolTip>
+          <div
+            id="post-options-icon"
+            data-testid="post-options-icon"
+            className="relative hover-item rounded-full p-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-slate-500"
+            onClick={handleMenuOpen}
+          >
+            <OptsIcon />
+            <span className="top-tooltip-text px-4 py-2 rounded-md bg-gray-800 text-white text-sm ">
+              Other options
+            </span>
+          </div>
+          {menuOpen === "open" ? (
+            <OptsMenu
+              data={data}
+              currentUser={currentUser}
+              isOpen={menuOpen}
+              closeFunc={closeMenu}
+            />
+          ) : null}
+        </div>
 
-                <ToolTip position="right" title="Jump to comments">
-                    <div className="flex sm:flex-col py-1 items-center">
-                        <SmartLink
-                            href="#post-comments-section"
-                            isScrollAble
-                        >
-                            <div
-                                id="post-comment-icon"
-                                className="rounded-full p-2 cursor-pointer border border-transparent hover:border-amber-400/40 hover:bg-amber-200/20 hover:text-amber-500 dark:hover:bg-transparent dark:hover:border-transparent"
-                            >
-                                <CommentIcon />
-                            </div>
-                        </SmartLink>
-                        <span id="post-total-comments" className="mx-1 sm:mx-2">{data?.totalComments}</span>
-                    </div>
-                </ToolTip>
+        <div
+          id="post-toc"
+          className="sm:relative flex sm:flex-col sm:hidden py-2 items-center"
+        >
+          <TableOfContent />
+        </div>
+      </div>
+    </aside>
+  );
+};
 
-                <ToolTip position="right" title="Save the Post">
-                    <BookmarkPost
-                        currentUser={currentUser}
-                        post={data as UserPost}
-                        isBookmarked={isBookmarked(currentUser, { data: data }) || false}
-                    />
-                </ToolTip>
-
-                <div id="post-opts" className="relative flex sm:flex-col py-2 items-center">
-                    <div
-                        id="post-options-icon"
-                        className="relative hover-item rounded-full p-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-slate-500"
-                        phx-hook="ToolTip"
-                        onClick={handleMenuOpen}
-                    >
-                        <OptsIcon />
-                        <span className="top-tooltip-text px-4 py-2 rounded-md bg-gray-800 text-white text-sm ">
-                            Other options
-                        </span>
-                    </div>
-                    {menuOpen === 'open' ?
-                        (
-                            <OptsMenu
-                                data={data}
-                                currentUser={currentUser}
-                                isOpen={menuOpen}
-                                closeFunc={closeMenu}
-                            />
-                        ) : null}
-                </div>
-            </div>
-        </aside>
-    )
-}
-
-export default PostSidebar
+export default PostSidebar;
