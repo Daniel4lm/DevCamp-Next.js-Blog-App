@@ -1,10 +1,19 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Inter } from 'next/font/google'
+import { Inter, Nunito } from 'next/font/google'
 import { AuthProvider } from '@/context/AuthProvider'
-import '@/app/globals.css'
+import '@/app/styles/globals.css'
 
-const inter = Inter({ subsets: ['latin'], display: 'swap' })
+const interFont = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter'
+})
+const nunitoFont = Nunito({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-nunito'
+})
 
 export const metadata = {
   title: 'Campy Auth',
@@ -28,7 +37,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${interFont.variable} ${nunitoFont.variable}`}>
         <script dangerouslySetInnerHTML={{ __html: initialThemeScript }} ></script>
         <AuthProvider>
           <main role="main" className="relative w-full min-h-screen antialiased dark:bg-main-dark-github dark:text-slate-100">
@@ -36,7 +45,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
               <div className="w-full flex justify-center text-white">
                 <Link href={'/'} className="flex items-center gap-3 mx-4">
                   <Image
-                    src="/images/Campy.svg"
+                    src="/assets/images/Campy.svg"
                     width={20}
                     height={20}
                     className='h-5 w-5 md:w-6 md:h-6'

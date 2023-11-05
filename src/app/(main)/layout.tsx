@@ -1,22 +1,44 @@
-import { Inter } from 'next/font/google'
-import { getServerSession } from 'next-auth'
-import { ThemeProvider } from '@/context/ThemeContext'
-import Navbar from '@/components/navigation/NavBar'
-import ReactQueryProvider from '@/lib/reactQuery/reactQueryProvider'
-import '@/app/globals.css'
-import { AuthProvider } from '@/context/AuthProvider'
-import { authOptions } from '@/api/auth/[...nextauth]/authOptions'
+import { Inter, Nunito } from "next/font/google";
+import { Metadata } from "next";
+import { getServerSession } from "next-auth";
+import { ThemeProvider } from "@/context/ThemeContext";
+import Navbar from "@/components/navigation/NavBar";
+import ReactQueryProvider from "@/lib/reactQuery/reactQueryProvider";
+import { AuthProvider } from "@/context/AuthProvider";
+import { authOptions } from "@/api/auth/[...nextauth]/authOptions";
+import "@/app/styles/globals.css";
 
-const inter = Inter({ subsets: ['latin'], display: 'swap' })
+const interFont = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
-export const metadata = {
-  title: 'Instacamp Next App',
-  description: 'Instacamp Web Blog-Tech app',
-}
+const nunitoFont = Nunito({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-nunito",
+});
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export const metadata: Metadata = {
+  title: "Instacamp Next App",
+  description: "Instacamp Web Blog-Tech app",
+  alternates: {
+    canonical: "/",
+  },
+};
 
-  const session = await getServerSession(authOptions)
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const session = await getServerSession(authOptions);
+
+  const userFontName =
+    session?.user?.fontName && session.user?.fontName !== undefined
+      ? `${session.user.fontName}`
+      : "font-default";
 
   const initialThemeScript = `
         const isDarkMode = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -29,7 +51,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         }
 
         detectThemeOnLoad()
-    `
+    `;
 
   const clearTheme = `
         function detectThemeOnLoad() {
@@ -41,33 +63,43 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         }
 
         detectThemeOnLoad()
-    `
+    `;
 
   function maybeChangeThemeMode() {
     if (session && session.user) {
-      return session.user.themeMode.toLowerCase()
+      return session.user.themeMode.toLowerCase();
     } else {
-      return 'light'
+      return "light";
     }
+  }
+
+  function collectFonts() {
+    return [interFont, nunitoFont].map((font) => ` ${font.variable} `);
   }
 
   return (
     <html lang="en">
-      <body className={`${inter.className} ${maybeChangeThemeMode()}`}>
-        <script dangerouslySetInnerHTML={{ __html: session ? clearTheme : initialThemeScript }} ></script>
+      <body className={`${collectFonts()} ${maybeChangeThemeMode()}`}>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: session ? clearTheme : initialThemeScript,
+          }}
+        ></script>
+
         <AuthProvider>
           <ThemeProvider>
             <ReactQueryProvider>
-              <>
-                <Navbar title="Campy" currentUser={session?.user} />
-                <main role="main" className="relative w-full min-h-screen antialiased dark:bg-main-dark dark:text-slate-100 flex flex-col">
-                  {children}
-                </main>
-              </>
+              <Navbar title="Campy" currentUser={session?.user} />
+              <main
+                role="main"
+                className={`relative w-full min-h-screen antialiased ${userFontName} dark:bg-main-dark dark:text-slate-100 flex flex-col`}
+              >
+                {children}
+              </main>
             </ReactQueryProvider>
           </ThemeProvider>
         </AuthProvider>
       </body>
     </html>
-  )
+  );
 }
