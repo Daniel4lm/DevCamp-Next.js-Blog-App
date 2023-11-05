@@ -109,8 +109,8 @@ export async function seedDB() {
                         published: true
                     }, {
                         columnId: inProgressColumn?.id || '',
-                        title: 'Marketing for Developers: The Unconventional Guide ',
-                        slug: 'marketing-for-developers-the-unconventional-guide ',
+                        title: 'Marketing for Developers: The Unconventional Guide',
+                        slug: 'marketing-for-developers-the-unconventional-guide',
                         tags: {
                             create: [
                                 {

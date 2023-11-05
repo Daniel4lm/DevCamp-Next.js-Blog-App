@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -17,6 +13,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "downlevelIteration": true,
+    "types": ["jest", "node", "@testing-library/jest-dom"],
     "jsx": "preserve",
     "incremental": true,
     "plugins": [
@@ -26,30 +23,21 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@/hooks*": [
-        "./src/hooks*"
-      ],
-      "@/context*": [
-        "./src/context*"
-      ],
-      "@/models*": [
-        "./src/models*"
-      ],
-      "@/api*": [
-        "./src/app/api*"
-      ],
+      "@/*": ["./src/*"],
+      "@/app*": ["./src/app*"],
+      "@/hooks*": ["./src/hooks*"],
+      "@/context*": ["./src/context*"],
+      "@/models*": ["./src/models*"],
+      "@/api*": ["./src/app/api*"]
     }
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    //"**/*.cy.ts",
+    ".next/types/**/*.ts",
+    "jest.polyfills.js"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["cypress", "cypress.config.ts", "node_modules"]
 }

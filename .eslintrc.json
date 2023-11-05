@@ -12,18 +12,17 @@
     "plugin:jest/recommended",
     "plugin:jest/style"
   ],
-  "overrides": [],
+  "overrides": [
+    {
+      "extends": ["plugin:@typescript-eslint/disable-type-checked"],
+      "files": ["./**/*.test.ts"]
+    }
+  ],
   "parserOptions": {
     "ecmaVersion": "latest",
-    "project": [
-      "./tsconfig.json"
-    ]
+    "project": ["./tsconfig.json", "./cypress/tsconfig.json"]
   },
-  "plugins": [
-    "react",
-    "@tanstack/query",
-    "cypress"
-  ],
+  "plugins": ["react", "@tanstack/query", "cypress"],
   "rules": {
     "react/no-unescaped-entities": "off",
     "react/display-name": "off",
