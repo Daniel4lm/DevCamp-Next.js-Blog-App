@@ -1,5 +1,5 @@
 import { Post, Prisma, Tag, Like, PostBookmark } from "@prisma/client"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { PostComment } from "../models/Comment"
 import { User } from "@/models/User"
 
@@ -23,6 +23,24 @@ const usePostQuery = (slug: string, condition: boolean = true) => {
         // initialData: postData,
     })
 }
+
+const useCreatePostMutation = () => {
+    const mutation = useMutation(
+        async ({ formData, methodType, }: { formData: FormData; methodType: "POST" | "PUT"; }) => {
+
+            const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/posts`, {
+                method: methodType,
+                body: formData,
+                // headers: {
+                //   "Content-Type": "multipart/form-data",
+                // },
+            });
+            return await res.json();
+        }
+    );
+
+    return mutation;
+};
 
 const useUserQuery = (username: string, userData?: User) => {
     return useQuery(useUserQueryData(username, userData))
@@ -69,4 +87,4 @@ const useCommentsQuery = (postId: string, initialComments?: PostComment[]) => {
     })
 }
 
-export { useCommentsQuery, useFollowingsQuery, usePostQuery, useUserQuery, useUserQueryData, useFollowingsQueryData }
+export { useCommentsQuery, useCreatePostMutation, useFollowingsQuery, usePostQuery, useUserQuery, useUserQueryData, useFollowingsQueryData }
