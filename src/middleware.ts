@@ -6,9 +6,13 @@ export default withAuth(
     function middleware(req: NextRequestWithAuth) {
 
         const userRole = req.nextauth.token?.role
-        const path = "/posts/new" || "/posts/edit" || "/settings/account" || "/settings/password"
 
-        if (req.nextUrl.pathname.includes(path) && !['USER', 'ADMIN'].includes(userRole || '')) {
+        function checkPaths(reqPathname: string) {
+            const paths = ["/posts/new", "/posts/edit", "/settings/account", "/settings/password"]
+            return paths.some(path => reqPathname.includes(path))
+        }
+
+        if (checkPaths(req.nextUrl.pathname) && !['USER', 'ADMIN'].includes(userRole || '')) {
             return NextResponse.rewrite(new URL('/denied', req.url))
         }
 
@@ -26,10 +30,12 @@ export default withAuth(
 export const config = {
     // matcher: ["/((?!register|kapi|login).*)"],
     matcher: [
+        '/((?!api|_next/static|_next/image|favicon.ico).*)',
         "/auth/logout",
         "/dashboard",
         "/posts/new",
         "/posts/edit",
+        "/posts/kanban",
         "/settings/account/(.*)"
     ],
 }
