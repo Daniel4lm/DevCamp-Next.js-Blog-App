@@ -370,8 +370,6 @@ let PostTask = {
     },
     moveArticle: async function (articleId: string, columnType: ArticleColumnType) {
 
-        console.log('Prisma side - move-article ', articleId, columnType)
-
         const boardColumn = await prismaClient.articleBoardColumn.findFirst({
             where: {
                 type: columnType
@@ -412,6 +410,8 @@ let PostTask = {
     },
     createNewPost: async function (data: any, tags: string[] = [], userEmail: string) {
 
+        const { boardColumn, ...params } = data
+
         const postTags = tags.map((tag: string) => {
             return { name: tag }
         })
@@ -419,10 +419,19 @@ let PostTask = {
         const maybeCreateNewTags = await this.maybeCreateNewTags(postTags)
 
         const readTimeData = Number(data.readTime as string)
-        const dbData = { ...data, ...{ readTime: readTimeData } }
+        const dbData = { ...params, ...{ readTime: readTimeData } }
+
+        const defaultBoard = await prismaClient.articleBoardColumn.findFirst({
+            where: { type: boardColumn }
+        })
+
+        // const defaultBoard = await prismaClient.articleBoardColumn.findFirst({
+        //     where: { type: ArticleColumnType.IN_PROGRESS }
+        // })
 
         const createPost = await prismaClient.post.create({
             data: {
+                boardColumn: { connect: { id: defaultBoard?.id } },
                 tags: {
                     connect: postTags,
                 },

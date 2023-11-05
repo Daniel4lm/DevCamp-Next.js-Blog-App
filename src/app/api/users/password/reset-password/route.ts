@@ -1,6 +1,6 @@
+import { NextRequest, NextResponse } from "next/server";
 import { encryptPassword } from "@/lib/helperFunctions";
 import UserTask from "@/lib/user";
-import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
 
@@ -15,11 +15,11 @@ export async function POST(request: NextRequest) {
                         some: {
                             AND: [
                                 {
-                                    resetedAt: null,
+                                    resetAt: null,
                                 },
                                 {
                                     createdAt: {
-                                        gt: new Date(Date.now() - 24 * 60 * 60 * 1000), // 24 hours ago
+                                        gt: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
                                     },
                                 },
                                 {
