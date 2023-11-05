@@ -44,6 +44,7 @@ module.exports = {
         'the-green': '#0095AA',
         'primary-yellow': '#FFC600',
         teal: '#70D4E2',
+        solitude: '#F4F6FA',
         gray: {
           250: '#dbdfe3'
         }

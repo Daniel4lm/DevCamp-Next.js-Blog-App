@@ -19,7 +19,7 @@ function useTocObserver({ selector }: UseTocObserverType) {
             })
         },
             {
-                rootMargin: "0px 0px -40% 0px"
+                rootMargin: "0px 0px -80% 0px"
             })
 
         const contentElements: NodeListOf<HTMLAnchorElement> = document.querySelectorAll(selector || 'h2,h3,h4,h5,h6')

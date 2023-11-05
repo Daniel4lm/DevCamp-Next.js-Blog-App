@@ -275,7 +275,7 @@ input[type="search"]::-webkit-search-results-decoration {
 
 .pattern-overlay-2::before {
   content: "";
-  background: url(/assets/images/02.png);
+  background: url(/assets/images/home-page-02.png);
   background-position-x: 0%;
   background-position-y: 0%;
   background-repeat: repeat;
