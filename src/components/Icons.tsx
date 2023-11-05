@@ -1,3 +1,4 @@
+
 const HambButton = () => {
     return (
         <svg
@@ -381,18 +382,8 @@ const PostIcon = () => {
 }
 const CommentIcon = () => {
     return (
-        <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-5 h-5 sm:w-6 sm:h-6"
-        >
-            <path
-                d="M10 3H14C16.1217 3 18.1566 3.84285 19.6569 5.34315C21.1571 6.84344 22 8.87827 22 11C22 13.1217 21.1571 15.1566 19.6569 16.6569C18.1566 18.1571 16.1217 19 14 19V22.5C9 20.5 2 17.5 2 11C2 8.87827 2.84285 6.84344 4.34315 5.34315C5.84344 3.84285 7.87827 3 10 3V3ZM12 17H14C15.5913 17 17.1174 16.3679 18.2426 15.2426C19.3679 14.1174 20 12.5913 20 11C20 9.4087 19.3679 7.88258 18.2426 6.75736C17.1174 5.63214 15.5913 5 14 5H10C8.4087 5 6.88258 5.63214 5.75736 6.75736C4.63214 7.88258 4 9.4087 4 11C4 14.61 6.462 16.966 12 19.48V17Z"
-                fill="currentColor"
-            />
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 sm:w-6 sm:h-6">
+            <path d="M3 12C3 16.418 5 18.5 9.5 20.5L13.5 22V19C19.5 18.5 21 14.5 21 12C21 7.582 16.97 4 12 4C7.03 4 3 7.582 3 12Z" stroke="currentColor" strokeWidth="1.6" />
         </svg>
     )
 }
@@ -1089,19 +1080,24 @@ const MoonIcon = () => {
 
 const SunIcon = () => {
     return (
-        <svg
-            id="theme-toggle-light-icon"
-            className="w-6 h-6 md:w-7 md:h-7 dark:hidden"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-            <path
-                d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-                fillRule="evenodd"
-                clipRule="evenodd"
-            >
-            </path>
+        <svg id="theme-toggle-light-icon"
+            className="w-6 h-6 md:w-7 md:h-7 dark:hidden" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clipPath="url(#clip0_1931_14)">
+                <path d="M10 14.1666C12.3012 14.1666 14.1667 12.3012 14.1667 9.99998C14.1667 7.69879 12.3012 5.83331 10 5.83331C7.69885 5.83331 5.83337 7.69879 5.83337 9.99998C5.83337 12.3012 7.69885 14.1666 10 14.1666Z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M10 0.833313V2.49998" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M10 17.5V19.1667" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M3.51672 3.51666L4.70006 4.7" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M15.3 15.3L16.4834 16.4833" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M0.833374 10H2.50004" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M17.5 10H19.1667" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M3.51672 16.4833L4.70006 15.3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M15.3 4.7L16.4834 3.51666" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+            </g>
+            <defs>
+                <clipPath id="clip0_1931_14">
+                    <rect width="20" height="20" fill="white" />
+                </clipPath>
+            </defs>
         </svg>
     )
 }
@@ -1128,6 +1124,26 @@ const CopyButton = () => {
                     <rect width="16" height="16" fill="white" transform="matrix(-1 0 0 1 16 0)" />
                 </clipPath>
             </defs>
+        </svg>
+    )
+}
+
+function SearchIcon() {
+    return (
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M10.9167 9.66667H10.2583L10.025 9.44167C10.8417 8.49167 11.3333 7.25833 11.3333 5.91667C11.3333 2.925 8.90833 0.5 5.91667 0.5C2.925 0.5 0.5 2.925 0.5 5.91667C0.5 8.90833 2.925 11.3333 5.91667 11.3333C7.25833 11.3333 8.49167 10.8417 9.44167 10.025L9.66667 10.2583V10.9167L13.8333 15.075L15.075 13.8333L10.9167 9.66667ZM5.91667 9.66667C3.84167 9.66667 2.16667 7.99167 2.16667 5.91667C2.16667 3.84167 3.84167 2.16667 5.91667 2.16667C7.99167 2.16667 9.66667 3.84167 9.66667 5.91667C9.66667 7.99167 7.99167 9.66667 5.91667 9.66667Z"
+                fill="currentColor"
+            />
+        </svg>
+    )
+}
+
+function Star() {
+    return (
+        <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true">
+            <path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Zm0 2.445L6.615 5.5a.75.75 0 0 1-.564.41l-3.097.45 2.24 2.184a.75.75 0 0 1 .216.664l-.528 3.084 2.769-1.456a.75.75 0 0 1 .698 0l2.77 1.456-.53-3.084a.75.75 0 0 1 .216-.664l2.24-2.183-3.096-.45a.75.75 0 0 1-.564-.41L8 2.694Z"
+                fill="currentColor"></path>
         </svg>
     )
 }
@@ -1169,11 +1185,13 @@ export {
     ReplyIcon,
     SavedListIcon,
     ScrollToTopIcon,
+    SearchIcon,
     SettingsIcon,
     SettingsIcon2,
     ShowPassIcon,
     SmallListIcon,
     SmallUserIcon,
+    Star,
     SunIcon,
     TagIcon,
     TagListIcon,
