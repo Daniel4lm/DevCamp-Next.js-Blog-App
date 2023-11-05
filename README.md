@@ -1,4 +1,3 @@
-
 # Instacamp Blog App
 
 This is a [Next.js](https://nextjs.org/) ver.13.4 project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
@@ -24,6 +23,7 @@ InstaCamp is made with the Next.js React web framework.
   - [Setting up the Database](#setting-up-the-database)
   - [Run in dev mode](#run-in-dev-mode)
   - [Run in prod mode](#run-in-prod-mode)
+  - [Running tests](#running-tests)
   - [Deploy on Vercel](#deploy-on-vercel)
   - [Author](#author)
 
@@ -69,15 +69,15 @@ Users should be able to:
 - Docs: https://nextjs.org/docs
 - Source: https://github.com/vercel/next.js
 
-### What I learned  
+### What I learned
 
-Comming soon ...  
-  
-### Continued development  
-  
-### TO-DO list  
-   
-Implement next features:  
+Comming soon ...
+
+### Continued development
+
+### TO-DO list
+
+Implement next features:
 
 - [x] Finish welcome/home feed page
 - User Settings page
@@ -86,15 +86,15 @@ Implement next features:
 - [x] Resize user avatar image while uploading(Implemented by using sharp package)
 - [x] Complete page for searching posts by topic/tag(or incorporate it with the home page due the similar logic)
 - [x] User can make comment on other comment. Maybe something like @mention or comment reply(implemented comment reply system)
-- [ ] Cover more code with tests
+- [x] Cover more code with tests(Jest and Cypress)
 - [x] Register/Login and customize their account(implemented by using NextAuth)
 - [x] Implement Like feature for posts and comments
 - [x] Implement Bookmark/tag feature for posts
 - [x] Implement Follow/Unfollow users feature
+- [x] Implement Kanban article board with sections and the list of coresponding articles
 - [ ] Receive activity messages when:
   - other users comment or like their posts/comments
   - other users start to follow them
-
 
 ### Useful resources
 
@@ -121,8 +121,8 @@ datasource db {
 
 Migrate your database and create prisma client:
 
-```bash 
-# db migration 
+```bash
+# db migration
 npm run/yarn/pnpm migrate:dev
 
 # generate prisma client
@@ -171,16 +171,20 @@ yarn start
 pnpm start
 ```
 
-
 Now you can visit [`localhost:3000`](http://localhost:3000) from your browser.
 
+## Running tests
+
+- install [Docker](https://docs.docker.com/get-docker/)
+- run `pnpm prisma:test_generate`
+- start Docker and run `docker compose start testdb_postgres`
+- run `cypress:test` to start dev app server and cypress for testing
 
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
 
 ## Author
 
