@@ -2,7 +2,7 @@
 
 import { CommentIcon, GlobeIcon, PinIcon, PostIcon, TagIcon } from "@/components/Icons"
 import DefaultAvatar from 'public/defaultAvatar.png'
-import { useFollowingsQuery, useUserQuery } from "@/hooks/api"
+import {  useFollowingsQueryData, useUserQueryData } from "@/hooks/api"
 import { displayWebsiteUri } from "@/lib/formHelpers"
 import Image from "next/image"
 import Link from "next/link"
@@ -11,6 +11,7 @@ import FollowList from "./FollowList"
 import { UserButton } from "./UserButton"
 import UserInfoSkeleton from "@/components/skeletons/UserInfoSkeleton"
 import { User } from "@/models/User"
+import { useQueries } from "@tanstack/react-query"
 
 interface UserFollowingProps {
     followed: User,
@@ -19,8 +20,18 @@ interface UserFollowingProps {
 
 function UserInfo({ user, currentUser }: { user: User, currentUser: SessionUser | undefined }) {
 
-    const { data: userInfo, isLoading: isUserLoading, isSuccess: isUserSuccess } = useUserQuery(user.username, user)
-    const { data: followData, isRefetching: isFollowLoading, isSuccess: isFollowSuccess } = useFollowingsQuery(user.username, user?.id || '')
+    //const { data: userInfo, isLoading: isUserLoading, isSuccess: isUserSuccess } = useUserQuery(user.username, user)
+    //const { data: followData, isRefetching: isFollowLoading, isSuccess: isFollowSuccess } = useFollowingsQuery(user.username, user?.id || '')
+
+    const [userQueryData, followQueryData] = useQueries({
+        queries: [
+            useUserQueryData(user.username, user),
+            useFollowingsQueryData(user.username, user?.id || '')
+        ]
+    })
+
+    const { data: userInfo, isLoading: isUserLoading, isSuccess: isUserSuccess } = userQueryData
+    const { data: followData, isRefetching: isFollowLoading, isSuccess: isFollowSuccess } = followQueryData
 
     const isFoolowed = isFollowSuccess && followData.followers.find((followerData: UserFollowingProps) => followerData.follower.id === currentUser?.id)
 
@@ -28,7 +39,7 @@ function UserInfo({ user, currentUser }: { user: User, currentUser: SessionUser 
         <>
             {isUserSuccess && isFollowSuccess ? (
                 <>
-                    <section className="relative flex justify-center items-center flex-col w-full sm:w-10/12 md:w-2/3 xl:w-3/6 mx-auto md:px-10 pt-10 mt-16 pb-4 bg-white dark:bg-[#344453] dark:text-slate-300 border-t sm:border dark:border-gray-600 sm:rounded-lg sm:shadow-md sm:shadow-slate-100 dark:shadow-none">
+                    <section className="relative flex justify-center items-center flex-col w-full sm:w-10/12 md:w-3/4 xl:w-3/6 2xl:w-2/5 mx-auto md:px-10 pt-10 mt-16 pb-4 bg-white dark:bg-[#344453] dark:text-slate-300 border-t sm:border dark:border-gray-600 sm:rounded-lg sm:shadow-md sm:shadow-slate-100 dark:shadow-none">
                         <div className="w-full mb-4">
                             <Image
                                 alt="User Avatar"
@@ -95,7 +106,7 @@ function UserInfo({ user, currentUser }: { user: User, currentUser: SessionUser 
                         </div>
                     </section>
 
-                    <section className="flex xs:justify-center xs:items-center flex-col w-full sm:w-10/12 md:w-2/3 xl:w-3/6 mx-auto px-4 xs:px-10 py-2 sm:my-4 bg-white dark:bg-[#344453] text-gray-600 dark:text-slate-300 sm:rounded-lg border-b sm:border dark:border-gray-600 shadow-md dark:shadow-none shadow-slate-100">
+                    <section className="flex xs:justify-center xs:items-center flex-col w-full sm:w-10/12 md:w-3/4 xl:w-3/6 2xl:w-2/5 mx-auto px-4 xs:px-10 py-2 sm:my-4 bg-white dark:bg-[#344453] text-gray-600 dark:text-slate-300 sm:rounded-lg border-b sm:border dark:border-gray-600 shadow-md dark:shadow-none shadow-slate-100">
                         <p className="text-md md:text-lg font-semibold my-2">Recent activity</p>
 
                         <ul className="flex xs:justify-center flex-wrap gap-x-8 md:p-2 text-sm md:text-base">
