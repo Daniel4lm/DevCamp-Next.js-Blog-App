@@ -37,7 +37,19 @@ body {
 }
 
 body * {
-  @apply transition-colors duration-200;
+  @apply transition-colors;
+}
+
+@-moz-document url-prefix() {
+  body * {
+    @apply duration-200;
+  }
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+  body * {
+    @apply duration-75;
+  }
 }
 
 h1 {
@@ -266,7 +278,7 @@ input[type="search"]::-webkit-search-results-decoration {
 }
 
 #post-body .text-link {
-  @apply relative !scroll-mt-52 ml-4 md:ml-0;
+  @apply relative scroll-mt-20 ml-4 md:ml-0;
 }
 
 .pattern-overlay-2 {
@@ -330,11 +342,6 @@ input[type="search"]::-webkit-search-results-decoration {
 
 #post-form .tox.tox-tinymce {
   @apply min-h-[140px] text-sm md:text-base dark:!bg-[#4a5469] border rounded-md duration-500 border-[#5C5C5CB2] dark:border-slate-400; /* focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-90 focus:border-transparent dark:focus:border-transparent dark:focus:ring-blue-400 */
-
-  /* min-height: 400px;
-  transition-duration: 150ms;
-  transition-property: height;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); */
 }
 
 #post-form .tox-editor-header,
@@ -604,7 +611,7 @@ svg:hover > .ql-fill {
   @apply content-[''] absolute left-0 w-full h-[0.15rem] bg-indigo-400 animate-[slide-active-link_0.2s_ease-in-out_forwards] transition-all;
 } */
 
-/* Sign in/Sign out form */
+/* Sign in/out form */
 
 #remember_me {
   @apply hidden;
