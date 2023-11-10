@@ -30,7 +30,6 @@ export default withAuth(
 export const config = {
     // matcher: ["/((?!register|kapi|login).*)"],
     matcher: [
-        '/((?!api|_next/static|_next/image|favicon.ico).*)',
         "/auth/logout",
         "/dashboard",
         "/posts/new",
