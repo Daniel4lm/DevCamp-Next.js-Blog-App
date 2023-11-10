@@ -29,12 +29,16 @@ export default function BoardColumn({
 
   const dragEnter = (event: DragEvent<HTMLDivElement>) => {
     const columnType = event.currentTarget.dataset.columnType;
-    const articleData = JSON.parse(event.dataTransfer.getData("text"));
+    try {
+      const articleData = JSON.parse(event.dataTransfer.getData("text") || '{}');
 
-    if (articleData.columnType === columnType) {
-      return;
+      if (articleData.columnType === columnType) {
+        return;
+      }
+      event.currentTarget.classList.add("drop");
+    } catch (error: any) {
+      console.log('DragEvent error: ', error.message);
     }
-    event.currentTarget.classList.add("drop");
   };
 
   const dragLeave = (event: DragEvent<HTMLDivElement>) => {
@@ -76,7 +80,7 @@ export default function BoardColumn({
       <h2 className="text-gray-900 text-2xl">{column.title}</h2>
 
       {currentUser?.profile?.kanbanColumnsReviewed &&
-      !currentUser?.profile.kanbanColumnsReviewed.includes(column.type) ? (
+        !currentUser?.profile.kanbanColumnsReviewed.includes(column.type) ? (
         <div
           className="relative articleboardcolumn-description mt-5 p-3 rounded-md border-2 border-dashed border-gray-250 text-sm text-gray-900"
           id={`articleboardcolumn-description-${column.id}`}
